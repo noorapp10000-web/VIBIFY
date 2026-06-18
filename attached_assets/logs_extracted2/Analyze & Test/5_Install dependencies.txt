@@ -1,0 +1,55 @@
+﻿2026-06-18T00:44:35.1424225Z ##[group]Run flutter pub get
+2026-06-18T00:44:35.1424625Z [36;1mflutter pub get[0m
+2026-06-18T00:44:35.1456475Z shell: /usr/bin/bash -e {0}
+2026-06-18T00:44:35.1456807Z env:
+2026-06-18T00:44:35.1457160Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.22.0-x64/flutter
+2026-06-18T00:44:35.1457611Z   PUB_CACHE: /home/runner/.pub-cache
+2026-06-18T00:44:35.1457914Z ##[endgroup]
+2026-06-18T00:44:35.5053075Z 
+2026-06-18T00:44:35.5066118Z   ╔════════════════════════════════════════════════════════════════════════════╗
+2026-06-18T00:44:35.5067382Z   ║                 Welcome to Flutter! - https://flutter.dev                  ║
+2026-06-18T00:44:35.5068445Z   ║                                                                            ║
+2026-06-18T00:44:35.5069368Z   ║ The Flutter tool uses Google Analytics to anonymously report feature usage ║
+2026-06-18T00:44:35.5070102Z   ║ statistics and basic crash reports. This data is used to help improve      ║
+2026-06-18T00:44:35.5070786Z   ║ Flutter tools over time.                                                   ║
+2026-06-18T00:44:35.5071410Z   ║                                                                            ║
+2026-06-18T00:44:35.5072154Z   ║ Flutter tool analytics are not sent on the very first run. To disable      ║
+2026-06-18T00:44:35.5073140Z   ║ reporting, type 'flutter config --no-analytics'. To display the current    ║
+2026-06-18T00:44:35.5073868Z   ║ setting, type 'flutter config'. If you opt out of analytics, an opt-out    ║
+2026-06-18T00:44:35.5074548Z   ║ event will be sent, and then no further information will be sent by the    ║
+2026-06-18T00:44:35.5075170Z   ║ Flutter tool.                                                              ║
+2026-06-18T00:44:35.5075686Z   ║                                                                            ║
+2026-06-18T00:44:35.5076266Z   ║ By downloading the Flutter SDK, you agree to the Google Terms of Service.  ║
+2026-06-18T00:44:35.5076960Z   ║ The Google Privacy Policy describes how data is handled in this service.   ║
+2026-06-18T00:44:35.5077559Z   ║                                                                            ║
+2026-06-18T00:44:35.5078155Z   ║ Moreover, Flutter includes the Dart SDK, which may send usage metrics and  ║
+2026-06-18T00:44:35.5078807Z   ║ crash reports to Google.                                                   ║
+2026-06-18T00:44:35.5079514Z   ║                                                                            ║
+2026-06-18T00:44:35.5079987Z   ║ Read about data we send with crash reports:                                ║
+2026-06-18T00:44:35.5080558Z   ║ https://flutter.dev/docs/reference/crash-reporting                         ║
+2026-06-18T00:44:35.5081051Z   ║                                                                            ║
+2026-06-18T00:44:35.5081508Z   ║ See Google's privacy policy:                                               ║
+2026-06-18T00:44:35.5082200Z   ║ https://policies.google.com/privacy                                        ║
+2026-06-18T00:44:35.5082694Z   ║                                                                            ║
+2026-06-18T00:44:35.5083162Z   ║ To disable animations in this tool, use                                    ║
+2026-06-18T00:44:35.5083709Z   ║ 'flutter config --no-cli-animations'.                                      ║
+2026-06-18T00:44:35.5084303Z   ╚════════════════════════════════════════════════════════════════════════════╝
+2026-06-18T00:44:35.5084607Z 
+2026-06-18T00:44:40.6826290Z Resolving dependencies...
+2026-06-18T00:44:43.3368470Z Note: meta is pinned to version 1.12.0 by flutter_web_plugins from the flutter SDK.
+2026-06-18T00:44:43.3369833Z See https://dart.dev/go/sdk-version-pinning for details.
+2026-06-18T00:44:43.3370473Z 
+2026-06-18T00:44:43.3370734Z The current Dart SDK version is 3.4.0.
+2026-06-18T00:44:43.3371198Z 
+2026-06-18T00:44:43.3372927Z Because riverpod_generator >=2.4.2 <2.6.1 depends on analyzer ^6.5.0 and analyzer >=6.5.0 <6.5.1 depends on meta ^1.14.0, riverpod_generator >=2.4.2 <2.6.1 requires meta ^1.14.0 or analyzer ^6.5.1.
+2026-06-18T00:44:43.3375654Z And because riverpod_generator >=2.6.4 <3.0.0-dev.2 depends on analyzer ^7.0.0, riverpod_generator >=2.4.2 <2.6.1-∞ or >=2.6.4 <3.0.0-dev.2 requires meta ^1.14.0 or analyzer ^6.5.1 or ^7.0.0.
+2026-06-18T00:44:43.3377462Z And because hive_generator >=2.0.1 depends on analyzer >=4.6.0 <7.0.0 and riverpod_generator >=2.6.1 <2.6.4 depends on analyzer ^6.7.0, if hive_generator >=2.0.1 and riverpod_generator >=2.4.2 <3.0.0-dev.2 then meta ^1.14.0 or analyzer ^6.5.1.
+2026-06-18T00:44:43.3379545Z And because analyzer >=6.5.1 <7.4.0 depends on meta ^1.15.0 and every version of flutter_web_plugins from sdk depends on meta 1.12.0, one of hive_generator >=2.0.1 or riverpod_generator >=2.4.2 <3.0.0-dev.2 or flutter_web_plugins from sdk must be false.
+2026-06-18T00:44:43.3381723Z And because permission_handler >=11.2.0 <11.4.0 depends on permission_handler_html ^0.1.1 which depends on flutter_web_plugins from sdk, one of hive_generator >=2.0.1 or riverpod_generator >=2.4.2 <3.0.0-dev.2 or permission_handler >=11.2.0 <11.4.0 must be false.
+2026-06-18T00:44:43.3384300Z And because permission_handler >=11.4.0 requires SDK version >=3.5.0 <4.0.0 and vibify depends on permission_handler ^11.3.1, hive_generator >=2.0.1 is incompatible with riverpod_generator >=2.4.2 <3.0.0-dev.2.
+2026-06-18T00:44:43.3386534Z So, because vibify depends on both riverpod_generator ^2.4.3 and hive_generator ^2.0.1, version solving failed.
+2026-06-18T00:44:43.3387308Z 
+2026-06-18T00:44:43.3387318Z 
+2026-06-18T00:44:43.3387619Z You can try the following suggestion to make the pubspec resolve:
+2026-06-18T00:44:43.3388761Z * Consider downgrading your constraint on riverpod_generator: flutter pub add dev:riverpod_generator:^2.4.0
+2026-06-18T00:44:43.4050388Z ##[error]Process completed with exit code 1.

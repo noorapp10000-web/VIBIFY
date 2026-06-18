@@ -1,0 +1,265 @@
+﻿2026-06-18T00:43:59.2334073Z Current runner version: '2.335.1'
+2026-06-18T00:43:59.2366431Z ##[group]Runner Image Provisioner
+2026-06-18T00:43:59.2367820Z Hosted Compute Agent
+2026-06-18T00:43:59.2368851Z Version: 20260611.554
+2026-06-18T00:43:59.2369774Z Commit: 5e0782fdc9014723d3be820dd114dd31555c2bd1
+2026-06-18T00:43:59.2370940Z Build Date: 2026-06-11T21:40:46Z
+2026-06-18T00:43:59.2372282Z Worker ID: {eab750ff-b7f5-4c2c-8915-df3695582233}
+2026-06-18T00:43:59.2373475Z Azure Region: eastus
+2026-06-18T00:43:59.2374427Z ##[endgroup]
+2026-06-18T00:43:59.2376473Z ##[group]Operating System
+2026-06-18T00:43:59.2377408Z Ubuntu
+2026-06-18T00:43:59.2378331Z 24.04.4
+2026-06-18T00:43:59.2379148Z LTS
+2026-06-18T00:43:59.2379963Z ##[endgroup]
+2026-06-18T00:43:59.2380919Z ##[group]Runner Image
+2026-06-18T00:43:59.2382517Z Image: ubuntu-24.04
+2026-06-18T00:43:59.2383525Z Version: 20260615.205.1
+2026-06-18T00:43:59.2385404Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260615.205/images/ubuntu/Ubuntu2404-Readme.md
+2026-06-18T00:43:59.2387969Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260615.205
+2026-06-18T00:43:59.2389519Z ##[endgroup]
+2026-06-18T00:43:59.2391522Z ##[group]GITHUB_TOKEN Permissions
+2026-06-18T00:43:59.2394376Z Contents: read
+2026-06-18T00:43:59.2395418Z Metadata: read
+2026-06-18T00:43:59.2396250Z Packages: read
+2026-06-18T00:43:59.2397203Z ##[endgroup]
+2026-06-18T00:43:59.2400116Z Secret source: Actions
+2026-06-18T00:43:59.2401463Z Prepare workflow directory
+2026-06-18T00:43:59.2946854Z Prepare all required actions
+2026-06-18T00:43:59.2985094Z Getting action download info
+2026-06-18T00:43:59.5485205Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+2026-06-18T00:43:59.9574448Z Download action repository 'subosito/flutter-action@v2' (SHA:1a449444c387b1966244ae4d4f8c696479add0b2)
+2026-06-18T00:44:00.0621635Z Download action repository 'actions/cache@v4' (SHA:0057852bfaa89a56745cba8c7296529d2fc39830)
+2026-06-18T00:44:00.2608496Z Getting action download info
+2026-06-18T00:44:00.3312883Z Download action repository 'actions/cache@v5' (SHA:27d5ce7f107fe9357f9df03efb73ab90386fccae)
+2026-06-18T00:44:00.4750883Z Complete job name: Analyze & Test
+2026-06-18T00:44:00.5527373Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-06-18T00:44:00.5536691Z ##[group]Run actions/checkout@v4
+2026-06-18T00:44:00.5537509Z with:
+2026-06-18T00:44:00.5538010Z   repository: noorapp10000-web/VIBIFY
+2026-06-18T00:44:00.5543028Z   token: ***
+2026-06-18T00:44:00.5543519Z   ssh-strict: true
+2026-06-18T00:44:00.5543995Z   ssh-user: git
+2026-06-18T00:44:00.5544474Z   persist-credentials: true
+2026-06-18T00:44:00.5545003Z   clean: true
+2026-06-18T00:44:00.5545500Z   sparse-checkout-cone-mode: true
+2026-06-18T00:44:00.5546115Z   fetch-depth: 1
+2026-06-18T00:44:00.5546591Z   fetch-tags: false
+2026-06-18T00:44:00.5547074Z   show-progress: true
+2026-06-18T00:44:00.5547568Z   lfs: false
+2026-06-18T00:44:00.5548059Z   submodules: false
+2026-06-18T00:44:00.5548548Z   set-safe-directory: true
+2026-06-18T00:44:00.5549350Z ##[endgroup]
+2026-06-18T00:44:00.6555749Z Syncing repository: noorapp10000-web/VIBIFY
+2026-06-18T00:44:00.6557967Z ##[group]Getting Git version info
+2026-06-18T00:44:00.6558803Z Working directory is '/home/runner/work/VIBIFY/VIBIFY'
+2026-06-18T00:44:00.6559898Z [command]/usr/bin/git version
+2026-06-18T00:44:00.6656384Z git version 2.54.0
+2026-06-18T00:44:00.6678554Z ##[endgroup]
+2026-06-18T00:44:00.6695760Z Temporarily overriding HOME='/home/runner/work/_temp/913228dc-b13c-40a7-8d64-cc09ec1ef225' before making global git config changes
+2026-06-18T00:44:00.6698616Z Adding repository directory to the temporary git global config as a safe directory
+2026-06-18T00:44:00.6701678Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/VIBIFY/VIBIFY
+2026-06-18T00:44:00.6754187Z Deleting the contents of '/home/runner/work/VIBIFY/VIBIFY'
+2026-06-18T00:44:00.6758385Z ##[group]Initializing the repository
+2026-06-18T00:44:00.6763667Z [command]/usr/bin/git init /home/runner/work/VIBIFY/VIBIFY
+2026-06-18T00:44:00.6886865Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-06-18T00:44:00.6888353Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-06-18T00:44:00.6889524Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-06-18T00:44:00.6890448Z hint: call:
+2026-06-18T00:44:00.6891146Z hint:
+2026-06-18T00:44:00.6891778Z hint: 	git config --global init.defaultBranch <name>
+2026-06-18T00:44:00.6892882Z hint:
+2026-06-18T00:44:00.6894066Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-06-18T00:44:00.6895948Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-06-18T00:44:00.6897381Z hint:
+2026-06-18T00:44:00.6897932Z hint: 	git branch -m <name>
+2026-06-18T00:44:00.6898516Z hint:
+2026-06-18T00:44:00.6899220Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-06-18T00:44:00.6900702Z Initialized empty Git repository in /home/runner/work/VIBIFY/VIBIFY/.git/
+2026-06-18T00:44:00.6905747Z [command]/usr/bin/git remote add origin https://github.com/noorapp10000-web/VIBIFY
+2026-06-18T00:44:00.6950442Z ##[endgroup]
+2026-06-18T00:44:00.6951310Z ##[group]Disabling automatic garbage collection
+2026-06-18T00:44:00.6954141Z [command]/usr/bin/git config --local gc.auto 0
+2026-06-18T00:44:00.6981513Z ##[endgroup]
+2026-06-18T00:44:00.6982829Z ##[group]Setting up auth
+2026-06-18T00:44:00.6988614Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-06-18T00:44:00.7022703Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-06-18T00:44:00.7406380Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-06-18T00:44:00.7440533Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-06-18T00:44:00.7660266Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-06-18T00:44:00.7693116Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-06-18T00:44:00.7913049Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-06-18T00:44:00.7948181Z ##[endgroup]
+2026-06-18T00:44:00.8015409Z ##[group]Fetching the repository
+2026-06-18T00:44:00.8017635Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +71c50eb9a0ffd58edb648405e6424f702b93fd61:refs/remotes/origin/main
+2026-06-18T00:44:01.3701885Z From https://github.com/noorapp10000-web/VIBIFY
+2026-06-18T00:44:01.3704544Z  * [new ref]         71c50eb9a0ffd58edb648405e6424f702b93fd61 -> origin/main
+2026-06-18T00:44:01.3741802Z ##[endgroup]
+2026-06-18T00:44:01.3743702Z ##[group]Determining the checkout info
+2026-06-18T00:44:01.3745230Z ##[endgroup]
+2026-06-18T00:44:01.3749851Z [command]/usr/bin/git sparse-checkout disable
+2026-06-18T00:44:01.3795147Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-06-18T00:44:01.3821320Z ##[group]Checking out the ref
+2026-06-18T00:44:01.3825428Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-06-18T00:44:01.4083930Z Switched to a new branch 'main'
+2026-06-18T00:44:01.4086056Z branch 'main' set up to track 'origin/main'.
+2026-06-18T00:44:01.4094937Z ##[endgroup]
+2026-06-18T00:44:01.4159719Z [command]/usr/bin/git log -1 --format=%H
+2026-06-18T00:44:01.4182877Z 71c50eb9a0ffd58edb648405e6424f702b93fd61
+2026-06-18T00:44:01.4808300Z ##[group]Run subosito/flutter-action@v2
+2026-06-18T00:44:01.4809443Z with:
+2026-06-18T00:44:01.4810223Z   flutter-version: 3.22.0
+2026-06-18T00:44:01.4811183Z   channel: stable
+2026-06-18T00:44:01.4812194Z   cache: true
+2026-06-18T00:44:01.4813009Z   architecture: X64
+2026-06-18T00:44:01.4813889Z   pub-cache-path: default
+2026-06-18T00:44:01.4814814Z   dry-run: false
+2026-06-18T00:44:01.4815834Z   git-source: https://github.com/flutter/flutter.git
+2026-06-18T00:44:01.4817072Z ##[endgroup]
+2026-06-18T00:44:01.4964850Z ##[group]Run chmod +x "$GITHUB_ACTION_PATH/setup.sh"
+2026-06-18T00:44:01.4966237Z [36;1mchmod +x "$GITHUB_ACTION_PATH/setup.sh"[0m
+2026-06-18T00:44:01.5171833Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-06-18T00:44:01.5173528Z ##[endgroup]
+2026-06-18T00:44:01.5344067Z ##[group]Run $GITHUB_ACTION_PATH/setup.sh -p \
+2026-06-18T00:44:01.5345373Z [36;1m$GITHUB_ACTION_PATH/setup.sh -p \[0m
+2026-06-18T00:44:01.5346520Z [36;1m  -n '3.22.0' \[0m
+2026-06-18T00:44:01.5347444Z [36;1m  -f '' \[0m
+2026-06-18T00:44:01.5348278Z [36;1m  -a 'X64' \[0m
+2026-06-18T00:44:01.5349142Z [36;1m  -k '' \[0m
+2026-06-18T00:44:01.5349971Z [36;1m  -c '' \[0m
+2026-06-18T00:44:01.5350790Z [36;1m  -l '' \[0m
+2026-06-18T00:44:01.5351634Z [36;1m  -d 'default' \[0m
+2026-06-18T00:44:01.5353047Z [36;1m  -g 'https://github.com/flutter/flutter.git' \[0m
+2026-06-18T00:44:01.5354292Z [36;1m  stable[0m
+2026-06-18T00:44:01.5386528Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-06-18T00:44:01.5387833Z ##[endgroup]
+2026-06-18T00:44:01.7199721Z ##[group]Run actions/cache@v5
+2026-06-18T00:44:01.7200822Z with:
+2026-06-18T00:44:01.7201885Z   path: /opt/hostedtoolcache/flutter/stable-3.22.0-x64
+2026-06-18T00:44:01.7204022Z   key: flutter-linux-stable-3.22.0-x64-5dcb86f68f239346676ceb1ed1ea385bd215fba1
+2026-06-18T00:44:01.7205730Z   enableCrossOsArchive: false
+2026-06-18T00:44:01.7206841Z   fail-on-cache-miss: false
+2026-06-18T00:44:01.7207881Z   lookup-only: false
+2026-06-18T00:44:01.7208816Z   save-always: false
+2026-06-18T00:44:01.7209732Z ##[endgroup]
+2026-06-18T00:44:01.9051653Z Cache not found for input keys: flutter-linux-stable-3.22.0-x64-5dcb86f68f239346676ceb1ed1ea385bd215fba1
+2026-06-18T00:44:02.0225581Z ##[group]Run actions/cache@v5
+2026-06-18T00:44:02.0226584Z with:
+2026-06-18T00:44:02.0227393Z   path: /home/runner/.pub-cache
+2026-06-18T00:44:02.0228997Z   key: flutter-pub-linux-stable-3.22.0-x64-5dcb86f68f239346676ceb1ed1ea385bd215fba1-
+2026-06-18T00:44:02.0230730Z   enableCrossOsArchive: false
+2026-06-18T00:44:02.0231768Z   fail-on-cache-miss: false
+2026-06-18T00:44:02.0233193Z   lookup-only: false
+2026-06-18T00:44:02.0234098Z   save-always: false
+2026-06-18T00:44:02.0234964Z ##[endgroup]
+2026-06-18T00:44:02.2054362Z Cache not found for input keys: flutter-pub-linux-stable-3.22.0-x64-5dcb86f68f239346676ceb1ed1ea385bd215fba1-
+2026-06-18T00:44:02.2184296Z ##[group]Run $GITHUB_ACTION_PATH/setup.sh \
+2026-06-18T00:44:02.2185540Z [36;1m$GITHUB_ACTION_PATH/setup.sh \[0m
+2026-06-18T00:44:02.2186617Z [36;1m  -n '3.22.0' \[0m
+2026-06-18T00:44:02.2187528Z [36;1m  -a 'x64' \[0m
+2026-06-18T00:44:02.2188659Z [36;1m  -c '/opt/hostedtoolcache/flutter/stable-3.22.0-x64' \[0m
+2026-06-18T00:44:02.2190020Z [36;1m  -d '/home/runner/.pub-cache' \[0m
+2026-06-18T00:44:02.2191103Z [36;1m  stable[0m
+2026-06-18T00:44:02.2227132Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-06-18T00:44:02.2228429Z ##[endgroup]
+2026-06-18T00:44:02.3748366Z   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+2026-06-18T00:44:02.3751850Z                                  Dload  Upload   Total   Spent    Left  Speed
+2026-06-18T00:44:02.3754276Z 
+2026-06-18T00:44:02.5126832Z   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-06-18T00:44:03.4460035Z   0  716M    0 19189    0     0   135k      0  1:30:03 --:--:--  1:30:03  135k
+2026-06-18T00:44:04.4437203Z  30  716M   30  216M    0     0   201M      0  0:00:03  0:00:01  0:00:02  201M
+2026-06-18T00:44:05.0250734Z  73  716M   73  524M    0     0   253M      0  0:00:02  0:00:02 --:--:--  253M
+2026-06-18T00:44:05.0252365Z 100  716M  100  716M    0     0   270M      0  0:00:02  0:00:02 --:--:--  270M
+2026-06-18T00:44:34.9677219Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-06-18T00:44:34.9678623Z ##[group]Run actions/cache@v4
+2026-06-18T00:44:34.9678912Z with:
+2026-06-18T00:44:34.9679175Z   path: ~/.pub-cache
+.dart_tool
+
+2026-06-18T00:44:34.9679479Z   key: Linux-pub-
+2026-06-18T00:44:34.9679753Z   restore-keys: Linux-pub-
+
+2026-06-18T00:44:34.9680055Z   enableCrossOsArchive: false
+2026-06-18T00:44:34.9680383Z   fail-on-cache-miss: false
+2026-06-18T00:44:34.9680675Z   lookup-only: false
+2026-06-18T00:44:34.9680934Z   save-always: false
+2026-06-18T00:44:34.9681210Z env:
+2026-06-18T00:44:34.9681577Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.22.0-x64/flutter
+2026-06-18T00:44:34.9682262Z   PUB_CACHE: /home/runner/.pub-cache
+2026-06-18T00:44:34.9682627Z ##[endgroup]
+2026-06-18T00:44:35.0729622Z (node:2584) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-06-18T00:44:35.0730776Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-06-18T00:44:35.1338371Z Cache not found for input keys: Linux-pub-, Linux-pub-
+2026-06-18T00:44:35.1424244Z ##[group]Run flutter pub get
+2026-06-18T00:44:35.1424629Z [36;1mflutter pub get[0m
+2026-06-18T00:44:35.1456486Z shell: /usr/bin/bash -e {0}
+2026-06-18T00:44:35.1456812Z env:
+2026-06-18T00:44:35.1457165Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.22.0-x64/flutter
+2026-06-18T00:44:35.1457614Z   PUB_CACHE: /home/runner/.pub-cache
+2026-06-18T00:44:35.1457917Z ##[endgroup]
+2026-06-18T00:44:35.5053139Z 
+2026-06-18T00:44:35.5066136Z   ╔════════════════════════════════════════════════════════════════════════════╗
+2026-06-18T00:44:35.5067391Z   ║                 Welcome to Flutter! - https://flutter.dev                  ║
+2026-06-18T00:44:35.5068452Z   ║                                                                            ║
+2026-06-18T00:44:35.5069375Z   ║ The Flutter tool uses Google Analytics to anonymously report feature usage ║
+2026-06-18T00:44:35.5070113Z   ║ statistics and basic crash reports. This data is used to help improve      ║
+2026-06-18T00:44:35.5070859Z   ║ Flutter tools over time.                                                   ║
+2026-06-18T00:44:35.5071414Z   ║                                                                            ║
+2026-06-18T00:44:35.5072159Z   ║ Flutter tool analytics are not sent on the very first run. To disable      ║
+2026-06-18T00:44:35.5073149Z   ║ reporting, type 'flutter config --no-analytics'. To display the current    ║
+2026-06-18T00:44:35.5073872Z   ║ setting, type 'flutter config'. If you opt out of analytics, an opt-out    ║
+2026-06-18T00:44:35.5074552Z   ║ event will be sent, and then no further information will be sent by the    ║
+2026-06-18T00:44:35.5075173Z   ║ Flutter tool.                                                              ║
+2026-06-18T00:44:35.5075690Z   ║                                                                            ║
+2026-06-18T00:44:35.5076269Z   ║ By downloading the Flutter SDK, you agree to the Google Terms of Service.  ║
+2026-06-18T00:44:35.5076976Z   ║ The Google Privacy Policy describes how data is handled in this service.   ║
+2026-06-18T00:44:35.5077563Z   ║                                                                            ║
+2026-06-18T00:44:35.5078157Z   ║ Moreover, Flutter includes the Dart SDK, which may send usage metrics and  ║
+2026-06-18T00:44:35.5078811Z   ║ crash reports to Google.                                                   ║
+2026-06-18T00:44:35.5079519Z   ║                                                                            ║
+2026-06-18T00:44:35.5079990Z   ║ Read about data we send with crash reports:                                ║
+2026-06-18T00:44:35.5080561Z   ║ https://flutter.dev/docs/reference/crash-reporting                         ║
+2026-06-18T00:44:35.5081054Z   ║                                                                            ║
+2026-06-18T00:44:35.5081517Z   ║ See Google's privacy policy:                                               ║
+2026-06-18T00:44:35.5082217Z   ║ https://policies.google.com/privacy                                        ║
+2026-06-18T00:44:35.5082697Z   ║                                                                            ║
+2026-06-18T00:44:35.5083165Z   ║ To disable animations in this tool, use                                    ║
+2026-06-18T00:44:35.5083713Z   ║ 'flutter config --no-cli-animations'.                                      ║
+2026-06-18T00:44:35.5084307Z   ╚════════════════════════════════════════════════════════════════════════════╝
+2026-06-18T00:44:35.5084612Z 
+2026-06-18T00:44:40.6826351Z Resolving dependencies...
+2026-06-18T00:44:43.3368527Z Note: meta is pinned to version 1.12.0 by flutter_web_plugins from the flutter SDK.
+2026-06-18T00:44:43.3369839Z See https://dart.dev/go/sdk-version-pinning for details.
+2026-06-18T00:44:43.3370478Z 
+2026-06-18T00:44:43.3370739Z The current Dart SDK version is 3.4.0.
+2026-06-18T00:44:43.3371203Z 
+2026-06-18T00:44:43.3373453Z Because riverpod_generator >=2.4.2 <2.6.1 depends on analyzer ^6.5.0 and analyzer >=6.5.0 <6.5.1 depends on meta ^1.14.0, riverpod_generator >=2.4.2 <2.6.1 requires meta ^1.14.0 or analyzer ^6.5.1.
+2026-06-18T00:44:43.3375659Z And because riverpod_generator >=2.6.4 <3.0.0-dev.2 depends on analyzer ^7.0.0, riverpod_generator >=2.4.2 <2.6.1-∞ or >=2.6.4 <3.0.0-dev.2 requires meta ^1.14.0 or analyzer ^6.5.1 or ^7.0.0.
+2026-06-18T00:44:43.3377466Z And because hive_generator >=2.0.1 depends on analyzer >=4.6.0 <7.0.0 and riverpod_generator >=2.6.1 <2.6.4 depends on analyzer ^6.7.0, if hive_generator >=2.0.1 and riverpod_generator >=2.4.2 <3.0.0-dev.2 then meta ^1.14.0 or analyzer ^6.5.1.
+2026-06-18T00:44:43.3379548Z And because analyzer >=6.5.1 <7.4.0 depends on meta ^1.15.0 and every version of flutter_web_plugins from sdk depends on meta 1.12.0, one of hive_generator >=2.0.1 or riverpod_generator >=2.4.2 <3.0.0-dev.2 or flutter_web_plugins from sdk must be false.
+2026-06-18T00:44:43.3381735Z And because permission_handler >=11.2.0 <11.4.0 depends on permission_handler_html ^0.1.1 which depends on flutter_web_plugins from sdk, one of hive_generator >=2.0.1 or riverpod_generator >=2.4.2 <3.0.0-dev.2 or permission_handler >=11.2.0 <11.4.0 must be false.
+2026-06-18T00:44:43.3384309Z And because permission_handler >=11.4.0 requires SDK version >=3.5.0 <4.0.0 and vibify depends on permission_handler ^11.3.1, hive_generator >=2.0.1 is incompatible with riverpod_generator >=2.4.2 <3.0.0-dev.2.
+2026-06-18T00:44:43.3386541Z So, because vibify depends on both riverpod_generator ^2.4.3 and hive_generator ^2.0.1, version solving failed.
+2026-06-18T00:44:43.3387313Z 
+2026-06-18T00:44:43.3387320Z 
+2026-06-18T00:44:43.3387624Z You can try the following suggestion to make the pubspec resolve:
+2026-06-18T00:44:43.3388767Z * Consider downgrading your constraint on riverpod_generator: flutter pub add dev:riverpod_generator:^2.4.0
+2026-06-18T00:44:43.4050414Z ##[error]Process completed with exit code 1.
+2026-06-18T00:44:43.4243716Z Post job cleanup.
+2026-06-18T00:44:43.4314106Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-06-18T00:44:43.4315366Z Post job cleanup.
+2026-06-18T00:44:43.5158852Z [command]/usr/bin/git version
+2026-06-18T00:44:43.5197912Z git version 2.54.0
+2026-06-18T00:44:43.5239113Z Temporarily overriding HOME='/home/runner/work/_temp/172c0de5-af35-4556-ad0d-bc8d994b1330' before making global git config changes
+2026-06-18T00:44:43.5240545Z Adding repository directory to the temporary git global config as a safe directory
+2026-06-18T00:44:43.5245682Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/VIBIFY/VIBIFY
+2026-06-18T00:44:43.5283553Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-06-18T00:44:43.5322608Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-06-18T00:44:43.5555114Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-06-18T00:44:43.5583512Z http.https://github.com/.extraheader
+2026-06-18T00:44:43.5594418Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-06-18T00:44:43.5625587Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-06-18T00:44:43.5886141Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-06-18T00:44:43.5917707Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-06-18T00:44:43.6295601Z Cleaning up orphan processes
+2026-06-18T00:44:43.6626550Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/cache@v4, actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
