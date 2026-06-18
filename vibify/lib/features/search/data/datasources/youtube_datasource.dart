@@ -6,7 +6,7 @@ import '../../../../core/errors/exceptions.dart';
 import '../../../player/domain/entities/track.dart';
 import '../../domain/entities/search_result.dart';
 
-const String _kApiBase = 'https://Seifooooooo-vibify-api.hf.space';
+const String _kApiBase = 'https://broken-unit-a21e.noor-app-8000.workers.dev';
 
 const String _kInnerTubeUrl =
     'https://www.youtube.com/youtubei/v1/search'
