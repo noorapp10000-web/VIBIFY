@@ -1,0 +1,117 @@
+name: vibify
+description: Vibify - Premium Music Player & Personal Audio Platform
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State Management
+  flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.5
+
+  # Routing
+  go_router: ^13.2.4
+
+  # Networking
+  dio: ^5.4.3+1
+  connectivity_plus: ^6.0.3
+
+  # Dependency Injection
+  get_it: ^7.7.0
+
+  # Audio
+  just_audio: ^0.9.40
+  just_audio_background: ^0.0.1-beta.12
+  audio_service: ^0.18.14
+  audio_session: ^0.1.21
+
+  # YouTube
+  youtube_explode_dart: ^2.2.1
+
+  # Local Database
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+
+  # Secure Storage
+  flutter_secure_storage: ^9.2.2
+
+  # Local Music
+  on_audio_query: ^2.9.0
+  permission_handler: ^11.3.1
+
+  # UI
+  cached_network_image: ^3.3.1
+  shimmer: ^3.0.0
+  palette_generator: ^0.3.3+3
+  flutter_staggered_animations: ^1.1.1
+  animations: ^2.0.11
+  lottie: ^3.1.2
+
+  # File/Storage
+  path_provider: ^2.1.3
+  path: ^1.9.0
+
+  # Utils
+  intl: ^0.19.0
+  uuid: ^4.4.0
+  collection: ^1.18.0
+  rxdart: ^0.27.7
+  equatable: ^2.0.5
+  freezed_annotation: ^2.4.4
+  json_annotation: ^4.9.0
+  logger: ^2.4.0
+
+  # Icons
+  flutter_svg: ^2.0.10+1
+  iconsax: ^0.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  build_runner: ^2.4.11
+  riverpod_generator: ^2.4.3
+  freezed: ^2.5.2
+  json_serializable: ^6.8.0
+  hive_generator: ^2.0.1
+  mockito: ^5.4.4
+  flutter_launcher_icons: ^0.14.1
+  flutter_native_splash: ^2.4.1
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/app_icon.png"
+  min_sdk_android: 21
+  adaptive_icon_background: "#111111"
+  adaptive_icon_foreground: "assets/icons/app_icon_foreground.png"
+
+flutter_native_splash:
+  color: "#111111"
+  color_dark: "#111111"
+  image: assets/icons/app_icon.png
+  android: true
+  ios: true
+  fullscreen: true
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/icons/
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Inter-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Inter-Bold.ttf
+          weight: 700

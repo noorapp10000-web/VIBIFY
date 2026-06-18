@@ -1,0 +1,49 @@
+# Flutter/Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+*.iml
+
+# Android
+android/.gradle
+android/captures/
+android/local.properties
+**/android/**/GeneratedPluginRegistrant.java
+android/app/vibify-release.jks
+key.properties
+android/key.properties
+
+# iOS
+ios/.generated/
+ios/Flutter/App.framework
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/Flutter/app.flx
+ios/Flutter/app.zip
+ios/Flutter/flutter_assets/
+ios/Runner/GeneratedPluginRegistrant.*
+ios/ServiceDefinitions.json
+ios/Runner/Assets.xcassets/AppIcon.appiconset/
+
+# Generated files
+*.g.dart
+*.freezed.dart
+lib/core/router/app_router.g.dart
+coverage/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.DS_Store
+
+# Env
+.env
+*.env
