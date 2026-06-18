@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../router/app_router.dart';
 import '../theme/app_colors.dart';
+import '../../features/downloads/presentation/providers/downloads_provider.dart';
 import '../../features/player/presentation/widgets/mini_player.dart';
 import '../../features/player/presentation/providers/player_provider.dart';
 
@@ -30,7 +31,7 @@ class MainScaffold extends ConsumerWidget {
   }
 }
 
-class _BottomNav extends StatelessWidget {
+class _BottomNav extends ConsumerWidget {
   final String currentLocation;
 
   const _BottomNav({required this.currentLocation});
@@ -44,9 +45,10 @@ class _BottomNav extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final idx = _selectedIndex(currentLocation);
     final scheme = Theme.of(context).colorScheme;
+    final activeDownloads = ref.watch(activeDownloadsCountProvider);
 
     return Container(
       decoration: BoxDecoration(
@@ -84,6 +86,7 @@ class _BottomNav extends StatelessWidget {
                 activeIcon: Icons.library_music_rounded,
                 label: 'Library',
                 isActive: idx == 2,
+                badgeCount: activeDownloads,
                 onTap: () => context.go(AppRoutes.library),
               ),
               _NavItem(
@@ -114,6 +117,7 @@ class _NavItem extends StatelessWidget {
   final String label;
   final bool isActive;
   final VoidCallback onTap;
+  final int badgeCount;
 
   const _NavItem({
     required this.icon,
@@ -121,6 +125,7 @@ class _NavItem extends StatelessWidget {
     required this.label,
     required this.isActive,
     required this.onTap,
+    this.badgeCount = 0,
   });
 
   @override
@@ -138,14 +143,25 @@ class _NavItem extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
-              child: Icon(
-                isActive ? activeIcon : icon,
-                key: ValueKey(isActive),
-                color: color,
-                size: 24,
-              ),
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  child: Icon(
+                    isActive ? activeIcon : icon,
+                    key: ValueKey(isActive),
+                    color: color,
+                    size: 24,
+                  ),
+                ),
+                if (badgeCount > 0)
+                  Positioned(
+                    top: -4,
+                    right: -6,
+                    child: _DownloadBadge(count: badgeCount),
+                  ),
+              ],
             ),
             const SizedBox(height: 4),
             AnimatedDefaultTextStyle(
@@ -159,6 +175,51 @@ class _NavItem extends StatelessWidget {
               child: Text(label),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DownloadBadge extends StatelessWidget {
+  final int count;
+
+  const _DownloadBadge({required this.count});
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0.0, end: 1.0),
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.elasticOut,
+      builder: (context, value, child) => Transform.scale(
+        scale: value,
+        child: child,
+      ),
+      child: Container(
+        constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+        decoration: BoxDecoration(
+          color: AppColors.primaryBeige,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primaryBeige.withValues(alpha: 0.5),
+              blurRadius: 4,
+              offset: const Offset(0, 1),
+            ),
+          ],
+        ),
+        child: Text(
+          count > 9 ? '9+' : '$count',
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 9,
+            fontWeight: FontWeight.w700,
+            fontFamily: 'Inter',
+            height: 1.2,
+          ),
+          textAlign: TextAlign.center,
         ),
       ),
     );

@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../downloads/domain/entities/download_item.dart';
+import '../../../downloads/presentation/providers/downloads_provider.dart';
 import '../../../player/presentation/providers/player_provider.dart';
 import '../../../playlists/presentation/providers/playlists_provider.dart';
 import '../providers/library_provider.dart';
@@ -224,27 +226,280 @@ class _DownloadsTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
+    final downloadsAsync = ref.watch(downloadsNotifierProvider);
+
+    return downloadsAsync.when(
+      loading: () => const Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation(AppColors.primaryBeige),
+        ),
+      ),
+      error: (e, _) => Center(child: Text('Error: $e')),
+      data: (downloads) {
+        if (downloads.isEmpty) {
+          return const _EmptyLibraryState(
+            icon: Icons.download_rounded,
+            message: 'No downloads yet',
+            action: null,
+            onAction: null,
+          );
+        }
+
+        final active = downloads.where((d) => d.isDownloading || d.isQueued).toList();
+        final completed = downloads.where((d) => d.isCompleted).toList();
+        final failed = downloads.where((d) => d.isFailed).toList();
+
+        return ListView(
+          padding: const EdgeInsets.only(top: 8, bottom: 16),
+          children: [
+            if (active.isNotEmpty) ...[
+              _SectionHeader(
+                label: 'Downloading (${active.length})',
+                trailing: null,
+              ),
+              ...active.map((item) => _DownloadTileInline(
+                    item: item,
+                    ref: ref,
+                  )),
+            ],
+            if (failed.isNotEmpty) ...[
+              _SectionHeader(
+                label: 'Failed (${failed.length})',
+                trailing: null,
+              ),
+              ...failed.map((item) => _DownloadTileInline(
+                    item: item,
+                    ref: ref,
+                  )),
+            ],
+            if (completed.isNotEmpty) ...[
+              _SectionHeader(
+                label: 'Downloaded (${completed.length})',
+                trailing: TextButton(
+                  onPressed: () => ref
+                      .read(downloadsNotifierProvider.notifier)
+                      .clearCompleted(),
+                  child: const Text(
+                    'Clear All',
+                    style: TextStyle(
+                      color: AppColors.primaryBeige,
+                      fontSize: 13,
+                      fontFamily: 'Inter',
+                    ),
+                  ),
+                ),
+              ),
+              ...completed.map((item) => _DownloadTileInline(
+                    item: item,
+                    ref: ref,
+                  )),
+            ],
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  final String label;
+  final Widget? trailing;
+
+  const _SectionHeader({required this.label, this.trailing});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 8, 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Icon(
-            Icons.download_rounded,
-            size: 56,
-            color:
-                Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
-          ),
-          const SizedBox(height: 12),
-          Text('Downloads',
-              style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 8),
-          ElevatedButton(
-            onPressed: () => context.push(AppRoutes.downloads),
-            child: const Text('Go to Downloads'),
-          ),
+          Text(label,
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withValues(alpha: 0.5),
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.4,
+                  )),
+          if (trailing != null) trailing!,
         ],
       ),
     );
+  }
+}
+
+class _DownloadTileInline extends StatelessWidget {
+  final DownloadItem item;
+  final WidgetRef ref;
+
+  const _DownloadTileInline({required this.item, required this.ref});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      contentPadding:
+          const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      leading: Container(
+        width: 48,
+        height: 48,
+        decoration: BoxDecoration(
+          color: _statusColor().withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(_statusIcon(), color: _statusColor(), size: 22),
+      ),
+      title: Text(
+        item.track.title,
+        style: Theme.of(context).textTheme.titleSmall,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            item.track.artist,
+            style: Theme.of(context).textTheme.bodySmall,
+            maxLines: 1,
+          ),
+          if (item.isDownloading || item.isQueued) ...[
+            const SizedBox(height: 5),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(2),
+              child: LinearProgressIndicator(
+                value: item.isQueued ? null : item.progress,
+                backgroundColor: AppColors.primaryBeige.withValues(alpha: 0.12),
+                valueColor:
+                    const AlwaysStoppedAnimation(AppColors.primaryBeige),
+                minHeight: 3,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              item.isQueued
+                  ? 'Queued…'
+                  : '${(item.progress * 100).toInt()}%  •  ${_sizeText()}',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AppColors.primaryBeige,
+                    fontSize: 11,
+                  ),
+            ),
+          ],
+          if (item.isFailed)
+            Text(
+              item.errorMessage ?? 'Download failed — tap retry',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Colors.red,
+                    fontSize: 11,
+                  ),
+            ),
+        ],
+      ),
+      isThreeLine: item.isDownloading || item.isQueued || item.isFailed,
+      trailing: _buildAction(context),
+    );
+  }
+
+  String _sizeText() {
+    if (item.fileSizeBytes == null) return '';
+    final mb = item.fileSizeBytes! / (1024 * 1024);
+    return '${mb.toStringAsFixed(1)} MB';
+  }
+
+  Widget? _buildAction(BuildContext context) {
+    if (item.isDownloading) {
+      return IconButton(
+        onPressed: () =>
+            ref.read(downloadsNotifierProvider.notifier).pause(item.id),
+        icon: const Icon(Icons.pause_rounded),
+        color: AppColors.primaryBeige,
+        tooltip: 'Pause',
+      );
+    }
+    if (item.isPaused) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            onPressed: () =>
+                ref.read(downloadsNotifierProvider.notifier).resume(item.id),
+            icon: const Icon(Icons.play_arrow_rounded),
+            color: AppColors.primaryBeige,
+            tooltip: 'Resume',
+          ),
+          IconButton(
+            onPressed: () =>
+                ref.read(downloadsNotifierProvider.notifier).cancel(item.id),
+            icon: const Icon(Icons.close_rounded),
+            tooltip: 'Cancel',
+          ),
+        ],
+      );
+    }
+    if (item.isFailed) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            onPressed: () =>
+                ref.read(downloadsNotifierProvider.notifier).retry(item.id),
+            icon: const Icon(Icons.refresh_rounded),
+            color: AppColors.primaryBeige,
+            tooltip: 'Retry',
+          ),
+          IconButton(
+            onPressed: () =>
+                ref.read(downloadsNotifierProvider.notifier).delete(item.id),
+            icon: const Icon(Icons.delete_outline_rounded),
+            tooltip: 'Delete',
+          ),
+        ],
+      );
+    }
+    if (item.isCompleted) {
+      return IconButton(
+        onPressed: () =>
+            ref.read(downloadsNotifierProvider.notifier).delete(item.id),
+        icon: const Icon(Icons.delete_outline_rounded),
+        tooltip: 'Remove',
+      );
+    }
+    return null;
+  }
+
+  Color _statusColor() {
+    switch (item.status) {
+      case DownloadStatus.completed:
+        return Colors.green;
+      case DownloadStatus.downloading:
+        return AppColors.primaryBeige;
+      case DownloadStatus.paused:
+        return Colors.orange;
+      case DownloadStatus.failed:
+        return Colors.red;
+      default:
+        return AppColors.primaryBeige;
+    }
+  }
+
+  IconData _statusIcon() {
+    switch (item.status) {
+      case DownloadStatus.completed:
+        return Icons.download_done_rounded;
+      case DownloadStatus.downloading:
+        return Icons.downloading_rounded;
+      case DownloadStatus.paused:
+        return Icons.pause_circle_rounded;
+      case DownloadStatus.failed:
+        return Icons.error_outline_rounded;
+      case DownloadStatus.queued:
+        return Icons.queue_rounded;
+      default:
+        return Icons.download_rounded;
+    }
   }
 }
 

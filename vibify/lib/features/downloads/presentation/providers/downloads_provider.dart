@@ -81,3 +81,11 @@ final trackDownloadStatusProvider =
     return null;
   }
 });
+
+/// Number of tracks currently downloading (queued or in-progress).
+final activeDownloadsCountProvider = Provider<int>((ref) {
+  final downloads = ref.watch(downloadsNotifierProvider).valueOrNull ?? [];
+  return downloads
+      .where((d) => d.isDownloading || d.isQueued)
+      .length;
+});
