@@ -1,0 +1,35 @@
+﻿2026-06-18T00:55:21.4898159Z ##[group]Run flutter pub run flutter_launcher_icons:main
+2026-06-18T00:55:21.4898612Z [36;1mflutter pub run flutter_launcher_icons:main[0m
+2026-06-18T00:55:21.4898958Z [36;1mflutter pub run flutter_native_splash:create[0m
+2026-06-18T00:55:21.4934032Z shell: /usr/bin/bash -e {0}
+2026-06-18T00:55:21.4934300Z env:
+2026-06-18T00:55:21.4934616Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.44.2-x64/flutter
+2026-06-18T00:55:21.4935030Z   PUB_CACHE: /home/runner/.pub-cache
+2026-06-18T00:55:21.4935302Z ##[endgroup]
+2026-06-18T00:55:23.0801338Z This command is deprecated and replaced with "flutter pub run flutter_launcher_icons"
+2026-06-18T00:55:23.0804750Z   ════════════════════════════════════════════
+2026-06-18T00:55:23.0805255Z      FLUTTER LAUNCHER ICONS (v0.14.4)                               
+2026-06-18T00:55:23.0805876Z   ════════════════════════════════════════════
+2026-06-18T00:55:23.0806431Z   
+2026-06-18T00:55:23.1533026Z • Creating default icons Android
+2026-06-18T00:55:23.1542733Z • Creating adaptive icons Android
+2026-06-18T00:55:23.2785525Z • Adding a new Android launcher icon
+2026-06-18T00:55:23.5591973Z • No colors.xml file found in your Android project
+2026-06-18T00:55:23.5592834Z • Creating colors.xml file and adding it to your Android project
+2026-06-18T00:55:23.8422728Z • Creating mipmap xml file Android
+2026-06-18T00:55:23.9335912Z 
+2026-06-18T00:55:23.9336897Z WARNING: Icons with alpha channel are not allowed in the Apple App Store.
+2026-06-18T00:55:23.9337579Z Set "remove_alpha_ios: true" to remove it.
+2026-06-18T00:55:23.9337797Z 
+2026-06-18T00:55:23.9339896Z • Overwriting default iOS launcher icon with new icon
+2026-06-18T00:55:24.9061127Z Unhandled exception:
+2026-06-18T00:55:24.9075169Z PathNotFoundException: Cannot open file, path = 'ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png' (OS Error: No such file or directory, errno = 2)
+2026-06-18T00:55:24.9076850Z #0      _checkForErrorResponse (dart:io/common.dart:58:9)
+2026-06-18T00:55:24.9077761Z #1      _File.open.<anonymous closure> (dart:io/file_impl.dart:438:7)
+2026-06-18T00:55:24.9078370Z <asynchronous suspension>
+2026-06-18T00:55:24.9078904Z #2      _File.writeAsBytes.<anonymous closure> (dart:io/file_impl.dart:728:34)
+2026-06-18T00:55:24.9079490Z <asynchronous suspension>
+2026-06-18T00:55:24.9080029Z #3      overwriteDefaultIcons (package:flutter_launcher_icons/ios.dart:272:3)
+2026-06-18T00:55:24.9080621Z <asynchronous suspension>
+2026-06-18T00:55:24.9468528Z Failed to update packages.
+2026-06-18T00:55:24.9545966Z ##[error]Process completed with exit code 255.

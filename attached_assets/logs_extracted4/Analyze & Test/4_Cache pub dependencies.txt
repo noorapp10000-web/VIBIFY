@@ -1,0 +1,20 @@
+﻿2026-06-18T00:55:06.8701978Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-06-18T00:55:06.8703324Z ##[group]Run actions/cache@v4
+2026-06-18T00:55:06.8703588Z with:
+2026-06-18T00:55:06.8703825Z   path: ~/.pub-cache
+.dart_tool
+
+2026-06-18T00:55:06.8704102Z   key: Linux-pub-
+2026-06-18T00:55:06.8704362Z   restore-keys: Linux-pub-
+
+2026-06-18T00:55:06.8704637Z   enableCrossOsArchive: false
+2026-06-18T00:55:06.8704895Z   fail-on-cache-miss: false
+2026-06-18T00:55:06.8705135Z   lookup-only: false
+2026-06-18T00:55:06.8705365Z   save-always: false
+2026-06-18T00:55:06.8705587Z env:
+2026-06-18T00:55:06.8705896Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.44.2-x64/flutter
+2026-06-18T00:55:06.8706701Z   PUB_CACHE: /home/runner/.pub-cache
+2026-06-18T00:55:06.8707002Z ##[endgroup]
+2026-06-18T00:55:06.9771312Z (node:2562) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-06-18T00:55:06.9772542Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-06-18T00:55:07.1250598Z Cache not found for input keys: Linux-pub-, Linux-pub-
