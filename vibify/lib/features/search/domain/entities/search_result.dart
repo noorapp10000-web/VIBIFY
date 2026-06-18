@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../player/domain/entities/track.dart';
+import '../../../player/domain/entities/track.dart';
 
 class SearchResult extends Equatable {
   final List<Track> tracks;

@@ -1,0 +1,26 @@
+﻿2026-06-18T01:21:18.9012833Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-06-18T01:21:18.9013890Z ##[group]Run actions/cache@v4
+2026-06-18T01:21:18.9014116Z with:
+2026-06-18T01:21:18.9014303Z   path: ~/.pub-cache
+.dart_tool
+
+2026-06-18T01:21:18.9014522Z   key: Linux-pub-
+2026-06-18T01:21:18.9014719Z   restore-keys: Linux-pub-
+
+2026-06-18T01:21:18.9014940Z   enableCrossOsArchive: false
+2026-06-18T01:21:18.9015159Z   fail-on-cache-miss: false
+2026-06-18T01:21:18.9015375Z   lookup-only: false
+2026-06-18T01:21:18.9015566Z   save-always: false
+2026-06-18T01:21:18.9015754Z env:
+2026-06-18T01:21:18.9016012Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.44.2-x64/flutter
+2026-06-18T01:21:18.9016361Z   PUB_CACHE: /home/runner/.pub-cache
+2026-06-18T01:21:18.9016595Z ##[endgroup]
+2026-06-18T01:21:18.9821213Z (node:2416) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-06-18T01:21:18.9821949Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-06-18T01:21:19.1092033Z Cache hit for: Linux-pub-
+2026-06-18T01:21:19.1171166Z (node:2416) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-06-18T01:21:20.0400785Z Received 95293668 of 95293668 (100.0%), 107.9 MBs/sec
+2026-06-18T01:21:20.0402104Z Cache Size: ~91 MB (95293668 B)
+2026-06-18T01:21:20.0434184Z [command]/usr/bin/tar -xf /home/runner/work/_temp/1e8dae20-9a79-43bb-ba02-a822f16a7fca/cache.tzst -P -C /home/runner/work/VIBIFY/VIBIFY --use-compress-program unzstd
+2026-06-18T01:21:21.3900464Z Cache restored successfully
+2026-06-18T01:21:21.4005139Z Cache restored from key: Linux-pub-

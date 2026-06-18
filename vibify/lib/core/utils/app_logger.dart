@@ -7,7 +7,7 @@ final appLogger = Logger(
     lineLength: 100,
     colors: true,
     printEmojis: true,
-    printTime: false,
+    dateTimeFormat: DateTimeFormat.none,
   ),
   level: Level.debug,
 );

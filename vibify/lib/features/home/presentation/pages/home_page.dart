@@ -126,7 +126,7 @@ class _RecentlyPlayedSection extends ConsumerWidget {
         SizedBox(
           height: 160,
           child: recentAsync.when(
-            loading: () => _ShimmerCarousel(itemWidth: 120),
+            loading: () => const _ShimmerCarousel(itemWidth: 120),
             error: (_, __) => const _EmptyState(message: 'Nothing played yet'),
             data: (tracks) => tracks.isEmpty
                 ? const _EmptyState(message: 'Start listening to see history')
@@ -163,7 +163,7 @@ class _FavoritesSection extends ConsumerWidget {
         SizedBox(
           height: 160,
           child: favAsync.when(
-            loading: () => _ShimmerCarousel(itemWidth: 120),
+            loading: () => const _ShimmerCarousel(itemWidth: 120),
             error: (_, __) => const _EmptyState(message: 'No favorites yet'),
             data: (tracks) => tracks.isEmpty
                 ? const _EmptyState(message: 'Tap the heart on any track')
@@ -253,7 +253,7 @@ class _SectionHeader extends StatelessWidget {
           Text(title, style: Theme.of(context).textTheme.titleMedium),
           GestureDetector(
             onTap: onSeeAll,
-            child: Text(
+            child: const Text(
               'See all',
               style: TextStyle(
                 color: AppColors.primaryBeige,

@@ -1,0 +1,607 @@
+﻿2026-06-18T01:20:56.6713370Z Current runner version: '2.335.1'
+2026-06-18T01:20:56.6733374Z ##[group]Runner Image Provisioner
+2026-06-18T01:20:56.6734171Z Hosted Compute Agent
+2026-06-18T01:20:56.6734733Z Version: 20260527.539
+2026-06-18T01:20:56.6735282Z Commit: a891dd388383b896fa6ac04a82c0b75cec981078
+2026-06-18T01:20:56.6735922Z Build Date: 2026-05-27T21:39:57Z
+2026-06-18T01:20:56.6736496Z Worker ID: {a5a4db38-413c-4625-a56d-b2f0c6bf4d79}
+2026-06-18T01:20:56.6737076Z Azure Region: northcentralus
+2026-06-18T01:20:56.6737799Z ##[endgroup]
+2026-06-18T01:20:56.6738910Z ##[group]Operating System
+2026-06-18T01:20:56.6739401Z Ubuntu
+2026-06-18T01:20:56.6739905Z 24.04.4
+2026-06-18T01:20:56.6740327Z LTS
+2026-06-18T01:20:56.6740773Z ##[endgroup]
+2026-06-18T01:20:56.6741264Z ##[group]Runner Image
+2026-06-18T01:20:56.6741749Z Image: ubuntu-24.04
+2026-06-18T01:20:56.6742584Z Version: 20260607.184.1
+2026-06-18T01:20:56.6743567Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260607.184/images/ubuntu/Ubuntu2404-Readme.md
+2026-06-18T01:20:56.6744844Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260607.184
+2026-06-18T01:20:56.6745619Z ##[endgroup]
+2026-06-18T01:20:56.6746615Z ##[group]GITHUB_TOKEN Permissions
+2026-06-18T01:20:56.6748445Z Contents: read
+2026-06-18T01:20:56.6749084Z Metadata: read
+2026-06-18T01:20:56.6749547Z Packages: read
+2026-06-18T01:20:56.6750032Z ##[endgroup]
+2026-06-18T01:20:56.6751725Z Secret source: Actions
+2026-06-18T01:20:56.6752320Z Prepare workflow directory
+2026-06-18T01:20:56.7094096Z Prepare all required actions
+2026-06-18T01:20:56.7124582Z Getting action download info
+2026-06-18T01:20:56.9615552Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+2026-06-18T01:20:57.0740874Z Download action repository 'subosito/flutter-action@v2' (SHA:1a449444c387b1966244ae4d4f8c696479add0b2)
+2026-06-18T01:20:57.2459300Z Download action repository 'actions/cache@v4' (SHA:0057852bfaa89a56745cba8c7296529d2fc39830)
+2026-06-18T01:20:57.4948032Z Getting action download info
+2026-06-18T01:20:57.5756837Z Download action repository 'actions/cache@v5' (SHA:27d5ce7f107fe9357f9df03efb73ab90386fccae)
+2026-06-18T01:20:57.7409845Z Complete job name: Analyze & Test
+2026-06-18T01:20:57.7993371Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-06-18T01:20:57.8000347Z ##[group]Run actions/checkout@v4
+2026-06-18T01:20:57.8000940Z with:
+2026-06-18T01:20:57.8001324Z   repository: noorapp10000-web/VIBIFY
+2026-06-18T01:20:57.8005327Z   token: ***
+2026-06-18T01:20:57.8005698Z   ssh-strict: true
+2026-06-18T01:20:57.8006078Z   ssh-user: git
+2026-06-18T01:20:57.8006458Z   persist-credentials: true
+2026-06-18T01:20:57.8006875Z   clean: true
+2026-06-18T01:20:57.8007262Z   sparse-checkout-cone-mode: true
+2026-06-18T01:20:57.8007907Z   fetch-depth: 1
+2026-06-18T01:20:57.8008280Z   fetch-tags: false
+2026-06-18T01:20:57.8008665Z   show-progress: true
+2026-06-18T01:20:57.8009312Z   lfs: false
+2026-06-18T01:20:57.8009890Z   submodules: false
+2026-06-18T01:20:57.8010467Z   set-safe-directory: true
+2026-06-18T01:20:57.8011434Z ##[endgroup]
+2026-06-18T01:20:57.8789980Z Syncing repository: noorapp10000-web/VIBIFY
+2026-06-18T01:20:57.8791658Z ##[group]Getting Git version info
+2026-06-18T01:20:57.8792254Z Working directory is '/home/runner/work/VIBIFY/VIBIFY'
+2026-06-18T01:20:57.8793128Z [command]/usr/bin/git version
+2026-06-18T01:20:57.8813422Z git version 2.54.0
+2026-06-18T01:20:57.8860391Z ##[endgroup]
+2026-06-18T01:20:57.8871413Z Temporarily overriding HOME='/home/runner/work/_temp/41f9def6-553c-409a-a446-912d87114a8d' before making global git config changes
+2026-06-18T01:20:57.8872604Z Adding repository directory to the temporary git global config as a safe directory
+2026-06-18T01:20:57.8875424Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/VIBIFY/VIBIFY
+2026-06-18T01:20:57.8904185Z Deleting the contents of '/home/runner/work/VIBIFY/VIBIFY'
+2026-06-18T01:20:57.8907675Z ##[group]Initializing the repository
+2026-06-18T01:20:57.8910656Z [command]/usr/bin/git init /home/runner/work/VIBIFY/VIBIFY
+2026-06-18T01:20:57.8974735Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-06-18T01:20:57.8976107Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-06-18T01:20:57.8977690Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-06-18T01:20:57.8979051Z hint: call:
+2026-06-18T01:20:57.8979677Z hint:
+2026-06-18T01:20:57.8980451Z hint: 	git config --global init.defaultBranch <name>
+2026-06-18T01:20:57.8981362Z hint:
+2026-06-18T01:20:57.8982214Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-06-18T01:20:57.8983616Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-06-18T01:20:57.8984818Z hint:
+2026-06-18T01:20:57.8985462Z hint: 	git branch -m <name>
+2026-06-18T01:20:57.8986133Z hint:
+2026-06-18T01:20:57.8987037Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-06-18T01:20:57.8988825Z Initialized empty Git repository in /home/runner/work/VIBIFY/VIBIFY/.git/
+2026-06-18T01:20:57.8991375Z [command]/usr/bin/git remote add origin https://github.com/noorapp10000-web/VIBIFY
+2026-06-18T01:20:57.9011021Z ##[endgroup]
+2026-06-18T01:20:57.9012147Z ##[group]Disabling automatic garbage collection
+2026-06-18T01:20:57.9013785Z [command]/usr/bin/git config --local gc.auto 0
+2026-06-18T01:20:57.9038534Z ##[endgroup]
+2026-06-18T01:20:57.9039618Z ##[group]Setting up auth
+2026-06-18T01:20:57.9043735Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-06-18T01:20:57.9068868Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-06-18T01:20:57.9307854Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-06-18T01:20:57.9331632Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-06-18T01:20:57.9513250Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-06-18T01:20:57.9539246Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-06-18T01:20:57.9723603Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-06-18T01:20:57.9751383Z ##[endgroup]
+2026-06-18T01:20:57.9811128Z ##[group]Fetching the repository
+2026-06-18T01:20:57.9813416Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +7b64f6cbe4cdd2db36a3151b9c977a47ef4c92e0:refs/remotes/origin/main
+2026-06-18T01:20:58.6898691Z From https://github.com/noorapp10000-web/VIBIFY
+2026-06-18T01:20:58.6900342Z  * [new ref]         7b64f6cbe4cdd2db36a3151b9c977a47ef4c92e0 -> origin/main
+2026-06-18T01:20:58.6921185Z ##[endgroup]
+2026-06-18T01:20:58.6922912Z ##[group]Determining the checkout info
+2026-06-18T01:20:58.6924895Z ##[endgroup]
+2026-06-18T01:20:58.6928085Z [command]/usr/bin/git sparse-checkout disable
+2026-06-18T01:20:58.6960293Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-06-18T01:20:58.6984811Z ##[group]Checking out the ref
+2026-06-18T01:20:58.6986803Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-06-18T01:20:58.7256886Z Switched to a new branch 'main'
+2026-06-18T01:20:58.7258618Z branch 'main' set up to track 'origin/main'.
+2026-06-18T01:20:58.7268413Z ##[endgroup]
+2026-06-18T01:20:58.7305952Z [command]/usr/bin/git log -1 --format=%H
+2026-06-18T01:20:58.7323667Z 7b64f6cbe4cdd2db36a3151b9c977a47ef4c92e0
+2026-06-18T01:20:58.7831490Z ##[group]Run subosito/flutter-action@v2
+2026-06-18T01:20:58.7832396Z with:
+2026-06-18T01:20:58.7833041Z   channel: stable
+2026-06-18T01:20:58.7833726Z   cache: true
+2026-06-18T01:20:58.7834399Z   architecture: X64
+2026-06-18T01:20:58.7835137Z   pub-cache-path: default
+2026-06-18T01:20:58.7835889Z   dry-run: false
+2026-06-18T01:20:58.7836692Z   git-source: https://github.com/flutter/flutter.git
+2026-06-18T01:20:58.7837790Z ##[endgroup]
+2026-06-18T01:20:58.7955183Z ##[group]Run chmod +x "$GITHUB_ACTION_PATH/setup.sh"
+2026-06-18T01:20:58.7956288Z [36;1mchmod +x "$GITHUB_ACTION_PATH/setup.sh"[0m
+2026-06-18T01:20:58.8413384Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-06-18T01:20:58.8414456Z ##[endgroup]
+2026-06-18T01:20:58.8557799Z ##[group]Run $GITHUB_ACTION_PATH/setup.sh -p \
+2026-06-18T01:20:58.8558858Z [36;1m$GITHUB_ACTION_PATH/setup.sh -p \[0m
+2026-06-18T01:20:58.8559784Z [36;1m  -n '' \[0m
+2026-06-18T01:20:58.8560474Z [36;1m  -f '' \[0m
+2026-06-18T01:20:58.8561185Z [36;1m  -a 'X64' \[0m
+2026-06-18T01:20:58.8561895Z [36;1m  -k '' \[0m
+2026-06-18T01:20:58.8562581Z [36;1m  -c '' \[0m
+2026-06-18T01:20:58.8563258Z [36;1m  -l '' \[0m
+2026-06-18T01:20:58.8563937Z [36;1m  -d 'default' \[0m
+2026-06-18T01:20:58.8564836Z [36;1m  -g 'https://github.com/flutter/flutter.git' \[0m
+2026-06-18T01:20:58.8565814Z [36;1m  stable[0m
+2026-06-18T01:20:58.8593295Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-06-18T01:20:58.8594317Z ##[endgroup]
+2026-06-18T01:20:59.0130482Z ##[group]Run actions/cache@v5
+2026-06-18T01:20:59.0131306Z with:
+2026-06-18T01:20:59.0132084Z   path: /opt/hostedtoolcache/flutter/stable-3.44.2-x64
+2026-06-18T01:20:59.0133476Z   key: flutter-linux-stable-3.44.2-x64-c9a6c484230f8b5e408ec57be1ef71dee1e77020
+2026-06-18T01:20:59.0134752Z   enableCrossOsArchive: false
+2026-06-18T01:20:59.0135576Z   fail-on-cache-miss: false
+2026-06-18T01:20:59.0136387Z   lookup-only: false
+2026-06-18T01:20:59.0137099Z   save-always: false
+2026-06-18T01:20:59.0138055Z ##[endgroup]
+2026-06-18T01:20:59.2225728Z Cache hit for: flutter-linux-stable-3.44.2-x64-c9a6c484230f8b5e408ec57be1ef71dee1e77020
+2026-06-18T01:21:00.3399437Z Received 150994944 of 1688811713 (8.9%), 144.0 MBs/sec
+2026-06-18T01:21:01.3624226Z Received 402653184 of 1688811713 (23.8%), 189.7 MBs/sec
+2026-06-18T01:21:02.3633373Z Received 666894336 of 1688811713 (39.5%), 210.2 MBs/sec
+2026-06-18T01:21:03.3636046Z Received 884998144 of 1688811713 (52.4%), 209.7 MBs/sec
+2026-06-18T01:21:04.3648569Z Received 1103101952 of 1688811713 (65.3%), 209.3 MBs/sec
+2026-06-18T01:21:05.3652278Z Received 1342177280 of 1688811713 (79.5%), 212.4 MBs/sec
+2026-06-18T01:21:06.3668405Z Received 1619001344 of 1688811713 (95.9%), 219.7 MBs/sec
+2026-06-18T01:21:06.6208064Z Received 1688811713 of 1688811713 (100.0%), 221.2 MBs/sec
+2026-06-18T01:21:06.6209756Z Cache Size: ~1611 MB (1688811713 B)
+2026-06-18T01:21:06.6268571Z [command]/usr/bin/tar -xf /home/runner/work/_temp/fd797617-c849-464d-97ee-6e1c695bffed/cache.tzst -P -C /home/runner/work/VIBIFY/VIBIFY --use-compress-program unzstd
+2026-06-18T01:21:16.1228931Z Cache restored successfully
+2026-06-18T01:21:16.2813837Z Cache restored from key: flutter-linux-stable-3.44.2-x64-c9a6c484230f8b5e408ec57be1ef71dee1e77020
+2026-06-18T01:21:16.3752490Z ##[group]Run actions/cache@v5
+2026-06-18T01:21:16.3752724Z with:
+2026-06-18T01:21:16.3752946Z   path: /home/runner/.pub-cache
+2026-06-18T01:21:16.3753325Z   key: flutter-pub-linux-stable-3.44.2-x64-c9a6c484230f8b5e408ec57be1ef71dee1e77020-
+2026-06-18T01:21:16.3753699Z   enableCrossOsArchive: false
+2026-06-18T01:21:16.3753918Z   fail-on-cache-miss: false
+2026-06-18T01:21:16.3754118Z   lookup-only: false
+2026-06-18T01:21:16.3754299Z   save-always: false
+2026-06-18T01:21:16.3754483Z ##[endgroup]
+2026-06-18T01:21:16.5748676Z Cache hit for: flutter-pub-linux-stable-3.44.2-x64-c9a6c484230f8b5e408ec57be1ef71dee1e77020-
+2026-06-18T01:21:17.5335421Z Received 95160714 of 95160714 (100.0%), 107.4 MBs/sec
+2026-06-18T01:21:17.5337596Z Cache Size: ~91 MB (95160714 B)
+2026-06-18T01:21:17.5395715Z [command]/usr/bin/tar -xf /home/runner/work/_temp/a551956b-884b-4767-92bc-39b4145387f3/cache.tzst -P -C /home/runner/work/VIBIFY/VIBIFY --use-compress-program unzstd
+2026-06-18T01:21:18.6337989Z Cache restored successfully
+2026-06-18T01:21:18.6442644Z Cache restored from key: flutter-pub-linux-stable-3.44.2-x64-c9a6c484230f8b5e408ec57be1ef71dee1e77020-
+2026-06-18T01:21:18.6574781Z ##[group]Run $GITHUB_ACTION_PATH/setup.sh \
+2026-06-18T01:21:18.6575230Z [36;1m$GITHUB_ACTION_PATH/setup.sh \[0m
+2026-06-18T01:21:18.6575624Z [36;1m  -n '3.44.2' \[0m
+2026-06-18T01:21:18.6575981Z [36;1m  -a 'x64' \[0m
+2026-06-18T01:21:18.6576385Z [36;1m  -c '/opt/hostedtoolcache/flutter/stable-3.44.2-x64' \[0m
+2026-06-18T01:21:18.6576852Z [36;1m  -d '/home/runner/.pub-cache' \[0m
+2026-06-18T01:21:18.6577227Z [36;1m  stable[0m
+2026-06-18T01:21:18.6606325Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-06-18T01:21:18.6606651Z ##[endgroup]
+2026-06-18T01:21:18.9012847Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-06-18T01:21:18.9013892Z ##[group]Run actions/cache@v4
+2026-06-18T01:21:18.9014119Z with:
+2026-06-18T01:21:18.9014306Z   path: ~/.pub-cache
+.dart_tool
+
+2026-06-18T01:21:18.9014524Z   key: Linux-pub-
+2026-06-18T01:21:18.9014722Z   restore-keys: Linux-pub-
+
+2026-06-18T01:21:18.9014942Z   enableCrossOsArchive: false
+2026-06-18T01:21:18.9015167Z   fail-on-cache-miss: false
+2026-06-18T01:21:18.9015377Z   lookup-only: false
+2026-06-18T01:21:18.9015568Z   save-always: false
+2026-06-18T01:21:18.9015763Z env:
+2026-06-18T01:21:18.9016014Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.44.2-x64/flutter
+2026-06-18T01:21:18.9016364Z   PUB_CACHE: /home/runner/.pub-cache
+2026-06-18T01:21:18.9016634Z ##[endgroup]
+2026-06-18T01:21:18.9821251Z (node:2416) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-06-18T01:21:18.9821954Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-06-18T01:21:19.1092061Z Cache hit for: Linux-pub-
+2026-06-18T01:21:19.1171183Z (node:2416) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-06-18T01:21:20.0400833Z Received 95293668 of 95293668 (100.0%), 107.9 MBs/sec
+2026-06-18T01:21:20.0402111Z Cache Size: ~91 MB (95293668 B)
+2026-06-18T01:21:20.0434197Z [command]/usr/bin/tar -xf /home/runner/work/_temp/1e8dae20-9a79-43bb-ba02-a822f16a7fca/cache.tzst -P -C /home/runner/work/VIBIFY/VIBIFY --use-compress-program unzstd
+2026-06-18T01:21:21.3900519Z Cache restored successfully
+2026-06-18T01:21:21.4005194Z Cache restored from key: Linux-pub-
+2026-06-18T01:21:21.4120796Z ##[group]Run flutter pub get
+2026-06-18T01:21:21.4121188Z [36;1mflutter pub get[0m
+2026-06-18T01:21:21.4151509Z shell: /usr/bin/bash -e {0}
+2026-06-18T01:21:21.4151741Z env:
+2026-06-18T01:21:21.4152020Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.44.2-x64/flutter
+2026-06-18T01:21:21.4152354Z   PUB_CACHE: /home/runner/.pub-cache
+2026-06-18T01:21:21.4152622Z ##[endgroup]
+2026-06-18T01:21:21.8266653Z Resolving dependencies...
+2026-06-18T01:21:22.8342293Z Downloading packages...
+2026-06-18T01:21:22.8409707Z + _fe_analyzer_shared 67.0.0 (104.0.0 available)
+2026-06-18T01:21:22.8410136Z + analyzer 6.4.1 (14.0.0 available)
+2026-06-18T01:21:22.8410507Z + analyzer_plugin 0.11.3 (0.14.13 available)
+2026-06-18T01:21:22.8410932Z + animations 2.2.0
+2026-06-18T01:21:22.8411205Z + ansicolor 2.0.3
+2026-06-18T01:21:22.8411416Z + archive 4.0.9
+2026-06-18T01:21:22.8411891Z + args 2.7.0
+2026-06-18T01:21:22.8412083Z + async 2.13.1
+2026-06-18T01:21:22.8412264Z + audio_service 0.18.18
+2026-06-18T01:21:22.8412547Z + audio_service_platform_interface 0.1.3
+2026-06-18T01:21:22.8412791Z + audio_service_web 0.1.4
+2026-06-18T01:21:22.8413009Z + audio_session 0.1.25 (0.2.3 available)
+2026-06-18T01:21:22.8413244Z + boolean_selector 2.1.2
+2026-06-18T01:21:22.8413465Z + build 2.4.1 (4.0.6 available)
+2026-06-18T01:21:22.8413678Z + build_config 1.1.2 (1.3.0 available)
+2026-06-18T01:21:22.8413910Z + build_daemon 4.1.1
+2026-06-18T01:21:22.8414152Z + build_resolvers 2.4.2 (3.0.4 available)
+2026-06-18T01:21:22.8414511Z + build_runner 2.4.13 (2.15.0 available)
+2026-06-18T01:21:22.8414864Z + build_runner_core 7.3.2 (9.3.2 available)
+2026-06-18T01:21:22.8415114Z + built_collection 5.1.1
+2026-06-18T01:21:22.8415314Z + built_value 8.12.6
+2026-06-18T01:21:22.8415506Z + cached_network_image 3.4.1
+2026-06-18T01:21:22.8415747Z + cached_network_image_platform_interface 4.1.1
+2026-06-18T01:21:22.8416026Z + cached_network_image_web 1.3.1
+2026-06-18T01:21:22.8416248Z + characters 1.4.1
+2026-06-18T01:21:22.8416436Z + checked_yaml 2.0.4
+2026-06-18T01:21:22.8416640Z + cli_util 0.4.2 (0.5.1 available)
+2026-06-18T01:21:22.8416861Z + clock 1.1.2
+2026-06-18T01:21:22.8417039Z + code_assets 1.2.1
+2026-06-18T01:21:22.8417221Z + code_builder 4.11.1
+2026-06-18T01:21:22.8417534Z + collection 1.19.1
+2026-06-18T01:21:22.8417833Z + connectivity_plus 6.1.5 (7.1.1 available)
+2026-06-18T01:21:22.8418145Z + connectivity_plus_platform_interface 2.1.0
+2026-06-18T01:21:22.8418415Z + convert 3.1.2
+2026-06-18T01:21:22.8418601Z + crypto 3.0.7
+2026-06-18T01:21:22.8418877Z + csslib 1.0.2
+2026-06-18T01:21:22.8419067Z + custom_lint_core 0.6.3 (0.8.2 available)
+2026-06-18T01:21:22.8419315Z + dart_style 2.3.6 (3.1.9 available)
+2026-06-18T01:21:22.8419539Z + dbus 0.7.14
+2026-06-18T01:21:22.8419710Z + dio 5.9.2
+2026-06-18T01:21:22.8419879Z + dio_web_adapter 2.1.2
+2026-06-18T01:21:22.8420072Z + equatable 2.0.8
+2026-06-18T01:21:22.8420260Z + fake_async 1.3.3
+2026-06-18T01:21:22.8420431Z + ffi 2.2.0
+2026-06-18T01:21:22.8420594Z + file 7.0.1
+2026-06-18T01:21:22.8420763Z + fixnum 1.1.1
+2026-06-18T01:21:22.8420944Z + flutter 0.0.0 from sdk flutter
+2026-06-18T01:21:22.8421180Z + flutter_cache_manager 3.4.1
+2026-06-18T01:21:22.8421491Z + flutter_launcher_icons 0.14.4
+2026-06-18T01:21:22.8421727Z + flutter_lints 4.0.0 (6.0.0 available)
+2026-06-18T01:21:22.8421963Z + flutter_native_splash 2.4.8
+2026-06-18T01:21:22.8422193Z + flutter_riverpod 2.6.1 (3.3.2 available)
+2026-06-18T01:21:22.8422454Z + flutter_secure_storage 9.2.4 (10.3.1 available)
+2026-06-18T01:21:22.8422753Z + flutter_secure_storage_linux 1.2.3 (3.0.1 available)
+2026-06-18T01:21:22.8423052Z + flutter_secure_storage_macos 3.1.3 (4.0.0 available)
+2026-06-18T01:21:22.8423388Z + flutter_secure_storage_platform_interface 1.1.2 (2.0.1 available)
+2026-06-18T01:21:22.8423756Z + flutter_secure_storage_web 1.2.1 (2.1.1 available)
+2026-06-18T01:21:22.8424059Z + flutter_secure_storage_windows 3.1.2 (4.2.2 available)
+2026-06-18T01:21:22.8424351Z + flutter_staggered_animations 1.1.1
+2026-06-18T01:21:22.8424792Z + flutter_svg 2.3.0
+2026-06-18T01:21:22.8425000Z + flutter_test 0.0.0 from sdk flutter
+2026-06-18T01:21:22.8425251Z + flutter_web_plugins 0.0.0 from sdk flutter
+2026-06-18T01:21:22.8425505Z + freezed 2.5.2 (3.2.5 available)
+2026-06-18T01:21:22.8425738Z + freezed_annotation 2.4.4 (3.1.0 available)
+2026-06-18T01:21:22.8426051Z + frontend_server_client 4.0.0
+2026-06-18T01:21:22.8426297Z + get_it 7.7.0 (9.2.1 available)
+2026-06-18T01:21:22.8426514Z + glob 2.1.3
+2026-06-18T01:21:22.8426688Z + go_router 13.2.5 (17.3.0 available)
+2026-06-18T01:21:22.8426915Z + graphs 2.3.2
+2026-06-18T01:21:22.8427089Z + hive 2.2.3
+2026-06-18T01:21:22.8427256Z + hive_flutter 1.1.0
+2026-06-18T01:21:22.8427551Z + hive_generator 2.0.1
+2026-06-18T01:21:22.8427743Z + hooks 2.0.2
+2026-06-18T01:21:22.8427915Z + html 0.15.6
+2026-06-18T01:21:22.8428090Z + http 1.6.0
+2026-06-18T01:21:22.8428259Z + http_multi_server 3.2.2
+2026-06-18T01:21:22.8428610Z + http_parser 4.1.2
+2026-06-18T01:21:22.8428793Z + iconsax 0.0.8
+2026-06-18T01:21:22.8428969Z + id3 1.0.2
+2026-06-18T01:21:22.8429176Z + image 4.8.0 (4.9.1 available)
+2026-06-18T01:21:22.8429399Z + intl 0.19.0 (0.20.2 available)
+2026-06-18T01:21:22.8429619Z + io 1.0.5
+2026-06-18T01:21:22.8429778Z + jni 1.0.0
+2026-06-18T01:21:22.8429946Z + jni_flutter 1.0.1
+2026-06-18T01:21:22.8430132Z + js 0.6.7 (0.7.2 available)
+2026-06-18T01:21:22.8430356Z + json_annotation 4.9.0 (4.12.0 available)
+2026-06-18T01:21:22.8430638Z + json_serializable 6.8.0 (6.14.0 available)
+2026-06-18T01:21:22.8430926Z + just_audio 0.9.46 (0.10.5 available)
+2026-06-18T01:21:22.8431163Z + just_audio_background 0.0.1-beta.17
+2026-06-18T01:21:22.8431406Z + just_audio_platform_interface 4.6.0
+2026-06-18T01:21:22.8431630Z + just_audio_web 0.4.16
+2026-06-18T01:21:22.8431828Z + leak_tracker 11.0.2
+2026-06-18T01:21:22.8432029Z + leak_tracker_flutter_testing 3.0.10
+2026-06-18T01:21:22.8432264Z + leak_tracker_testing 3.0.2
+2026-06-18T01:21:22.8432481Z + lints 4.0.0 (6.1.0 available)
+2026-06-18T01:21:22.8432692Z + logger 2.7.0
+2026-06-18T01:21:22.8432869Z + logging 1.3.0
+2026-06-18T01:21:22.8433052Z + lottie 3.3.3
+2026-06-18T01:21:22.8433230Z + matcher 0.12.19 (0.12.20 available)
+2026-06-18T01:21:22.8433460Z + material_color_utilities 0.13.0
+2026-06-18T01:21:22.8433683Z + meta 1.18.0 (1.18.3 available)
+2026-06-18T01:21:22.8433888Z + mime 2.0.0
+2026-06-18T01:21:22.8434066Z + mockito 5.4.4 (5.7.0 available)
+2026-06-18T01:21:22.8434266Z + nm 0.5.0
+2026-06-18T01:21:22.8434434Z + objective_c 9.4.1
+2026-06-18T01:21:22.8434612Z + octo_image 2.1.0
+2026-06-18T01:21:22.8434804Z + on_audio_query 2.9.0
+2026-06-18T01:21:22.8435003Z + on_audio_query_android 1.1.0
+2026-06-18T01:21:22.8435223Z + on_audio_query_ios 1.1.0
+2026-06-18T01:21:22.8435436Z + on_audio_query_platform_interface 1.7.0
+2026-06-18T01:21:22.8435680Z + on_audio_query_web 1.6.0
+2026-06-18T01:21:22.8435883Z + package_config 2.2.0 (3.0.0 available)
+2026-06-18T01:21:22.8436142Z + palette_generator 0.3.3+7 (discontinued)
+2026-06-18T01:21:22.8436380Z + path 1.9.1
+2026-06-18T01:21:22.8436560Z + path_parsing 1.1.0
+2026-06-18T01:21:22.8436751Z + path_provider 2.1.6
+2026-06-18T01:21:22.8436954Z + path_provider_android 2.3.1
+2026-06-18T01:21:22.8437177Z + path_provider_foundation 2.6.0
+2026-06-18T01:21:22.8437555Z + path_provider_linux 2.2.1
+2026-06-18T01:21:22.8437815Z + path_provider_platform_interface 2.1.3
+2026-06-18T01:21:22.8438061Z + path_provider_windows 2.3.0
+2026-06-18T01:21:22.8438287Z + permission_handler 11.4.0 (12.0.3 available)
+2026-06-18T01:21:22.8438579Z + permission_handler_android 12.1.0 (13.0.1 available)
+2026-06-18T01:21:22.8438849Z + permission_handler_apple 9.4.10
+2026-06-18T01:21:22.8439080Z + permission_handler_html 0.1.3+5
+2026-06-18T01:21:22.8439323Z + permission_handler_platform_interface 4.3.0
+2026-06-18T01:21:22.8439590Z + permission_handler_windows 0.2.1
+2026-06-18T01:21:22.8439813Z + petitparser 7.0.2
+2026-06-18T01:21:22.8439997Z + platform 3.1.6
+2026-06-18T01:21:22.8440198Z + plugin_platform_interface 2.1.8
+2026-06-18T01:21:22.8440407Z + pool 1.5.2
+2026-06-18T01:21:22.8440580Z + posix 6.5.0
+2026-06-18T01:21:22.8440876Z + pub_semver 2.2.0
+2026-06-18T01:21:22.8441064Z + pubspec_parse 1.5.0
+2026-06-18T01:21:22.8441257Z + record_use 0.6.0
+2026-06-18T01:21:22.8441447Z + riverpod 2.6.1 (3.3.2 available)
+2026-06-18T01:21:22.8441686Z + riverpod_analyzer_utils 0.5.1 (0.5.10 available)
+2026-06-18T01:21:22.8441969Z + riverpod_annotation 2.6.1 (4.0.3 available)
+2026-06-18T01:21:22.8442225Z + riverpod_generator 2.4.0 (4.0.4 available)
+2026-06-18T01:21:22.8442470Z + rxdart 0.27.7 (0.28.0 available)
+2026-06-18T01:21:22.8442679Z + shelf 1.4.2
+2026-06-18T01:21:22.8442863Z + shelf_web_socket 2.0.1 (3.0.0 available)
+2026-06-18T01:21:22.8443092Z + shimmer 3.0.0
+2026-06-18T01:21:22.8443279Z + simple_sparse_list 0.1.4
+2026-06-18T01:21:22.8443489Z + sky_engine 0.0.0 from sdk flutter
+2026-06-18T01:21:22.8443723Z + source_gen 1.5.0 (4.2.3 available)
+2026-06-18T01:21:22.8443952Z + source_helper 1.3.5 (1.3.12 available)
+2026-06-18T01:21:22.8444280Z + source_span 1.10.2
+2026-06-18T01:21:22.8444467Z + sqflite 2.4.3
+2026-06-18T01:21:22.8444659Z + sqflite_android 2.4.3
+2026-06-18T01:21:22.8444866Z + sqflite_common 2.5.11
+2026-06-18T01:21:22.8445061Z + sqflite_darwin 2.4.3
+2026-06-18T01:21:22.8445276Z + sqflite_platform_interface 2.4.1
+2026-06-18T01:21:22.8445506Z + stack_trace 1.12.1
+2026-06-18T01:21:22.8445690Z + state_notifier 1.0.0
+2026-06-18T01:21:22.8445884Z + stream_channel 2.1.4
+2026-06-18T01:21:22.8446073Z + stream_transform 2.1.1
+2026-06-18T01:21:22.8446282Z + string_scanner 1.4.1
+2026-06-18T01:21:22.8446470Z + synchronized 3.4.1
+2026-06-18T01:21:22.8446659Z + term_glyph 1.2.2
+2026-06-18T01:21:22.8446844Z + test_api 0.7.11 (0.7.12 available)
+2026-06-18T01:21:22.8447061Z + timing 1.0.2
+2026-06-18T01:21:22.8447234Z + typed_data 1.4.0
+2026-06-18T01:21:22.8447552Z + unicode 1.1.9
+2026-06-18T01:21:22.8447768Z + universal_io 2.3.1
+2026-06-18T01:21:22.8447956Z + uuid 4.5.3
+2026-06-18T01:21:22.8448138Z + vector_graphics 1.2.2
+2026-06-18T01:21:22.8448344Z + vector_graphics_codec 1.1.13
+2026-06-18T01:21:22.8448570Z + vector_graphics_compiler 1.2.6
+2026-06-18T01:21:22.8448798Z + vector_math 2.2.0 (2.4.0 available)
+2026-06-18T01:21:22.8449022Z + vm_service 15.2.0
+2026-06-18T01:21:22.8449209Z + watcher 1.2.1
+2026-06-18T01:21:22.8449374Z + web 1.1.1
+2026-06-18T01:21:22.8449540Z + web_socket 1.0.1
+2026-06-18T01:21:22.8449728Z + web_socket_channel 3.0.3
+2026-06-18T01:21:22.8449928Z + win32 5.15.0 (6.3.0 available)
+2026-06-18T01:21:22.8450145Z + xdg_directories 1.1.0
+2026-06-18T01:21:22.8450332Z + xml 6.6.1 (7.0.1 available)
+2026-06-18T01:21:22.8450538Z + yaml 3.1.3
+2026-06-18T01:21:22.8450723Z + youtube_explode_dart 2.5.3 (3.1.0 available)
+2026-06-18T01:21:22.8450989Z Changed 180 dependencies!
+2026-06-18T01:21:22.8451195Z 1 package is discontinued.
+2026-06-18T01:21:22.8451497Z 51 packages have newer versions incompatible with dependency constraints.
+2026-06-18T01:21:22.8451850Z Try `flutter pub outdated` for more information.
+2026-06-18T01:21:23.5950602Z ##[group]Run flutter pub run flutter_launcher_icons:main
+2026-06-18T01:21:23.5951220Z [36;1mflutter pub run flutter_launcher_icons:main[0m
+2026-06-18T01:21:23.5951695Z [36;1mflutter pub run flutter_native_splash:create[0m
+2026-06-18T01:21:23.5980886Z shell: /usr/bin/bash -e {0}
+2026-06-18T01:21:23.5981118Z env:
+2026-06-18T01:21:23.5981389Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.44.2-x64/flutter
+2026-06-18T01:21:23.5981729Z   PUB_CACHE: /home/runner/.pub-cache
+2026-06-18T01:21:23.5981958Z ##[endgroup]
+2026-06-18T01:21:25.2274414Z This command is deprecated and replaced with "flutter pub run flutter_launcher_icons"
+2026-06-18T01:21:25.2276721Z   ════════════════════════════════════════════
+2026-06-18T01:21:25.2277141Z      FLUTTER LAUNCHER ICONS (v0.14.4)                               
+2026-06-18T01:21:25.2277680Z   ════════════════════════════════════════════
+2026-06-18T01:21:25.2277927Z   
+2026-06-18T01:21:25.2848434Z • Creating default icons Android
+2026-06-18T01:21:25.2855551Z • Creating adaptive icons Android
+2026-06-18T01:21:25.3801323Z • Adding a new Android launcher icon
+2026-06-18T01:21:25.5972361Z • No colors.xml file found in your Android project
+2026-06-18T01:21:25.5973027Z • Creating colors.xml file and adding it to your Android project
+2026-06-18T01:21:25.8143385Z • Creating mipmap xml file Android
+2026-06-18T01:21:25.9395416Z Creating Icons for Web...
+2026-06-18T01:21:25.9412290Z ⚠️Requirements failed for platform Web. Skipped
+2026-06-18T01:21:25.9414065Z 
+2026-06-18T01:21:25.9414586Z ✓ Successfully generated launcher icons
+2026-06-18T01:21:27.7565951Z [Android] Creating default splash images
+2026-06-18T01:21:27.8604368Z [Android] Creating dark mode splash images
+2026-06-18T01:21:28.1109962Z [Android] Creating default android12splash images
+2026-06-18T01:21:28.4338616Z [Android] Creating dark mode android12splash images
+2026-06-18T01:21:28.8618634Z [Android] Updating launch background(s) with splash image path...
+2026-06-18T01:21:28.8668231Z [Android]  - android/app/src/main/res/drawable/launch_background.xml
+2026-06-18T01:21:29.0868659Z [Android]  - android/app/src/main/res/drawable-night/launch_background.xml
+2026-06-18T01:21:29.0881589Z [Android]  - android/app/src/main/res/drawable-v21/launch_background.xml
+2026-06-18T01:21:29.0907895Z [Android]  - android/app/src/main/res/drawable-night-v21/launch_background.xml
+2026-06-18T01:21:29.0928081Z [Android] Updating styles...
+2026-06-18T01:21:29.0937946Z [Android]  - android/app/src/main/res/values-v31/styles.xml
+2026-06-18T01:21:29.1028115Z [Android] No android/app/src/main/res/values-v31/styles.xml found in your Android project
+2026-06-18T01:21:29.1067602Z [Android] Creating android/app/src/main/res/values-v31/styles.xml and adding it to your Android project
+2026-06-18T01:21:29.1068578Z [Android]  - android/app/src/main/res/values-night-v31/styles.xml
+2026-06-18T01:21:29.1069575Z [Android] No android/app/src/main/res/values-night-v31/styles.xml found in your Android project
+2026-06-18T01:21:29.1070648Z [Android] Creating android/app/src/main/res/values-night-v31/styles.xml and adding it to your Android project
+2026-06-18T01:21:29.1071581Z [Android]  - android/app/src/main/res/values/styles.xml
+2026-06-18T01:21:29.1072219Z [Android]  - android/app/src/main/res/values-night/styles.xml
+2026-06-18T01:21:29.1110886Z [Android] No android/app/src/main/res/values-night/styles.xml found in your Android project
+2026-06-18T01:21:29.1114335Z [Android] Creating android/app/src/main/res/values-night/styles.xml and adding it to your Android project
+2026-06-18T01:21:29.1167995Z Web folder not found, skipping web splash update...
+2026-06-18T01:21:29.1168659Z 
+2026-06-18T01:21:29.1199561Z ✅ Native splash complete.
+2026-06-18T01:21:29.1228032Z Now go finish building something awesome! 💪 You rock! 🤘🤩
+2026-06-18T01:21:29.1241119Z Like the package? Please give it a 👍 here: https://pub.dev/packages/flutter_native_splash
+2026-06-18T01:21:29.1241682Z 
+2026-06-18T01:21:29.6436744Z ##[group]Run flutter pub run build_runner build --delete-conflicting-outputs
+2026-06-18T01:21:29.6437244Z [36;1mflutter pub run build_runner build --delete-conflicting-outputs[0m
+2026-06-18T01:21:29.6465874Z shell: /usr/bin/bash -e {0}
+2026-06-18T01:21:29.6466106Z env:
+2026-06-18T01:21:29.6466381Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.44.2-x64/flutter
+2026-06-18T01:21:29.6466704Z   PUB_CACHE: /home/runner/.pub-cache
+2026-06-18T01:21:29.6466939Z ##[endgroup]
+2026-06-18T01:21:33.5361189Z [INFO] Generating build script...
+2026-06-18T01:21:33.7731285Z [INFO] Generating build script completed, took 243ms
+2026-06-18T01:21:33.8019061Z 
+2026-06-18T01:21:33.8019521Z [INFO] Precompiling build script......
+2026-06-18T01:21:37.8604641Z [INFO] Precompiling build script... completed, took 4.1s
+2026-06-18T01:21:37.8605060Z 
+2026-06-18T01:21:38.2698436Z [INFO] Initializing inputs
+2026-06-18T01:21:38.5893060Z [INFO] Building new asset graph...
+2026-06-18T01:21:39.7297111Z [INFO] Building new asset graph completed, took 1.1s
+2026-06-18T01:21:39.7297629Z 
+2026-06-18T01:21:39.7311432Z [INFO] Checking for unexpected pre-existing outputs....
+2026-06-18T01:21:39.7319454Z [INFO] Checking for unexpected pre-existing outputs. completed, took 0ms
+2026-06-18T01:21:39.7319905Z 
+2026-06-18T01:21:39.7378478Z [INFO] Running build...
+2026-06-18T01:21:39.7654898Z [INFO] Generating SDK summary...
+2026-06-18T01:21:41.2014142Z [INFO] 1.5s elapsed, 0/16 actions completed.
+2026-06-18T01:21:42.6818096Z [INFO] 2.9s elapsed, 0/16 actions completed.
+2026-06-18T01:21:42.7118625Z [WARNING] riverpod_generator on test/widget/mini_player_test.dart:
+2026-06-18T01:21:42.7128091Z Your current `analyzer` version may not fully support your current SDK version.
+2026-06-18T01:21:42.7147893Z 
+2026-06-18T01:21:42.7148292Z Analyzer language version: 3.4.0
+2026-06-18T01:21:42.7148820Z SDK language version: 3.12.0
+2026-06-18T01:21:42.7149165Z 
+2026-06-18T01:21:42.7149549Z Please update to the latest `analyzer` version (14.0.0) by running
+2026-06-18T01:21:42.7150219Z `flutter packages upgrade`.
+2026-06-18T01:21:42.7150818Z 
+2026-06-18T01:21:42.7151207Z If you are not getting the latest version by running the above command, you
+2026-06-18T01:21:42.7151979Z can try adding a constraint like the following to your pubspec to start
+2026-06-18T01:21:42.7152653Z diagnosing why you can't get the latest version:
+2026-06-18T01:21:42.7153072Z 
+2026-06-18T01:21:42.7153301Z dev_dependencies:
+2026-06-18T01:21:42.7153711Z   analyzer: ^14.0.0
+2026-06-18T01:21:42.7154009Z 
+2026-06-18T01:21:43.5257874Z [INFO] Generating SDK summary completed, took 3.8s
+2026-06-18T01:21:43.5258249Z 
+2026-06-18T01:21:44.5402998Z [INFO] 4.8s elapsed, 40/87 actions completed.
+2026-06-18T01:21:45.5421667Z [INFO] 5.8s elapsed, 117/135 actions completed.
+2026-06-18T01:21:54.6351089Z [INFO] 14.9s elapsed, 165/166 actions completed.
+2026-06-18T01:21:55.6503625Z [INFO] 15.9s elapsed, 282/299 actions completed.
+2026-06-18T01:21:56.7885890Z [INFO] 17.1s elapsed, 330/334 actions completed.
+2026-06-18T01:21:56.9989999Z [INFO] Running build completed, took 17.3s
+2026-06-18T01:21:56.9990353Z 
+2026-06-18T01:21:56.9990465Z [INFO] Caching finalized dependency graph...
+2026-06-18T01:21:57.1948995Z [INFO] Caching finalized dependency graph completed, took 195ms
+2026-06-18T01:21:57.1949524Z 
+2026-06-18T01:21:57.1973868Z [INFO] Succeeded after 17.5s with 132 outputs (605 actions)
+2026-06-18T01:21:57.1974208Z 
+2026-06-18T01:21:57.8065781Z ##[group]Run flutter analyze --fatal-warnings
+2026-06-18T01:21:57.8066149Z [36;1mflutter analyze --fatal-warnings[0m
+2026-06-18T01:21:57.8094399Z shell: /usr/bin/bash -e {0}
+2026-06-18T01:21:57.8094617Z env:
+2026-06-18T01:21:57.8094877Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.44.2-x64/flutter
+2026-06-18T01:21:57.8095197Z   PUB_CACHE: /home/runner/.pub-cache
+2026-06-18T01:21:57.8095422Z ##[endgroup]
+2026-06-18T01:22:06.7159982Z Analyzing vibify...                                             
+2026-06-18T01:22:06.7164956Z 
+2026-06-18T01:22:06.7191298Z warning • 'avoid_returning_null_for_future' was removed in Dart '3.3.0' Try removing the reference to 'avoid_returning_null_for_future' • analysis_options.yaml:19:7 • removed_lint
+2026-06-18T01:22:06.7195372Z    info • The type of the right operand ('ConnectivityResult') isn't a subtype or a supertype of the left operand ('List<ConnectivityResult>'). Try changing one or both of the operands • lib/core/network/network_info.dart:14:19 • unrelated_type_equality_checks
+2026-06-18T01:22:06.7198141Z    info • The type of the right operand ('ConnectivityResult') isn't a subtype or a supertype of the left operand ('List<ConnectivityResult>'). Try changing one or both of the operands • lib/core/network/network_info.dart:20:28 • unrelated_type_equality_checks
+2026-06-18T01:22:06.7200890Z    info • The import of 'package:flutter_riverpod/flutter_riverpod.dart' is unnecessary because all of the used elements are also provided by the import of 'package:riverpod_annotation/riverpod_annotation.dart'. Try removing the import directive • lib/core/router/app_router.dart:2:8 • unnecessary_import
+2026-06-18T01:22:06.7203308Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/router/app_router.dart:87:42 • prefer_const_constructors
+2026-06-18T01:22:06.7205231Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:13:22 • prefer_const_constructors
+2026-06-18T01:22:06.7207687Z    info • 'surfaceVariant' is deprecated and shouldn't be used. Use surfaceContainerHighest instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/core/theme/app_theme.dart:22:11 • deprecated_member_use
+2026-06-18T01:22:06.7209882Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:38:35 • prefer_const_constructors
+2026-06-18T01:22:06.7211612Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:52:22 • prefer_const_constructors
+2026-06-18T01:22:06.7213765Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:54:20 • prefer_const_constructors
+2026-06-18T01:22:06.7215464Z   error • The argument type 'CardTheme' can't be assigned to the parameter type 'CardThemeData?'.  • lib/core/theme/app_theme.dart:68:20 • argument_type_not_assignable
+2026-06-18T01:22:06.7217160Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:100:25 • prefer_const_constructors
+2026-06-18T01:22:06.7233795Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:105:22 • prefer_const_constructors
+2026-06-18T01:22:06.7235659Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:126:20 • prefer_const_constructors
+2026-06-18T01:22:06.7237906Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:158:22 • prefer_const_constructors
+2026-06-18T01:22:06.7240151Z    info • 'surfaceVariant' is deprecated and shouldn't be used. Use surfaceContainerHighest instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/core/theme/app_theme.dart:167:11 • deprecated_member_use
+2026-06-18T01:22:06.7242441Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:183:35 • prefer_const_constructors
+2026-06-18T01:22:06.7244395Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:195:22 • prefer_const_constructors
+2026-06-18T01:22:06.7246225Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:197:20 • prefer_const_constructors
+2026-06-18T01:22:06.7248049Z   error • The argument type 'CardTheme' can't be assigned to the parameter type 'CardThemeData?'.  • lib/core/theme/app_theme.dart:211:20 • argument_type_not_assignable
+2026-06-18T01:22:06.7249729Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:243:25 • prefer_const_constructors
+2026-06-18T01:22:06.7251535Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:248:22 • prefer_const_constructors
+2026-06-18T01:22:06.7253356Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:269:20 • prefer_const_constructors
+2026-06-18T01:22:06.7255705Z    info • 'printTime' is deprecated and shouldn't be used. Use `dateTimeFormat` with `DateTimeFormat.onlyTimeAndSinceStart` or `DateTimeFormat.none` instead. Try replacing the use of the deprecated member with the replacement • lib/core/utils/app_logger.dart:10:5 • deprecated_member_use
+2026-06-18T01:22:06.7258255Z    info • The type parameter name 'Type' matches a visible type name. Try changing the type parameter name to not match an existing type • lib/core/utils/usecase.dart:1:24 • avoid_types_as_parameter_names
+2026-06-18T01:22:06.7260104Z    info • The type parameter name 'Type' matches a visible type name. Try changing the type parameter name to not match an existing type • lib/core/utils/usecase.dart:5:32 • avoid_types_as_parameter_names
+2026-06-18T01:22:06.7262359Z    info • Missing an 'await' for the 'Future' computed by this expression. Try adding an 'await' or wrapping the expression with 'unawaited' • lib/features/downloads/data/datasources/download_datasource.dart:61:5 • unawaited_futures
+2026-06-18T01:22:06.7264566Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/downloads/data/datasources/download_datasource.dart:81:15 • prefer_const_constructors
+2026-06-18T01:22:06.7266684Z    info • Missing an 'await' for the 'Future' computed by this expression. Try adding an 'await' or wrapping the expression with 'unawaited' • lib/features/downloads/data/datasources/download_datasource.dart:155:7 • unawaited_futures
+2026-06-18T01:22:06.7268991Z    info • Missing an 'await' for the 'Future' computed by this expression. Try adding an 'await' or wrapping the expression with 'unawaited' • lib/features/downloads/data/datasources/download_datasource.dart:170:7 • unawaited_futures
+2026-06-18T01:22:06.7270966Z    info • Use of an async 'dart:io' method. Try using the synchronous version of the method • lib/features/downloads/data/datasources/download_datasource.dart:179:17 • avoid_slow_async_io
+2026-06-18T01:22:06.7273427Z    info • Use a function declaration rather than a variable assignment to bind a function to a name. Try rewriting the closure assignment as a function declaration • lib/features/downloads/data/datasources/download_datasource.dart:248:13 • prefer_function_declarations_over_variables
+2026-06-18T01:22:06.7275896Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/downloads/presentation/pages/downloads_page.dart:121:19 • prefer_const_constructors
+2026-06-18T01:22:06.7278083Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/home/presentation/pages/home_page.dart:129:28 • prefer_const_constructors
+2026-06-18T01:22:06.7280179Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/home/presentation/pages/home_page.dart:166:28 • prefer_const_constructors
+2026-06-18T01:22:06.7282237Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/home/presentation/pages/home_page.dart:256:20 • prefer_const_constructors
+2026-06-18T01:22:06.7284263Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/home/presentation/pages/home_page.dart:258:22 • prefer_const_constructors
+2026-06-18T01:22:06.7286114Z warning • Unused import: '../../../../core/constants/app_constants.dart'. Try removing the import directive • lib/features/player/data/datasources/audio_handler.dart:6:8 • unused_import
+2026-06-18T01:22:06.7287837Z    info • Unnecessary 'const' keyword. Try removing the keyword • lib/features/player/data/datasources/audio_handler.dart:32:28 • unnecessary_const
+2026-06-18T01:22:06.7290277Z    info • 'onReorder' is deprecated and shouldn't be used. Use the onReorderItem callback instead. The onReorderItem callback adjusts the newIndex parameter for a removed item at the oldIndex. This feature was deprecated after v3.41.0-0.0.pre. Try replacing the use of the deprecated member with the replacement • lib/features/player/presentation/widgets/queue_panel.dart:66:13 • deprecated_member_use
+2026-06-18T01:22:06.7292949Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/playlists/data/datasources/playlist_datasource.dart:80:33 • prefer_const_constructors
+2026-06-18T01:22:06.7295058Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/playlists/data/datasources/playlist_datasource.dart:88:33 • prefer_const_constructors
+2026-06-18T01:22:06.7298314Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/playlists/data/datasources/playlist_datasource.dart:97:33 • prefer_const_constructors
+2026-06-18T01:22:06.7300337Z   error • The argument type 'Video' can't be assigned to the parameter type 'SearchVideo'.  • lib/features/search/data/datasources/youtube_datasource.dart:26:36 • argument_type_not_assignable
+2026-06-18T01:22:06.7302534Z   error • The getter 'name' isn't defined for the type 'Video'. Try importing the library that defines 'name', correcting the name to the name of an existing getter, or defining a getter or field named 'name' • lib/features/search/data/datasources/youtube_datasource.dart:30:26 • undefined_getter
+2026-06-18T01:22:06.7305302Z   error • The getter 'isNotEmpty' isn't defined for the type 'ThumbnailSet'. Try importing the library that defines 'isNotEmpty', correcting the name to the name of an existing getter, or defining a getter or field named 'isNotEmpty' • lib/features/search/data/datasources/youtube_datasource.dart:31:45 • undefined_getter
+2026-06-18T01:22:06.7308670Z   error • The getter 'last' isn't defined for the type 'ThumbnailSet'. Try importing the library that defines 'last', correcting the name to the name of an existing getter, or defining a getter or field named 'last' • lib/features/search/data/datasources/youtube_datasource.dart:32:37 • undefined_getter
+2026-06-18T01:22:06.7311535Z   error • The getter 'firstOrNull' isn't defined for the type 'ThumbnailSet'. Try importing the library that defines 'firstOrNull', correcting the name to the name of an existing getter, or defining a getter or field named 'firstOrNull' • lib/features/search/data/datasources/youtube_datasource.dart:39:45 • undefined_getter
+2026-06-18T01:22:06.7314061Z    info • Uses 'await' on an instance of 'Stream<Video>', which is not a subtype of 'Future'. Try removing the 'await' or changing the expression • lib/features/search/data/datasources/youtube_datasource.dart:77:24 • await_only_futures
+2026-06-18T01:22:06.7316132Z warning • The left operand can't be null, so the right operand is never executed. Try removing the operator and the right operand • lib/features/search/data/datasources/youtube_datasource.dart:100:33 • dead_null_aware_expression
+2026-06-18T01:22:06.7318285Z   error • The argument type 'String' can't be assigned to the parameter type 'Duration?'.  • lib/features/search/data/datasources/youtube_datasource.dart:101:19 • argument_type_not_assignable
+2026-06-18T01:22:06.7320364Z   error • Target of URI doesn't exist: '../../player/domain/entities/track.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/features/search/domain/entities/search_result.dart:3:8 • uri_does_not_exist
+2026-06-18T01:22:06.7322586Z   error • The name 'Track' isn't a type, so it can't be used as a type argument. Try correcting the name to an existing type, or defining a type named 'Track' • lib/features/search/domain/entities/search_result.dart:6:14 • non_type_as_type_argument
+2026-06-18T01:22:06.7324767Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/search/presentation/pages/search_page.dart:130:24 • prefer_const_constructors
+2026-06-18T01:22:06.7326794Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/search/presentation/pages/search_page.dart:132:26 • prefer_const_constructors
+2026-06-18T01:22:06.7328980Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/settings/presentation/pages/settings_page.dart:34:17 • prefer_const_constructors
+2026-06-18T01:22:06.7331017Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/settings/presentation/pages/settings_page.dart:42:17 • prefer_const_constructors
+2026-06-18T01:22:06.7333191Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/settings/presentation/pages/settings_page.dart:67:17 • prefer_const_constructors
+2026-06-18T01:22:06.7335272Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/settings/presentation/pages/settings_page.dart:87:17 • prefer_const_constructors
+2026-06-18T01:22:06.7337329Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/settings/presentation/pages/settings_page.dart:90:21 • prefer_const_constructors
+2026-06-18T01:22:06.7339646Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/settings/presentation/pages/settings_page.dart:156:16 • prefer_const_constructors
+2026-06-18T01:22:06.7342536Z    info • 'groupValue' is deprecated and shouldn't be used. Use a RadioGroup ancestor to manage group value instead. This feature was deprecated after v3.32.0-0.0.pre. Try replacing the use of the deprecated member with the replacement • lib/features/settings/presentation/pages/settings_page.dart:419:21 • deprecated_member_use
+2026-06-18T01:22:06.7345647Z    info • 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre. Try replacing the use of the deprecated member with the replacement • lib/features/settings/presentation/pages/settings_page.dart:421:21 • deprecated_member_use
+2026-06-18T01:22:06.7348101Z    info • Type could be non-nullable. Try changing the type to be non-nullable • test/unit/duration_extension_test.dart:47:23 • unnecessary_nullable_for_final_variable_declarations
+2026-06-18T01:22:06.7349898Z    info • Use 'const' literals as arguments to constructors of '@immutable' classes. Try adding 'const' before the literal • test/unit/playlist_test.dart:38:17 • prefer_const_literals_to_create_immutables
+2026-06-18T01:22:06.7351726Z    info • Use 'const' literals as arguments to constructors of '@immutable' classes. Try adding 'const' before the literal • test/unit/playlist_test.dart:49:17 • prefer_const_literals_to_create_immutables
+2026-06-18T01:22:06.7352597Z 
+2026-06-18T01:22:06.7372934Z 66 issues found. (ran in 8.3s)
+2026-06-18T01:22:06.7433639Z ##[error]Process completed with exit code 1.
+2026-06-18T01:22:06.8561141Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-06-18T01:22:06.8562149Z Post job cleanup.
+2026-06-18T01:22:06.9452417Z Cache hit occurred on the primary key Linux-pub-, not saving cache.
+2026-06-18T01:22:06.9455599Z (node:2796) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-06-18T01:22:06.9456422Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-06-18T01:22:06.9611953Z Post job cleanup.
+2026-06-18T01:22:07.0669441Z Post job cleanup.
+2026-06-18T01:22:07.1677953Z Cache hit occurred on the primary key flutter-pub-linux-stable-3.44.2-x64-c9a6c484230f8b5e408ec57be1ef71dee1e77020-, not saving cache.
+2026-06-18T01:22:07.1776939Z Post job cleanup.
+2026-06-18T01:22:07.2838487Z Cache hit occurred on the primary key flutter-linux-stable-3.44.2-x64-c9a6c484230f8b5e408ec57be1ef71dee1e77020, not saving cache.
+2026-06-18T01:22:07.2945155Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-06-18T01:22:07.2946280Z Post job cleanup.
+2026-06-18T01:22:07.3627782Z [command]/usr/bin/git version
+2026-06-18T01:22:07.3658489Z git version 2.54.0
+2026-06-18T01:22:07.3685512Z Temporarily overriding HOME='/home/runner/work/_temp/087b9b4b-38e2-440a-947b-ba34bfee7b40' before making global git config changes
+2026-06-18T01:22:07.3686863Z Adding repository directory to the temporary git global config as a safe directory
+2026-06-18T01:22:07.3690117Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/VIBIFY/VIBIFY
+2026-06-18T01:22:07.3719378Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-06-18T01:22:07.3746746Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-06-18T01:22:07.3949272Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-06-18T01:22:07.3970385Z http.https://github.com/.extraheader
+2026-06-18T01:22:07.3980714Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-06-18T01:22:07.4017377Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-06-18T01:22:07.4216061Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-06-18T01:22:07.4241955Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-06-18T01:22:07.4547888Z Cleaning up orphan processes
+2026-06-18T01:22:07.4787918Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/cache@v4, actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

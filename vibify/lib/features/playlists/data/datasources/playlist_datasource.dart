@@ -77,7 +77,7 @@ class PlaylistDatasourceImpl implements PlaylistDatasource {
   @override
   Future<Playlist> addTrack(String playlistId, Track track) async {
     final playlist = await getPlaylistById(playlistId);
-    if (playlist == null) throw CacheException(message: 'Playlist not found');
+    if (playlist == null) throw const CacheException(message: 'Playlist not found');
     final updatedTracks = [...playlist.tracks, track];
     return updatePlaylist(playlist.copyWith(tracks: updatedTracks));
   }
@@ -85,7 +85,7 @@ class PlaylistDatasourceImpl implements PlaylistDatasource {
   @override
   Future<Playlist> removeTrack(String playlistId, int index) async {
     final playlist = await getPlaylistById(playlistId);
-    if (playlist == null) throw CacheException(message: 'Playlist not found');
+    if (playlist == null) throw const CacheException(message: 'Playlist not found');
     final updatedTracks = [...playlist.tracks]..removeAt(index);
     return updatePlaylist(playlist.copyWith(tracks: updatedTracks));
   }
@@ -94,7 +94,7 @@ class PlaylistDatasourceImpl implements PlaylistDatasource {
   Future<Playlist> reorderTracks(
       String playlistId, int oldIndex, int newIndex) async {
     final playlist = await getPlaylistById(playlistId);
-    if (playlist == null) throw CacheException(message: 'Playlist not found');
+    if (playlist == null) throw const CacheException(message: 'Playlist not found');
     final updatedTracks = [...playlist.tracks];
     final track = updatedTracks.removeAt(oldIndex);
     updatedTracks.insert(newIndex, track);

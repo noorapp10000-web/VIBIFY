@@ -23,20 +23,20 @@ class YoutubeDatasourceImpl implements YoutubeDatasource {
 
       for (final result in searchList.take(limit)) {
         if (result is yt.SearchVideo) {
-          tracks.add(_videoToTrack(result));
+          tracks.add(_videoToTrack(result as yt.Video));
         } else if (result is yt.SearchChannel) {
+          final channel = result as yt.Video;
           artists.add(SearchArtist(
-            id: result.id.value,
-            name: result.name,
-            thumbnailUrl: result.thumbnails.isNotEmpty
-                ? result.thumbnails.last.url.toString()
-                : null,
+            id: channel.id.value,
+            name: channel.title,
+            thumbnailUrl: _thumbnailUrl(channel.thumbnails),
           ));
         } else if (result is yt.SearchPlaylist) {
+          final pl = result as yt.Video;
           playlists.add(SearchPlaylist(
-            id: result.id.value,
-            title: result.title,
-            thumbnailUrl: result.thumbnails.firstOrNull?.url.toString(),
+            id: pl.id.value,
+            title: pl.title,
+            thumbnailUrl: _thumbnailUrl(pl.thumbnails),
           ));
         }
       }
@@ -74,9 +74,9 @@ class YoutubeDatasourceImpl implements YoutubeDatasource {
   @override
   Future<List<Track>> getPlaylistTracks(String playlistId) async {
     try {
-      final playlist = await _yt.playlists.getVideos(playlistId);
+      final videoStream = _yt.playlists.getVideos(playlistId);
       final tracks = <Track>[];
-      await for (final video in playlist) {
+      await for (final video in videoStream) {
         tracks.add(Track(
           id: video.id.value,
           title: video.title,
@@ -94,14 +94,17 @@ class YoutubeDatasourceImpl implements YoutubeDatasource {
     }
   }
 
-  Track _videoToTrack(yt.SearchVideo video) => Track(
+  String? _thumbnailUrl(yt.ThumbnailSet thumbnails) {
+    final url = thumbnails.highResUrl;
+    return url.isNotEmpty ? url : null;
+  }
+
+  Track _videoToTrack(yt.Video video) => Track(
         id: video.id.value,
         title: video.title,
-        artist: video.author ?? 'Unknown',
+        artist: video.author,
         duration: video.duration,
-        thumbnailUrl: video.thumbnails.isNotEmpty
-            ? video.thumbnails.last.url.toString()
-            : null,
+        thumbnailUrl: _thumbnailUrl(video.thumbnails),
         source: TrackSource.youtube,
         youtubeVideoId: video.id.value,
         addedAt: DateTime.now(),

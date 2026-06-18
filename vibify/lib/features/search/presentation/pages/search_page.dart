@@ -127,7 +127,7 @@ class _RecentSearches extends StatelessWidget {
                   style: Theme.of(context).textTheme.titleSmall),
               TextButton(
                 onPressed: onClear,
-                child: Text(
+                child: const Text(
                   'Clear',
                   style: TextStyle(
                     color: AppColors.primaryBeige,

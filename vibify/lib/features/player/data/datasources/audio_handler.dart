@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-import '../../../../core/constants/app_constants.dart';
 import '../../domain/entities/track.dart';
 
 class VibifyAudioHandler extends BaseAudioHandler
@@ -29,7 +28,7 @@ class VibifyAudioHandler extends BaseAudioHandler
         androidNotificationChannelName: 'Vibify',
         androidNotificationOngoing: true,
         androidStopForegroundOnPause: true,
-        notificationColor: const Color(0xFFD6B48A),
+        notificationColor: Color(0xFFD6B48A),
         androidNotificationIcon: 'drawable/ic_notification',
       ),
     );
@@ -93,7 +92,6 @@ class VibifyAudioHandler extends BaseAudioHandler
       );
       await _player.play();
     } catch (e) {
-      // Retry once on failure
       try {
         final streamUrl = await _getYoutubeStreamUrl(videoId);
         await _player.setAudioSource(
@@ -111,7 +109,6 @@ class VibifyAudioHandler extends BaseAudioHandler
   Future<String> _getYoutubeStreamUrl(String videoId) async {
     final manifest = await _yt.videos.streamsClient.getManifest(videoId);
     final audioStreams = manifest.audioOnly;
-    // Prefer M4A high quality
     final stream = audioStreams.withHighestBitrate();
     return stream.url.toString();
   }
@@ -193,7 +190,6 @@ class VibifyAudioHandler extends BaseAudioHandler
 
   @override
   Future<void> skipToPrevious() async {
-    // If more than 3 seconds in, restart current track
     if (_player.position.inSeconds > 3) {
       await seek(Duration.zero);
       return;

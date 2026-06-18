@@ -1,0 +1,35 @@
+﻿2026-06-18T01:22:46.2094850Z ##[group]Run flutter pub run flutter_native_splash:create
+2026-06-18T01:22:46.2095363Z [36;1mflutter pub run flutter_native_splash:create[0m
+2026-06-18T01:22:46.2126791Z shell: /usr/bin/bash -e {0}
+2026-06-18T01:22:46.2127063Z env:
+2026-06-18T01:22:46.2127360Z   JAVA_HOME: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.19-10/x64
+2026-06-18T01:22:46.2127807Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.19-10/x64
+2026-06-18T01:22:46.2128271Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.44.2-x64/flutter
+2026-06-18T01:22:46.2128659Z   PUB_CACHE: /home/runner/.pub-cache
+2026-06-18T01:22:46.2128937Z ##[endgroup]
+2026-06-18T01:22:48.4199952Z [Android] Creating default splash images
+2026-06-18T01:22:48.5548065Z [Android] Creating dark mode splash images
+2026-06-18T01:22:48.8762021Z [Android] Creating default android12splash images
+2026-06-18T01:22:49.2295859Z [Android] Creating dark mode android12splash images
+2026-06-18T01:22:49.6845549Z [Android] Updating launch background(s) with splash image path...
+2026-06-18T01:22:49.6875220Z [Android]  - android/app/src/main/res/drawable/launch_background.xml
+2026-06-18T01:22:50.0286597Z [Android]  - android/app/src/main/res/drawable-night/launch_background.xml
+2026-06-18T01:22:50.0305971Z [Android]  - android/app/src/main/res/drawable-v21/launch_background.xml
+2026-06-18T01:22:50.0345025Z [Android]  - android/app/src/main/res/drawable-night-v21/launch_background.xml
+2026-06-18T01:22:50.0346388Z [Android] Updating styles...
+2026-06-18T01:22:50.0375355Z [Android]  - android/app/src/main/res/values-v31/styles.xml
+2026-06-18T01:22:50.0405684Z [Android] No android/app/src/main/res/values-v31/styles.xml found in your Android project
+2026-06-18T01:22:50.0435257Z [Android] Creating android/app/src/main/res/values-v31/styles.xml and adding it to your Android project
+2026-06-18T01:22:50.0555244Z [Android]  - android/app/src/main/res/values-night-v31/styles.xml
+2026-06-18T01:22:50.0574277Z [Android] No android/app/src/main/res/values-night-v31/styles.xml found in your Android project
+2026-06-18T01:22:50.0583729Z [Android] Creating android/app/src/main/res/values-night-v31/styles.xml and adding it to your Android project
+2026-06-18T01:22:50.0608040Z [Android]  - android/app/src/main/res/values/styles.xml
+2026-06-18T01:22:50.0635202Z [Android]  - android/app/src/main/res/values-night/styles.xml
+2026-06-18T01:22:50.0665270Z [Android] No android/app/src/main/res/values-night/styles.xml found in your Android project
+2026-06-18T01:22:50.0695485Z [Android] Creating android/app/src/main/res/values-night/styles.xml and adding it to your Android project
+2026-06-18T01:22:50.0696787Z Web folder not found, skipping web splash update...
+2026-06-18T01:22:50.0725019Z 
+2026-06-18T01:22:50.0739961Z ✅ Native splash complete.
+2026-06-18T01:22:50.0740850Z Now go finish building something awesome! 💪 You rock! 🤘🤩
+2026-06-18T01:22:50.0742076Z Like the package? Please give it a 👍 here: https://pub.dev/packages/flutter_native_splash
+2026-06-18T01:22:50.0743140Z 

@@ -1,0 +1,36 @@
+﻿2026-06-18T01:22:19.1658604Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-06-18T01:22:19.1663647Z ##[group]Run actions/setup-java@v4
+2026-06-18T01:22:19.1664974Z with:
+2026-06-18T01:22:19.1665832Z   distribution: zulu
+2026-06-18T01:22:19.1666783Z   java-version: 17
+2026-06-18T01:22:19.1667721Z   java-package: jdk
+2026-06-18T01:22:19.1668661Z   check-latest: false
+2026-06-18T01:22:19.1669640Z   server-id: github
+2026-06-18T01:22:19.1670608Z   server-username: GITHUB_ACTOR
+2026-06-18T01:22:19.1671708Z   server-password: GITHUB_TOKEN
+2026-06-18T01:22:19.1672801Z   overwrite-settings: true
+2026-06-18T01:22:19.1673836Z   job-status: success
+2026-06-18T01:22:19.1685088Z   token: ***
+2026-06-18T01:22:19.1686002Z ##[endgroup]
+2026-06-18T01:22:19.3333329Z ##[group]Installed distributions
+2026-06-18T01:22:19.3363183Z Trying to resolve the latest version from remote
+2026-06-18T01:22:19.3475943Z (node:2301) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-06-18T01:22:19.3480338Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-06-18T01:22:19.3970976Z Resolved latest version as 17.0.19+10
+2026-06-18T01:22:19.3973687Z Trying to download...
+2026-06-18T01:22:19.3977208Z Downloading Java 17.0.19+10 (Zulu) from https://cdn.azul.com/zulu/bin/zulu17.66.19-ca-crac-jdk17.0.19-linux_x64.tar.gz ...
+2026-06-18T01:22:22.3189776Z Extracting Java archive...
+2026-06-18T01:22:22.3333615Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/4934c8d7-30e7-4d17-b7fd-3b40262e37ef -f /home/runner/work/_temp/a52d3f8e-26c7-4572-ad97-f65f69cbe608
+2026-06-18T01:22:25.0008375Z Java 17.0.19+10 was downloaded
+2026-06-18T01:22:25.0008819Z Setting Java 17.0.19+10 as the default
+2026-06-18T01:22:25.0020641Z Creating toolchains.xml for JDK version 17 from zulu
+2026-06-18T01:22:25.0099848Z Writing to /home/runner/.m2/toolchains.xml
+2026-06-18T01:22:25.0109169Z 
+2026-06-18T01:22:25.0109700Z Java configuration:
+2026-06-18T01:22:25.0110071Z   Distribution: zulu
+2026-06-18T01:22:25.0110384Z   Version: 17.0.19+10
+2026-06-18T01:22:25.0110742Z   Path: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.19-10/x64
+2026-06-18T01:22:25.0111026Z 
+2026-06-18T01:22:25.0112189Z ##[endgroup]
+2026-06-18T01:22:25.0127928Z Creating settings.xml with server-id: github
+2026-06-18T01:22:25.0128897Z Writing to /home/runner/.m2/settings.xml

@@ -31,7 +31,7 @@ class SettingsPage extends ConsumerWidget {
             padding: const EdgeInsets.all(16),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                _SectionTitle(title: 'Appearance'),
+                const _SectionTitle(title: 'Appearance'),
                 _SettingsCard(
                   children: [
                     _ThemeSelector(currentMode: themeMode),
@@ -39,32 +39,31 @@ class SettingsPage extends ConsumerWidget {
                 ),
 
                 const SizedBox(height: 24),
-                _SectionTitle(title: 'Audio'),
+                const _SectionTitle(title: 'Audio'),
                 _SettingsCard(
                   children: [
                     _AudioQualitySelector(currentQuality: audioQuality),
                     const Divider(height: 1, indent: 16, endIndent: 16),
-                    _SettingsTile(
+                    const _SettingsTile(
                       icon: Icons.graphic_eq_rounded,
                       title: 'Equaliser',
                       subtitle: 'Fine-tune audio frequencies',
                       trailing: Switch(
                         value: false,
-                        onChanged: (_) {},
+                        onChanged: null,
                       ),
                     ),
                     const Divider(height: 1, indent: 16, endIndent: 16),
-                    _SettingsTile(
+                    const _SettingsTile(
                       icon: Icons.timer_rounded,
                       title: 'Sleep Timer',
                       subtitle: 'Auto-stop playback after a set time',
-                      onTap: () {},
                     ),
                   ],
                 ),
 
                 const SizedBox(height: 24),
-                _SectionTitle(title: 'Storage'),
+                const _SectionTitle(title: 'Storage'),
                 _SettingsCard(
                   children: [
                     _SettingsTile(
@@ -74,35 +73,32 @@ class SettingsPage extends ConsumerWidget {
                       onTap: () => _showClearCacheDialog(context),
                     ),
                     const Divider(height: 1, indent: 16, endIndent: 16),
-                    _SettingsTile(
+                    const _SettingsTile(
                       icon: Icons.folder_rounded,
                       title: 'Download Location',
                       subtitle: 'Choose where to save downloads',
-                      onTap: () {},
                     ),
                   ],
                 ),
 
                 const SizedBox(height: 24),
-                _SectionTitle(title: 'About'),
-                _SettingsCard(
+                const _SectionTitle(title: 'About'),
+                const _SettingsCard(
                   children: [
                     _SettingsTile(
                       icon: Icons.info_outline_rounded,
                       title: 'Version',
                       subtitle: '1.0.0',
                     ),
-                    const Divider(height: 1, indent: 16, endIndent: 16),
+                    Divider(height: 1, indent: 16, endIndent: 16),
                     _SettingsTile(
                       icon: Icons.privacy_tip_outlined,
                       title: 'Privacy Policy',
-                      onTap: () {},
                     ),
-                    const Divider(height: 1, indent: 16, endIndent: 16),
+                    Divider(height: 1, indent: 16, endIndent: 16),
                     _SettingsTile(
                       icon: Icons.description_outlined,
                       title: 'Terms of Service',
-                      onTap: () {},
                     ),
                   ],
                 ),
@@ -153,7 +149,7 @@ class _SectionTitle extends StatelessWidget {
       padding: const EdgeInsets.only(left: 4, bottom: 8),
       child: Text(
         title,
-        style: TextStyle(
+        style: const TextStyle(
           fontFamily: 'Inter',
           fontSize: 13,
           fontWeight: FontWeight.w600,
@@ -410,24 +406,24 @@ class _AudioQualitySelector extends ConsumerWidget {
     showModalBottomSheet(
       context: context,
       builder: (_) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: AudioQuality.values
-              .map((q) => RadioListTile<AudioQuality>(
-                    title: Text(_qualityLabel(q)),
-                    value: q,
-                    groupValue: currentQuality,
-                    activeColor: AppColors.primaryBeige,
-                    onChanged: (val) {
-                      if (val != null) {
-                        ref
-                            .read(audioQualityProvider.notifier)
-                            .setQuality(val);
-                      }
-                      Navigator.pop(context);
-                    },
-                  ))
-              .toList(),
+        child: RadioGroup<AudioQuality>(
+          groupValue: currentQuality,
+          onChanged: (val) {
+            if (val != null) {
+              ref.read(audioQualityProvider.notifier).setQuality(val);
+            }
+            Navigator.pop(context);
+          },
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: AudioQuality.values
+                .map((q) => RadioListTile<AudioQuality>(
+                      title: Text(_qualityLabel(q)),
+                      value: q,
+                      activeColor: AppColors.primaryBeige,
+                    ))
+                .toList(),
+          ),
         ),
       ),
     );

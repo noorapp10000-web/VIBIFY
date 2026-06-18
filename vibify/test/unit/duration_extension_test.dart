@@ -44,7 +44,7 @@ void main() {
     });
 
     test('formattedOrZero returns formatted string for non-null', () {
-      const Duration? d = Duration(minutes: 2, seconds: 15);
+      const Duration d = Duration(minutes: 2, seconds: 15);
       expect(d.formattedOrZero, '02:15');
     });
   });

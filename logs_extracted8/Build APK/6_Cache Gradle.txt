@@ -1,0 +1,22 @@
+﻿2026-06-18T01:22:41.7323810Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-06-18T01:22:41.7325707Z ##[group]Run actions/cache@v4
+2026-06-18T01:22:41.7325979Z with:
+2026-06-18T01:22:41.7326221Z   path: ~/.gradle/caches
+~/.gradle/wrapper
+
+2026-06-18T01:22:41.7326704Z   key: Linux-gradle-06226f0701b4302f538e471ee014cd4b06175e708b3b96464f0e4cb584de8ee7
+2026-06-18T01:22:41.7327378Z   restore-keys: Linux-gradle-
+
+2026-06-18T01:22:41.7327669Z   enableCrossOsArchive: false
+2026-06-18T01:22:41.7327941Z   fail-on-cache-miss: false
+2026-06-18T01:22:41.7328199Z   lookup-only: false
+2026-06-18T01:22:41.7328430Z   save-always: false
+2026-06-18T01:22:41.7328651Z env:
+2026-06-18T01:22:41.7328924Z   JAVA_HOME: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.19-10/x64
+2026-06-18T01:22:41.7329399Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.19-10/x64
+2026-06-18T01:22:41.7329861Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.44.2-x64/flutter
+2026-06-18T01:22:41.7330247Z   PUB_CACHE: /home/runner/.pub-cache
+2026-06-18T01:22:41.7330526Z ##[endgroup]
+2026-06-18T01:22:41.8366676Z (node:2591) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-06-18T01:22:41.8367495Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-06-18T01:22:41.8938547Z Cache not found for input keys: Linux-gradle-06226f0701b4302f538e471ee014cd4b06175e708b3b96464f0e4cb584de8ee7, Linux-gradle-

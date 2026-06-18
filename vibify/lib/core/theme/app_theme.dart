@@ -10,7 +10,7 @@ class AppTheme {
   static ThemeData get lightTheme => ThemeData(
         useMaterial3: true,
         brightness: Brightness.light,
-        colorScheme: ColorScheme.light(
+        colorScheme: const ColorScheme.light(
           primary: AppColors.primaryBeige,
           onPrimary: AppColors.darkBackground,
           secondary: AppColors.primaryBeige,
@@ -19,7 +19,7 @@ class AppTheme {
           onSurface: AppColors.lightText,
           error: AppColors.error,
           onError: Colors.white,
-          surfaceVariant: AppColors.lightSurface,
+          surfaceContainerHighest: AppColors.lightSurface,
           onSurfaceVariant: AppColors.lightSecondaryText,
         ),
         scaffoldBackgroundColor: AppColors.lightBackground,
@@ -35,7 +35,7 @@ class AppTheme {
           ),
           titleTextStyle: AppTextStyles.lightTextTheme.titleLarge,
         ),
-        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           backgroundColor: AppColors.lightBackground,
           selectedItemColor: AppColors.primaryBeige,
           unselectedItemColor: AppColors.lightSecondaryText,
@@ -49,9 +49,9 @@ class AppTheme {
           indicatorColor: AppColors.primaryBeige.withValues(alpha: 0.2),
           iconTheme: WidgetStateProperty.resolveWith((states) {
             if (states.contains(WidgetState.selected)) {
-              return IconThemeData(color: AppColors.primaryBeige);
+              return const IconThemeData(color: AppColors.primaryBeige);
             }
-            return IconThemeData(color: AppColors.lightSecondaryText);
+            return const IconThemeData(color: AppColors.lightSecondaryText);
           }),
           labelTextStyle: WidgetStateProperty.resolveWith((states) {
             if (states.contains(WidgetState.selected)) {
@@ -65,7 +65,7 @@ class AppTheme {
             );
           }),
         ),
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           color: AppColors.lightSurface,
           elevation: 0,
           shape: RoundedRectangleBorder(
@@ -97,12 +97,12 @@ class AppTheme {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(
+            borderSide: const BorderSide(
               color: AppColors.primaryBeige,
               width: 1.5,
             ),
           ),
-          hintStyle: TextStyle(
+          hintStyle: const TextStyle(
             color: AppColors.lightSecondaryText,
             fontSize: 14,
           ),
@@ -123,7 +123,7 @@ class AppTheme {
             ),
           ),
         ),
-        iconTheme: IconThemeData(color: AppColors.lightText, size: 24),
+        iconTheme: const IconThemeData(color: AppColors.lightText, size: 24),
         dividerTheme: DividerThemeData(
           color: AppColors.lightText.withValues(alpha: 0.08),
           thickness: 1,
@@ -155,7 +155,7 @@ class AppTheme {
   static ThemeData get darkTheme => ThemeData(
         useMaterial3: true,
         brightness: Brightness.dark,
-        colorScheme: ColorScheme.dark(
+        colorScheme: const ColorScheme.dark(
           primary: AppColors.primaryBeige,
           onPrimary: AppColors.darkBackground,
           secondary: AppColors.primaryBeige,
@@ -164,7 +164,7 @@ class AppTheme {
           onSurface: AppColors.darkText,
           error: AppColors.error,
           onError: Colors.white,
-          surfaceVariant: AppColors.darkSurface,
+          surfaceContainerHighest: AppColors.darkSurface,
           onSurfaceVariant: AppColors.darkSecondaryText,
         ),
         scaffoldBackgroundColor: AppColors.darkBackground,
@@ -180,7 +180,7 @@ class AppTheme {
           ),
           titleTextStyle: AppTextStyles.darkTextTheme.titleLarge,
         ),
-        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           backgroundColor: AppColors.darkBackground,
           selectedItemColor: AppColors.primaryBeige,
           unselectedItemColor: AppColors.darkSecondaryText,
@@ -192,9 +192,9 @@ class AppTheme {
           indicatorColor: AppColors.primaryBeige.withValues(alpha: 0.2),
           iconTheme: WidgetStateProperty.resolveWith((states) {
             if (states.contains(WidgetState.selected)) {
-              return IconThemeData(color: AppColors.primaryBeige);
+              return const IconThemeData(color: AppColors.primaryBeige);
             }
-            return IconThemeData(color: AppColors.darkSecondaryText);
+            return const IconThemeData(color: AppColors.darkSecondaryText);
           }),
           labelTextStyle: WidgetStateProperty.resolveWith((states) {
             if (states.contains(WidgetState.selected)) {
@@ -208,7 +208,7 @@ class AppTheme {
             );
           }),
         ),
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           color: AppColors.darkSurface,
           elevation: 0,
           shape: RoundedRectangleBorder(
@@ -240,12 +240,12 @@ class AppTheme {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(
+            borderSide: const BorderSide(
               color: AppColors.primaryBeige,
               width: 1.5,
             ),
           ),
-          hintStyle: TextStyle(
+          hintStyle: const TextStyle(
             color: AppColors.darkSecondaryText,
             fontSize: 14,
           ),
@@ -266,7 +266,7 @@ class AppTheme {
             ),
           ),
         ),
-        iconTheme: IconThemeData(color: AppColors.darkText, size: 24),
+        iconTheme: const IconThemeData(color: AppColors.darkText, size: 24),
         dividerTheme: DividerThemeData(
           color: AppColors.darkText.withValues(alpha: 0.08),
           thickness: 1,

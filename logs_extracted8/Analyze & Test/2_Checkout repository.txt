@@ -1,0 +1,73 @@
+﻿2026-06-18T01:20:57.7993337Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-06-18T01:20:57.8000326Z ##[group]Run actions/checkout@v4
+2026-06-18T01:20:57.8000935Z with:
+2026-06-18T01:20:57.8001320Z   repository: noorapp10000-web/VIBIFY
+2026-06-18T01:20:57.8005323Z   token: ***
+2026-06-18T01:20:57.8005696Z   ssh-strict: true
+2026-06-18T01:20:57.8006075Z   ssh-user: git
+2026-06-18T01:20:57.8006455Z   persist-credentials: true
+2026-06-18T01:20:57.8006871Z   clean: true
+2026-06-18T01:20:57.8007259Z   sparse-checkout-cone-mode: true
+2026-06-18T01:20:57.8007894Z   fetch-depth: 1
+2026-06-18T01:20:57.8008275Z   fetch-tags: false
+2026-06-18T01:20:57.8008662Z   show-progress: true
+2026-06-18T01:20:57.8009302Z   lfs: false
+2026-06-18T01:20:57.8009832Z   submodules: false
+2026-06-18T01:20:57.8010459Z   set-safe-directory: true
+2026-06-18T01:20:57.8011423Z ##[endgroup]
+2026-06-18T01:20:57.8789911Z Syncing repository: noorapp10000-web/VIBIFY
+2026-06-18T01:20:57.8791646Z ##[group]Getting Git version info
+2026-06-18T01:20:57.8792248Z Working directory is '/home/runner/work/VIBIFY/VIBIFY'
+2026-06-18T01:20:57.8793123Z [command]/usr/bin/git version
+2026-06-18T01:20:57.8813403Z git version 2.54.0
+2026-06-18T01:20:57.8860373Z ##[endgroup]
+2026-06-18T01:20:57.8871390Z Temporarily overriding HOME='/home/runner/work/_temp/41f9def6-553c-409a-a446-912d87114a8d' before making global git config changes
+2026-06-18T01:20:57.8872598Z Adding repository directory to the temporary git global config as a safe directory
+2026-06-18T01:20:57.8875411Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/VIBIFY/VIBIFY
+2026-06-18T01:20:57.8904151Z Deleting the contents of '/home/runner/work/VIBIFY/VIBIFY'
+2026-06-18T01:20:57.8907627Z ##[group]Initializing the repository
+2026-06-18T01:20:57.8910635Z [command]/usr/bin/git init /home/runner/work/VIBIFY/VIBIFY
+2026-06-18T01:20:57.8974687Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-06-18T01:20:57.8976092Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-06-18T01:20:57.8977671Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-06-18T01:20:57.8979033Z hint: call:
+2026-06-18T01:20:57.8979667Z hint:
+2026-06-18T01:20:57.8980439Z hint: 	git config --global init.defaultBranch <name>
+2026-06-18T01:20:57.8981355Z hint:
+2026-06-18T01:20:57.8982207Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-06-18T01:20:57.8983596Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-06-18T01:20:57.8984806Z hint:
+2026-06-18T01:20:57.8985454Z hint: 	git branch -m <name>
+2026-06-18T01:20:57.8986123Z hint:
+2026-06-18T01:20:57.8987012Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-06-18T01:20:57.8988813Z Initialized empty Git repository in /home/runner/work/VIBIFY/VIBIFY/.git/
+2026-06-18T01:20:57.8991362Z [command]/usr/bin/git remote add origin https://github.com/noorapp10000-web/VIBIFY
+2026-06-18T01:20:57.9010999Z ##[endgroup]
+2026-06-18T01:20:57.9012139Z ##[group]Disabling automatic garbage collection
+2026-06-18T01:20:57.9013762Z [command]/usr/bin/git config --local gc.auto 0
+2026-06-18T01:20:57.9038510Z ##[endgroup]
+2026-06-18T01:20:57.9039600Z ##[group]Setting up auth
+2026-06-18T01:20:57.9043698Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-06-18T01:20:57.9068830Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-06-18T01:20:57.9307803Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-06-18T01:20:57.9331331Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-06-18T01:20:57.9513208Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-06-18T01:20:57.9539212Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-06-18T01:20:57.9723554Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-06-18T01:20:57.9751360Z ##[endgroup]
+2026-06-18T01:20:57.9811093Z ##[group]Fetching the repository
+2026-06-18T01:20:57.9813403Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +7b64f6cbe4cdd2db36a3151b9c977a47ef4c92e0:refs/remotes/origin/main
+2026-06-18T01:20:58.6898631Z From https://github.com/noorapp10000-web/VIBIFY
+2026-06-18T01:20:58.6900276Z  * [new ref]         7b64f6cbe4cdd2db36a3151b9c977a47ef4c92e0 -> origin/main
+2026-06-18T01:20:58.6921163Z ##[endgroup]
+2026-06-18T01:20:58.6922893Z ##[group]Determining the checkout info
+2026-06-18T01:20:58.6924884Z ##[endgroup]
+2026-06-18T01:20:58.6928060Z [command]/usr/bin/git sparse-checkout disable
+2026-06-18T01:20:58.6960264Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-06-18T01:20:58.6984789Z ##[group]Checking out the ref
+2026-06-18T01:20:58.6986784Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-06-18T01:20:58.7256835Z Switched to a new branch 'main'
+2026-06-18T01:20:58.7258583Z branch 'main' set up to track 'origin/main'.
+2026-06-18T01:20:58.7268389Z ##[endgroup]
+2026-06-18T01:20:58.7305922Z [command]/usr/bin/git log -1 --format=%H
+2026-06-18T01:20:58.7323625Z 7b64f6cbe4cdd2db36a3151b9c977a47ef4c92e0

@@ -63,11 +63,10 @@ class QueuePanel extends ConsumerWidget {
           child: ReorderableListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             itemCount: queue.length,
-            onReorder: (oldIndex, newIndex) {
-              if (newIndex > oldIndex) newIndex--;
+            onReorderItem: (oldIndex, newIndex) {
               ref
                   .read(playerNotifierProvider.notifier)
-                  .skipToIndex(newIndex); // simplified
+                  .skipToIndex(newIndex);
             },
             itemBuilder: (context, index) {
               final track = queue[index];

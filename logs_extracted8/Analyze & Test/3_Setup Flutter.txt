@@ -1,0 +1,72 @@
+﻿2026-06-18T01:20:58.7831455Z ##[group]Run subosito/flutter-action@v2
+2026-06-18T01:20:58.7832388Z with:
+2026-06-18T01:20:58.7833036Z   channel: stable
+2026-06-18T01:20:58.7833721Z   cache: true
+2026-06-18T01:20:58.7834395Z   architecture: X64
+2026-06-18T01:20:58.7835131Z   pub-cache-path: default
+2026-06-18T01:20:58.7835885Z   dry-run: false
+2026-06-18T01:20:58.7836686Z   git-source: https://github.com/flutter/flutter.git
+2026-06-18T01:20:58.7837784Z ##[endgroup]
+2026-06-18T01:20:58.7955156Z ##[group]Run chmod +x "$GITHUB_ACTION_PATH/setup.sh"
+2026-06-18T01:20:58.7956282Z [36;1mchmod +x "$GITHUB_ACTION_PATH/setup.sh"[0m
+2026-06-18T01:20:58.8413356Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-06-18T01:20:58.8414450Z ##[endgroup]
+2026-06-18T01:20:58.8557776Z ##[group]Run $GITHUB_ACTION_PATH/setup.sh -p \
+2026-06-18T01:20:58.8558851Z [36;1m$GITHUB_ACTION_PATH/setup.sh -p \[0m
+2026-06-18T01:20:58.8559773Z [36;1m  -n '' \[0m
+2026-06-18T01:20:58.8560470Z [36;1m  -f '' \[0m
+2026-06-18T01:20:58.8561148Z [36;1m  -a 'X64' \[0m
+2026-06-18T01:20:58.8561891Z [36;1m  -k '' \[0m
+2026-06-18T01:20:58.8562571Z [36;1m  -c '' \[0m
+2026-06-18T01:20:58.8563254Z [36;1m  -l '' \[0m
+2026-06-18T01:20:58.8563934Z [36;1m  -d 'default' \[0m
+2026-06-18T01:20:58.8564831Z [36;1m  -g 'https://github.com/flutter/flutter.git' \[0m
+2026-06-18T01:20:58.8565809Z [36;1m  stable[0m
+2026-06-18T01:20:58.8593283Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-06-18T01:20:58.8594311Z ##[endgroup]
+2026-06-18T01:20:59.0130430Z ##[group]Run actions/cache@v5
+2026-06-18T01:20:59.0131300Z with:
+2026-06-18T01:20:59.0132077Z   path: /opt/hostedtoolcache/flutter/stable-3.44.2-x64
+2026-06-18T01:20:59.0133462Z   key: flutter-linux-stable-3.44.2-x64-c9a6c484230f8b5e408ec57be1ef71dee1e77020
+2026-06-18T01:20:59.0134745Z   enableCrossOsArchive: false
+2026-06-18T01:20:59.0135572Z   fail-on-cache-miss: false
+2026-06-18T01:20:59.0136382Z   lookup-only: false
+2026-06-18T01:20:59.0137095Z   save-always: false
+2026-06-18T01:20:59.0138019Z ##[endgroup]
+2026-06-18T01:20:59.2225680Z Cache hit for: flutter-linux-stable-3.44.2-x64-c9a6c484230f8b5e408ec57be1ef71dee1e77020
+2026-06-18T01:21:00.3399356Z Received 150994944 of 1688811713 (8.9%), 144.0 MBs/sec
+2026-06-18T01:21:01.3624151Z Received 402653184 of 1688811713 (23.8%), 189.7 MBs/sec
+2026-06-18T01:21:02.3633297Z Received 666894336 of 1688811713 (39.5%), 210.2 MBs/sec
+2026-06-18T01:21:03.3635888Z Received 884998144 of 1688811713 (52.4%), 209.7 MBs/sec
+2026-06-18T01:21:04.3648499Z Received 1103101952 of 1688811713 (65.3%), 209.3 MBs/sec
+2026-06-18T01:21:05.3652205Z Received 1342177280 of 1688811713 (79.5%), 212.4 MBs/sec
+2026-06-18T01:21:06.3668339Z Received 1619001344 of 1688811713 (95.9%), 219.7 MBs/sec
+2026-06-18T01:21:06.6207979Z Received 1688811713 of 1688811713 (100.0%), 221.2 MBs/sec
+2026-06-18T01:21:06.6209747Z Cache Size: ~1611 MB (1688811713 B)
+2026-06-18T01:21:06.6268518Z [command]/usr/bin/tar -xf /home/runner/work/_temp/fd797617-c849-464d-97ee-6e1c695bffed/cache.tzst -P -C /home/runner/work/VIBIFY/VIBIFY --use-compress-program unzstd
+2026-06-18T01:21:16.1228864Z Cache restored successfully
+2026-06-18T01:21:16.2813775Z Cache restored from key: flutter-linux-stable-3.44.2-x64-c9a6c484230f8b5e408ec57be1ef71dee1e77020
+2026-06-18T01:21:16.3752454Z ##[group]Run actions/cache@v5
+2026-06-18T01:21:16.3752721Z with:
+2026-06-18T01:21:16.3752916Z   path: /home/runner/.pub-cache
+2026-06-18T01:21:16.3753321Z   key: flutter-pub-linux-stable-3.44.2-x64-c9a6c484230f8b5e408ec57be1ef71dee1e77020-
+2026-06-18T01:21:16.3753695Z   enableCrossOsArchive: false
+2026-06-18T01:21:16.3753916Z   fail-on-cache-miss: false
+2026-06-18T01:21:16.3754115Z   lookup-only: false
+2026-06-18T01:21:16.3754297Z   save-always: false
+2026-06-18T01:21:16.3754480Z ##[endgroup]
+2026-06-18T01:21:16.5748658Z Cache hit for: flutter-pub-linux-stable-3.44.2-x64-c9a6c484230f8b5e408ec57be1ef71dee1e77020-
+2026-06-18T01:21:17.5335370Z Received 95160714 of 95160714 (100.0%), 107.4 MBs/sec
+2026-06-18T01:21:17.5336914Z Cache Size: ~91 MB (95160714 B)
+2026-06-18T01:21:17.5395690Z [command]/usr/bin/tar -xf /home/runner/work/_temp/a551956b-884b-4767-92bc-39b4145387f3/cache.tzst -P -C /home/runner/work/VIBIFY/VIBIFY --use-compress-program unzstd
+2026-06-18T01:21:18.6337925Z Cache restored successfully
+2026-06-18T01:21:18.6442623Z Cache restored from key: flutter-pub-linux-stable-3.44.2-x64-c9a6c484230f8b5e408ec57be1ef71dee1e77020-
+2026-06-18T01:21:18.6574764Z ##[group]Run $GITHUB_ACTION_PATH/setup.sh \
+2026-06-18T01:21:18.6575227Z [36;1m$GITHUB_ACTION_PATH/setup.sh \[0m
+2026-06-18T01:21:18.6575621Z [36;1m  -n '3.44.2' \[0m
+2026-06-18T01:21:18.6575977Z [36;1m  -a 'x64' \[0m
+2026-06-18T01:21:18.6576381Z [36;1m  -c '/opt/hostedtoolcache/flutter/stable-3.44.2-x64' \[0m
+2026-06-18T01:21:18.6576849Z [36;1m  -d '/home/runner/.pub-cache' \[0m
+2026-06-18T01:21:18.6577224Z [36;1m  stable[0m
+2026-06-18T01:21:18.6606319Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-06-18T01:21:18.6606648Z ##[endgroup]

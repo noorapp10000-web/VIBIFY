@@ -39,7 +39,7 @@ class DownloadsPage extends ConsumerWidget {
         ),
         error: (e, _) => Center(child: Text('Error: $e')),
         data: (downloads) => downloads.isEmpty
-            ? _EmptyDownloads()
+            ? const _EmptyDownloads()
             : ListView.separated(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 itemCount: downloads.length,

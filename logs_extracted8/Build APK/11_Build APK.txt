@@ -1,0 +1,53 @@
+﻿2026-06-18T01:23:25.7313474Z ##[group]Run flutter build apk --debug
+2026-06-18T01:23:25.7313858Z [36;1mflutter build apk --debug[0m
+2026-06-18T01:23:25.7345868Z shell: /usr/bin/bash -e {0}
+2026-06-18T01:23:25.7346142Z env:
+2026-06-18T01:23:25.7346443Z   JAVA_HOME: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.19-10/x64
+2026-06-18T01:23:25.7346897Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.19-10/x64
+2026-06-18T01:23:25.7347398Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.44.2-x64/flutter
+2026-06-18T01:23:25.7347788Z   PUB_CACHE: /home/runner/.pub-cache
+2026-06-18T01:23:25.7348065Z ##[endgroup]
+2026-06-18T01:23:26.2941459Z Upgrading build.gradle
+2026-06-18T01:23:26.2976683Z Upgrading gradle.properties
+2026-06-18T01:23:26.3237127Z [!] Your app isn't using AndroidX.
+2026-06-18T01:23:26.3238448Z     To avoid potential build failures, you can quickly migrate your app by following the steps on https://docs.flutter.dev/release/breaking-changes/androidx-migration .
+2026-06-18T01:24:56.1156185Z Running Gradle task 'assembleDebug'...                          
+2026-06-18T01:24:56.1203329Z 
+2026-06-18T01:24:56.1203976Z FAILURE: Build failed with an exception.
+2026-06-18T01:24:56.1206528Z 
+2026-06-18T01:24:56.1206987Z * Where:
+2026-06-18T01:24:56.1207922Z Build file '/home/runner/work/VIBIFY/VIBIFY/vibify/android/app/build.gradle' line: 4
+2026-06-18T01:24:56.1208743Z 
+2026-06-18T01:24:56.1209071Z * What went wrong:
+2026-06-18T01:24:56.1209987Z An exception occurred applying plugin request [id: 'dev.flutter.flutter-gradle-plugin']
+2026-06-18T01:24:56.1211149Z > Failed to apply plugin 'dev.flutter.flutter-gradle-plugin'.
+2026-06-18T01:24:56.1212584Z    > Error: Your project's Gradle version (8.3.0) is lower than Flutter's minimum supported version of 8.7.0. Please upgrade your Gradle version. 
+2026-06-18T01:24:56.1214244Z      Alternatively, use the flag "--android-skip-build-dependency-validation" to bypass this check.
+2026-06-18T01:24:56.1215453Z 
+2026-06-18T01:24:56.1216914Z      Potential fix: Your project's gradle version is typically defined in the gradle wrapper file. By default, this can be found at /home/runner/work/VIBIFY/VIBIFY/vibify/android/gradle/wrapper/gradle-wrapper.properties. 
+2026-06-18T01:24:56.1219042Z      For more information, see https://docs.gradle.org/current/userguide/gradle_wrapper.html.
+2026-06-18T01:24:56.1219982Z 
+2026-06-18T01:24:56.1220158Z 
+2026-06-18T01:24:56.1220465Z * Try:
+2026-06-18T01:24:56.1221152Z > Run with --stacktrace option to get the stack trace.
+2026-06-18T01:24:56.1222027Z > Run with --info or --debug option to get more log output.
+2026-06-18T01:24:56.1222845Z > Run with --scan to get full insights.
+2026-06-18T01:24:56.1223598Z > Get more help at https://help.gradle.org.
+2026-06-18T01:24:56.1224156Z 
+2026-06-18T01:24:56.1224693Z BUILD FAILED in 1m 29s
+2026-06-18T01:24:56.5236069Z Running Gradle task 'assembleDebug'...                             90.2s
+2026-06-18T01:24:56.5275569Z 
+2026-06-18T01:24:56.5282703Z ┌─ Flutter Fix ────────────────────────────────────────────────────────────────────────┐
+2026-06-18T01:24:56.5285233Z │ [!] Starting AGP 9+, only the new DSL interface will be read.                        │
+2026-06-18T01:24:56.5286433Z │ This results in a build failure when applying the Flutter Gradle plugin at           │
+2026-06-18T01:24:56.5287600Z │ /home/runner/work/VIBIFY/VIBIFY/vibify/android/app/build.gradle.                     │
+2026-06-18T01:24:56.5288588Z │                                                                                      │
+2026-06-18T01:24:56.5290200Z │ To resolve this update flutter or opt out of `android.newDsl`.                       │
+2026-06-18T01:24:56.5291335Z │ For instructions on how to opt out, see:                                             │
+2026-06-18T01:24:56.5292730Z │ https://developer.android.com/build/releases/agp-9-0-0-release-notes                 │
+2026-06-18T01:24:56.5293863Z │                                                                                      │
+2026-06-18T01:24:56.5295804Z │ If you are not upgrading to AGP 9+, run `flutter analyze --suggestions` to check for │
+2026-06-18T01:24:56.5297447Z │ incompatible dependencies.                                                           │
+2026-06-18T01:24:56.5298291Z └──────────────────────────────────────────────────────────────────────────────────────┘
+2026-06-18T01:24:56.5397026Z Gradle task assembleDebug failed with exit code 1
+2026-06-18T01:24:56.5461932Z ##[error]Process completed with exit code 1.

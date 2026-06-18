@@ -1,0 +1,28 @@
+﻿2026-06-18T01:22:39.0505782Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-06-18T01:22:39.0507129Z ##[group]Run actions/cache@v4
+2026-06-18T01:22:39.0507386Z with:
+2026-06-18T01:22:39.0507604Z   path: ~/.pub-cache
+.dart_tool
+
+2026-06-18T01:22:39.0507881Z   key: Linux-pub-
+2026-06-18T01:22:39.0508111Z   restore-keys: Linux-pub-
+
+2026-06-18T01:22:39.0508381Z   enableCrossOsArchive: false
+2026-06-18T01:22:39.0508652Z   fail-on-cache-miss: false
+2026-06-18T01:22:39.0508893Z   lookup-only: false
+2026-06-18T01:22:39.0509123Z   save-always: false
+2026-06-18T01:22:39.0509336Z env:
+2026-06-18T01:22:39.0509624Z   JAVA_HOME: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.19-10/x64
+2026-06-18T01:22:39.0510056Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.19-10/x64
+2026-06-18T01:22:39.0510562Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.44.2-x64/flutter
+2026-06-18T01:22:39.0510947Z   PUB_CACHE: /home/runner/.pub-cache
+2026-06-18T01:22:39.0511216Z ##[endgroup]
+2026-06-18T01:22:39.1523935Z (node:2562) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-06-18T01:22:39.1525116Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-06-18T01:22:39.2089750Z Cache hit for: Linux-pub-
+2026-06-18T01:22:39.2197154Z (node:2562) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-06-18T01:22:39.7304205Z Received 95293668 of 95293668 (100.0%), 187.8 MBs/sec
+2026-06-18T01:22:39.7305210Z Cache Size: ~91 MB (95293668 B)
+2026-06-18T01:22:39.7335978Z [command]/usr/bin/tar -xf /home/runner/work/_temp/3c5488aa-5b02-4dbb-aac2-a4e5dbe047a4/cache.tzst -P -C /home/runner/work/VIBIFY/VIBIFY --use-compress-program unzstd
+2026-06-18T01:22:41.5882024Z Cache restored successfully
+2026-06-18T01:22:41.6002306Z Cache restored from key: Linux-pub-

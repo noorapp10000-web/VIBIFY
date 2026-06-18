@@ -35,7 +35,7 @@ void main() {
       final playlist = Playlist(
         id: 'p1',
         name: 'My Playlist',
-        tracks: [track1, track2],
+        tracks: const [track1, track2],
         createdAt: now,
         updatedAt: now,
       );
@@ -46,7 +46,7 @@ void main() {
       final playlist = Playlist(
         id: 'p1',
         name: 'My Playlist',
-        tracks: [track1, track2],
+        tracks: const [track1, track2],
         createdAt: now,
         updatedAt: now,
       );

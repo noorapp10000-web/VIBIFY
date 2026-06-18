@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -58,7 +59,7 @@ class DownloadDatasourceImpl implements DownloadDatasource {
       createdAt: DateTime.now(),
     );
     await _box.put(item.id, _toMap(item));
-    _downloadInBackground(item);
+    unawaited(_downloadInBackground(item));
     return item;
   }
 
@@ -76,9 +77,9 @@ class DownloadDatasourceImpl implements DownloadDatasource {
         final stream = manifest.audioOnly.withHighestBitrate();
         downloadUrl = stream.url.toString();
       } else if (item.track.localPath != null) {
-        return; // Already local
+        return;
       } else {
-        throw DownloadException(message: 'No downloadable source');
+        throw const DownloadException(message: 'No downloadable source');
       }
 
       final dir = await getApplicationDocumentsDirectory();
@@ -152,7 +153,7 @@ class DownloadDatasourceImpl implements DownloadDatasource {
   Future<void> resumeDownload(String downloadId) async {
     final item = _getItem(downloadId);
     if (item != null && item.isPaused) {
-      _downloadInBackground(item);
+      unawaited(_downloadInBackground(item));
     }
   }
 
@@ -167,7 +168,7 @@ class DownloadDatasourceImpl implements DownloadDatasource {
   Future<void> retryDownload(String downloadId) async {
     final item = _getItem(downloadId);
     if (item != null && item.isFailed) {
-      _downloadInBackground(item);
+      unawaited(_downloadInBackground(item));
     }
   }
 
@@ -176,7 +177,7 @@ class DownloadDatasourceImpl implements DownloadDatasource {
     final item = _getItem(downloadId);
     if (item?.localPath != null) {
       final file = File(item!.localPath!);
-      if (await file.exists()) await file.delete();
+      if (file.existsSync()) await file.delete();
     }
     await _box.delete(downloadId);
   }
@@ -245,7 +246,7 @@ class _DownloadProgressController {
 
   _DownloadProgressController() {
     stream = Stream.multi((controller) {
-      final listener = (DownloadItem item) => controller.add(item);
+      void listener(DownloadItem item) => controller.add(item);
       _listeners.add(listener);
       controller.onCancel = () => _listeners.remove(listener);
     });
