@@ -1,0 +1,35 @@
+﻿2026-06-18T00:40:07.7876330Z Current runner version: '2.335.1'
+2026-06-18T00:40:07.7909785Z ##[group]Runner Image Provisioner
+2026-06-18T00:40:07.7911110Z Hosted Compute Agent
+2026-06-18T00:40:07.7912153Z Version: 20260527.539
+2026-06-18T00:40:07.7913251Z Commit: a891dd388383b896fa6ac04a82c0b75cec981078
+2026-06-18T00:40:07.7914442Z Build Date: 2026-05-27T21:39:57Z
+2026-06-18T00:40:07.7915642Z Worker ID: {59357ecf-cdeb-43df-ba41-e880bd02a56e}
+2026-06-18T00:40:07.7916864Z Azure Region: eastus
+2026-06-18T00:40:07.7917811Z ##[endgroup]
+2026-06-18T00:40:07.7920391Z ##[group]Operating System
+2026-06-18T00:40:07.7921399Z Ubuntu
+2026-06-18T00:40:07.7922897Z 24.04.4
+2026-06-18T00:40:07.7924130Z LTS
+2026-06-18T00:40:07.7924921Z ##[endgroup]
+2026-06-18T00:40:07.7925937Z ##[group]Runner Image
+2026-06-18T00:40:07.7926968Z Image: ubuntu-24.04
+2026-06-18T00:40:07.7928070Z Version: 20260607.184.1
+2026-06-18T00:40:07.7930177Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260607.184/images/ubuntu/Ubuntu2404-Readme.md
+2026-06-18T00:40:07.7933194Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260607.184
+2026-06-18T00:40:07.7934917Z ##[endgroup]
+2026-06-18T00:40:07.7936903Z ##[group]GITHUB_TOKEN Permissions
+2026-06-18T00:40:07.7939839Z Contents: read
+2026-06-18T00:40:07.7940826Z Metadata: read
+2026-06-18T00:40:07.7941720Z Packages: read
+2026-06-18T00:40:07.7942729Z ##[endgroup]
+2026-06-18T00:40:07.7945552Z Secret source: Actions
+2026-06-18T00:40:07.7946859Z Prepare workflow directory
+2026-06-18T00:40:07.8507999Z Prepare all required actions
+2026-06-18T00:40:07.8563282Z Getting action download info
+2026-06-18T00:40:08.1008300Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+2026-06-18T00:40:08.1771908Z Download action repository 'subosito/flutter-action@v2' (SHA:1a449444c387b1966244ae4d4f8c696479add0b2)
+2026-06-18T00:40:08.2716165Z Download action repository 'actions/cache@v4' (SHA:0057852bfaa89a56745cba8c7296529d2fc39830)
+2026-06-18T00:40:08.4740756Z Getting action download info
+2026-06-18T00:40:08.5382286Z Download action repository 'actions/cache@v5' (SHA:27d5ce7f107fe9357f9df03efb73ab90386fccae)
+2026-06-18T00:40:08.6747487Z Complete job name: Analyze & Test

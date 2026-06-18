@@ -1,0 +1,66 @@
+﻿2026-06-18T00:40:09.3425617Z ##[group]Run subosito/flutter-action@v2
+2026-06-18T00:40:09.3426795Z with:
+2026-06-18T00:40:09.3427617Z   flutter-version: 3.22.0
+2026-06-18T00:40:09.3428568Z   channel: stable
+2026-06-18T00:40:09.3429624Z   cache: true
+2026-06-18T00:40:09.3430468Z   architecture: X64
+2026-06-18T00:40:09.3431357Z   pub-cache-path: default
+2026-06-18T00:40:09.3432289Z   dry-run: false
+2026-06-18T00:40:09.3433311Z   git-source: https://github.com/flutter/flutter.git
+2026-06-18T00:40:09.3434556Z ##[endgroup]
+2026-06-18T00:40:09.3582192Z ##[group]Run chmod +x "$GITHUB_ACTION_PATH/setup.sh"
+2026-06-18T00:40:09.3583608Z [36;1mchmod +x "$GITHUB_ACTION_PATH/setup.sh"[0m
+2026-06-18T00:40:09.3736924Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-06-18T00:40:09.3738240Z ##[endgroup]
+2026-06-18T00:40:09.3901059Z ##[group]Run $GITHUB_ACTION_PATH/setup.sh -p \
+2026-06-18T00:40:09.3902335Z [36;1m$GITHUB_ACTION_PATH/setup.sh -p \[0m
+2026-06-18T00:40:09.3903451Z [36;1m  -n '3.22.0' \[0m
+2026-06-18T00:40:09.3904311Z [36;1m  -f '' \[0m
+2026-06-18T00:40:09.3905138Z [36;1m  -a 'X64' \[0m
+2026-06-18T00:40:09.3905956Z [36;1m  -k '' \[0m
+2026-06-18T00:40:09.3906742Z [36;1m  -c '' \[0m
+2026-06-18T00:40:09.3907519Z [36;1m  -l '' \[0m
+2026-06-18T00:40:09.3908317Z [36;1m  -d 'default' \[0m
+2026-06-18T00:40:09.3909570Z [36;1m  -g 'https://github.com/flutter/flutter.git' \[0m
+2026-06-18T00:40:09.3910768Z [36;1m  stable[0m
+2026-06-18T00:40:09.3940742Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-06-18T00:40:09.3941989Z ##[endgroup]
+2026-06-18T00:40:09.5709461Z ##[group]Run actions/cache@v5
+2026-06-18T00:40:09.5710464Z with:
+2026-06-18T00:40:09.5711342Z   path: /opt/hostedtoolcache/flutter/stable-3.22.0-x64
+2026-06-18T00:40:09.5712993Z   key: flutter-linux-stable-3.22.0-x64-5dcb86f68f239346676ceb1ed1ea385bd215fba1
+2026-06-18T00:40:09.5714538Z   enableCrossOsArchive: false
+2026-06-18T00:40:09.5715484Z   fail-on-cache-miss: false
+2026-06-18T00:40:09.5716353Z   lookup-only: false
+2026-06-18T00:40:09.5717163Z   save-always: false
+2026-06-18T00:40:09.5717941Z ##[endgroup]
+2026-06-18T00:40:09.7543459Z Cache not found for input keys: flutter-linux-stable-3.22.0-x64-5dcb86f68f239346676ceb1ed1ea385bd215fba1
+2026-06-18T00:40:09.8620528Z ##[group]Run actions/cache@v5
+2026-06-18T00:40:09.8621460Z with:
+2026-06-18T00:40:09.8622193Z   path: /home/runner/.pub-cache
+2026-06-18T00:40:09.8623669Z   key: flutter-pub-linux-stable-3.22.0-x64-5dcb86f68f239346676ceb1ed1ea385bd215fba1-
+2026-06-18T00:40:09.8625300Z   enableCrossOsArchive: false
+2026-06-18T00:40:09.8626223Z   fail-on-cache-miss: false
+2026-06-18T00:40:09.8627086Z   lookup-only: false
+2026-06-18T00:40:09.8627870Z   save-always: false
+2026-06-18T00:40:09.8628865Z ##[endgroup]
+2026-06-18T00:40:10.0500530Z Cache not found for input keys: flutter-pub-linux-stable-3.22.0-x64-5dcb86f68f239346676ceb1ed1ea385bd215fba1-
+2026-06-18T00:40:10.0613968Z ##[group]Run $GITHUB_ACTION_PATH/setup.sh \
+2026-06-18T00:40:10.0615140Z [36;1m$GITHUB_ACTION_PATH/setup.sh \[0m
+2026-06-18T00:40:10.0616229Z [36;1m  -n '3.22.0' \[0m
+2026-06-18T00:40:10.0617136Z [36;1m  -a 'x64' \[0m
+2026-06-18T00:40:10.0618253Z [36;1m  -c '/opt/hostedtoolcache/flutter/stable-3.22.0-x64' \[0m
+2026-06-18T00:40:10.0619715Z [36;1m  -d '/home/runner/.pub-cache' \[0m
+2026-06-18T00:40:10.0620769Z [36;1m  stable[0m
+2026-06-18T00:40:10.0653300Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-06-18T00:40:10.0654538Z ##[endgroup]
+2026-06-18T00:40:10.2202362Z   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+2026-06-18T00:40:10.2204147Z                                  Dload  Upload   Total   Spent    Left  Speed
+2026-06-18T00:40:10.2204863Z 
+2026-06-18T00:40:10.3242771Z   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-06-18T00:40:11.3245075Z   0  716M    0 4230k    0     0  39.6M      0  0:00:18 --:--:--  0:00:18 39.3M
+2026-06-18T00:40:12.3242894Z  23  716M   23  171M    0     0   155M      0  0:00:04  0:00:01  0:00:03  155M
+2026-06-18T00:40:13.3239893Z  41  716M   41  297M    0     0   141M      0  0:00:05  0:00:02  0:00:03  141M
+2026-06-18T00:40:14.3239637Z  59  716M   59  428M    0     0   137M      0  0:00:05  0:00:03  0:00:02  137M
+2026-06-18T00:40:15.3040528Z  80  716M   80  575M    0     0   140M      0  0:00:05  0:00:04  0:00:01  140M
+2026-06-18T00:40:15.3041823Z 100  716M  100  716M    0     0   140M      0  0:00:05  0:00:05 --:--:--  143M

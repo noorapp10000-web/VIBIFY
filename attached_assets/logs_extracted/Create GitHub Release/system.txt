@@ -1,0 +1,4 @@
+2026-06-18T00:40:55.9470000Z Evaluating release.if
+2026-06-18T00:40:55.9470000Z Evaluating: (success() && (startsWith(github.ref, 'refs/tags/v')))
+2026-06-18T00:40:55.9470000Z Expanded: (false && startsWith(github.ref, 'refs/tags/v'))
+2026-06-18T00:40:55.9470000Z Result: false
