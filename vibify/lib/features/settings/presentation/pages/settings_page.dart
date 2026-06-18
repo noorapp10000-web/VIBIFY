@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../player/presentation/providers/player_provider.dart';
 import '../providers/settings_provider.dart';
 
 class SettingsPage extends ConsumerWidget {
@@ -54,10 +57,11 @@ class SettingsPage extends ConsumerWidget {
                       ),
                     ),
                     const Divider(height: 1, indent: 16, endIndent: 16),
-                    const _SettingsTile(
+                    _SettingsTile(
                       icon: Icons.timer_rounded,
                       title: 'Sleep Timer',
                       subtitle: 'Auto-stop playback after a set time',
+                      onTap: () => _showSleepTimerDialog(context, ref),
                     ),
                   ],
                 ),
@@ -111,6 +115,66 @@ class SettingsPage extends ConsumerWidget {
     );
   }
 
+  void _showSleepTimerDialog(BuildContext context, WidgetRef ref) {
+    final options = [
+      ('5 minutes', const Duration(minutes: 5)),
+      ('15 minutes', const Duration(minutes: 15)),
+      ('30 minutes', const Duration(minutes: 30)),
+      ('45 minutes', const Duration(minutes: 45)),
+      ('1 hour', const Duration(hours: 1)),
+      ('Cancel timer', null),
+    ];
+
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              child: Text(
+                'Sleep Timer',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+              ),
+            ),
+            const Divider(height: 1),
+            ...options.map((opt) => ListTile(
+                  leading: Icon(
+                    opt.$2 == null
+                        ? Icons.timer_off_rounded
+                        : Icons.timer_rounded,
+                    color: opt.$2 == null
+                        ? Colors.redAccent
+                        : AppColors.primaryBeige,
+                  ),
+                  title: Text(opt.$1),
+                  onTap: () {
+                    Navigator.pop(context);
+                    final notifier =
+                        ref.read(playerNotifierProvider.notifier);
+                    if (opt.$2 == null) {
+                      notifier.cancelSleepTimer();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Sleep timer cancelled')),
+                      );
+                    } else {
+                      notifier.setSleepTimer(opt.$2!);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text('Sleep timer set for ${opt.$1}')),
+                      );
+                    }
+                  },
+                )),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _showClearCacheDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -124,11 +188,17 @@ class SettingsPage extends ConsumerWidget {
             child: const Text('Cancel'),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Cache cleared successfully')),
-              );
+              try {
+                final cacheBox = Hive.box(AppConstants.cacheBox);
+                await cacheBox.clear();
+              } catch (_) {}
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Cache cleared successfully')),
+                );
+              }
             },
             child: const Text('Clear'),
           ),
@@ -406,24 +476,22 @@ class _AudioQualitySelector extends ConsumerWidget {
     showModalBottomSheet(
       context: context,
       builder: (_) => SafeArea(
-        child: RadioGroup<AudioQuality>(
-          groupValue: currentQuality,
-          onChanged: (val) {
-            if (val != null) {
-              ref.read(audioQualityProvider.notifier).setQuality(val);
-            }
-            Navigator.pop(context);
-          },
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: AudioQuality.values
-                .map((q) => RadioListTile<AudioQuality>(
-                      title: Text(_qualityLabel(q)),
-                      value: q,
-                      activeColor: AppColors.primaryBeige,
-                    ))
-                .toList(),
-          ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: AudioQuality.values
+              .map((q) => RadioListTile<AudioQuality>(
+                    title: Text(_qualityLabel(q)),
+                    value: q,
+                    groupValue: currentQuality,
+                    activeColor: AppColors.primaryBeige,
+                    onChanged: (val) {
+                      if (val != null) {
+                        ref.read(audioQualityProvider.notifier).setQuality(val);
+                      }
+                      Navigator.pop(context);
+                    },
+                  ))
+              .toList(),
         ),
       ),
     );

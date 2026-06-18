@@ -12,6 +12,10 @@ class VibifyAudioHandler extends BaseAudioHandler
   final AudioPlayer _player;
   final YoutubeExplode _yt;
 
+  // Track queue index ourselves — _player.currentIndex is always 0
+  // because we load individual AudioSources, not a ConcatenatingAudioSource.
+  int _currentQueueIndex = 0;
+
   VibifyAudioHandler._({
     required AudioPlayer player,
     required YoutubeExplode yt,
@@ -52,26 +56,25 @@ class VibifyAudioHandler extends BaseAudioHandler
     });
 
     _player.durationStream.listen((duration) {
-      final index = _player.currentIndex;
-      if (index != null && queue.value.isNotEmpty && index < queue.value.length) {
-        final updatedItem = queue.value[index].copyWith(
+      if (_currentQueueIndex < queue.value.length) {
+        final updatedItem = queue.value[_currentQueueIndex].copyWith(
           duration: duration,
         );
         final newQueue = List<MediaItem>.from(queue.value);
-        newQueue[index] = updatedItem;
+        newQueue[_currentQueueIndex] = updatedItem;
         queue.add(newQueue);
       }
     });
   }
 
   void _handleTrackCompletion() {
-    final currentRepeatMode = playbackState.value.repeatMode;
-    if (currentRepeatMode == AudioServiceRepeatMode.one) {
+    final repeatMode = playbackState.value.repeatMode;
+    if (repeatMode == AudioServiceRepeatMode.one) {
       seek(Duration.zero);
       play();
-    } else if ((_player.currentIndex ?? 0) < queue.value.length - 1) {
+    } else if (_currentQueueIndex < queue.value.length - 1) {
       skipToNext();
-    } else if (currentRepeatMode == AudioServiceRepeatMode.all) {
+    } else if (repeatMode == AudioServiceRepeatMode.all) {
       skipToQueueItem(0);
     } else {
       stop();
@@ -81,6 +84,8 @@ class VibifyAudioHandler extends BaseAudioHandler
   Future<void> playTrack(Track track) async {
     final mediaItem = _trackToMediaItem(track);
     this.mediaItem.add(mediaItem);
+    _currentQueueIndex = 0;
+    queue.add([mediaItem]);
 
     if (track.source == TrackSource.youtube && track.youtubeVideoId != null) {
       await _playYoutubeTrack(track.youtubeVideoId!);
@@ -90,19 +95,36 @@ class VibifyAudioHandler extends BaseAudioHandler
     }
   }
 
+  /// Fetches the best audio stream URL for a YouTube video.
+  /// Tries high-bitrate first, falls back to any audio stream on error.
+  Future<String> _getYoutubeStreamUrl(String videoId,
+      {bool useFallback = false}) async {
+    final manifest = await _yt.videos.streamsClient.getManifest(videoId);
+    final audioStreams = manifest.audioOnly;
+    if (audioStreams.isEmpty) {
+      throw Exception('No audio streams available for $videoId');
+    }
+    if (useFallback) {
+      // Fallback: lowest bitrate (most compatible)
+      final sorted = List.of(audioStreams)
+        ..sort((a, b) =>
+            a.bitrate.bitsPerSecond.compareTo(b.bitrate.bitsPerSecond));
+      return sorted.first.url.toString();
+    }
+    return audioStreams.withHighestBitrate().url.toString();
+  }
+
   Future<void> _playYoutubeTrack(String videoId) async {
     try {
       final streamUrl = await _getYoutubeStreamUrl(videoId);
-      await _player.setAudioSource(
-        AudioSource.uri(Uri.parse(streamUrl)),
-      );
+      await _player.setAudioSource(AudioSource.uri(Uri.parse(streamUrl)));
       await _player.play();
     } catch (e) {
+      // On error, try fallback to lowest bitrate stream
       try {
-        final streamUrl = await _getYoutubeStreamUrl(videoId);
-        await _player.setAudioSource(
-          AudioSource.uri(Uri.parse(streamUrl)),
-        );
+        final streamUrl =
+            await _getYoutubeStreamUrl(videoId, useFallback: true);
+        await _player.setAudioSource(AudioSource.uri(Uri.parse(streamUrl)));
         await _player.play();
       } catch (_) {
         playbackState.add(playbackState.value.copyWith(
@@ -112,17 +134,12 @@ class VibifyAudioHandler extends BaseAudioHandler
     }
   }
 
-  Future<String> _getYoutubeStreamUrl(String videoId) async {
-    final manifest = await _yt.videos.streamsClient.getManifest(videoId);
-    final audioStreams = manifest.audioOnly;
-    final stream = audioStreams.withHighestBitrate();
-    return stream.url.toString();
-  }
-
-  Future<void> setQueueFromTracks(List<Track> tracks, {int startIndex = 0}) async {
+  Future<void> setQueueFromTracks(List<Track> tracks,
+      {int startIndex = 0}) async {
     final mediaItems = tracks.map(_trackToMediaItem).toList();
     queue.add(mediaItems);
-    await skipToQueueItem(startIndex);
+    _currentQueueIndex = startIndex.clamp(0, tracks.length - 1);
+    await skipToQueueItem(_currentQueueIndex);
   }
 
   MediaItem _trackToMediaItem(Track track) => MediaItem(
@@ -156,7 +173,7 @@ class VibifyAudioHandler extends BaseAudioHandler
         MediaAction.seekBackward,
       },
       androidCompactActionIndices: const [0, 1, 3],
-      processingState: {
+      processingState: const {
         ProcessingState.idle: AudioProcessingState.idle,
         ProcessingState.loading: AudioProcessingState.loading,
         ProcessingState.buffering: AudioProcessingState.buffering,
@@ -167,7 +184,7 @@ class VibifyAudioHandler extends BaseAudioHandler
       updatePosition: _player.position,
       bufferedPosition: _player.bufferedPosition,
       speed: _player.speed,
-      queueIndex: event.currentIndex,
+      queueIndex: _currentQueueIndex,
     ));
   }
 
@@ -188,9 +205,8 @@ class VibifyAudioHandler extends BaseAudioHandler
 
   @override
   Future<void> skipToNext() async {
-    final index = _player.currentIndex ?? 0;
-    if (index < queue.value.length - 1) {
-      await skipToQueueItem(index + 1);
+    if (_currentQueueIndex < queue.value.length - 1) {
+      await skipToQueueItem(_currentQueueIndex + 1);
     }
   }
 
@@ -200,15 +216,15 @@ class VibifyAudioHandler extends BaseAudioHandler
       await seek(Duration.zero);
       return;
     }
-    final index = _player.currentIndex ?? 0;
-    if (index > 0) {
-      await skipToQueueItem(index - 1);
+    if (_currentQueueIndex > 0) {
+      await skipToQueueItem(_currentQueueIndex - 1);
     }
   }
 
   @override
   Future<void> skipToQueueItem(int index) async {
     if (index < 0 || index >= queue.value.length) return;
+    _currentQueueIndex = index;
     final item = queue.value[index];
     mediaItem.add(item);
 
@@ -229,7 +245,7 @@ class VibifyAudioHandler extends BaseAudioHandler
 
   @override
   Future<void> setRepeatMode(AudioServiceRepeatMode repeatMode) async {
-    final loopMode = {
+    final loopMode = const {
       AudioServiceRepeatMode.none: LoopMode.off,
       AudioServiceRepeatMode.one: LoopMode.one,
       AudioServiceRepeatMode.all: LoopMode.all,
