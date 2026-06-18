@@ -22,25 +22,27 @@ class VibifyAudioHandler extends BaseAudioHandler
   })  : _player = player,
         _yt = yt;
 
-  /// Creates the handler and starts AudioService.init() in the background.
-  /// Does NOT block — call this before runApp() so the UI shows immediately.
-  static VibifyAudioHandler create() {
+  /// Creates the handler and awaits AudioService.init() so the media session
+  /// and lock-screen / notification controls are registered before playback.
+  static Future<VibifyAudioHandler> createAndInit() async {
     final handler = VibifyAudioHandler._(
       player: AudioPlayer(),
       yt: YoutubeExplode(),
     );
 
-    AudioService.init(
-      builder: () => handler,
-      config: const AudioServiceConfig(
-        androidNotificationChannelId: 'com.vibify.audio',
-        androidNotificationChannelName: 'Vibify',
-        androidNotificationOngoing: true,
-        androidStopForegroundOnPause: true,
-        notificationColor: Color(0xFFD6B48A),
-        androidNotificationIcon: 'drawable/ic_notification',
-      ),
-    ).timeout(const Duration(seconds: 10)).catchError((_) {});
+    try {
+      await AudioService.init(
+        builder: () => handler,
+        config: const AudioServiceConfig(
+          androidNotificationChannelId: 'com.vibify.audio',
+          androidNotificationChannelName: 'Vibify',
+          androidNotificationOngoing: true,
+          androidStopForegroundOnPause: true,
+          notificationColor: Color(0xFFD6B48A),
+          androidNotificationIcon: 'drawable/ic_notification',
+        ),
+      ).timeout(const Duration(seconds: 10));
+    } catch (_) {}
 
     handler._listenToPlayerEvents();
     return handler;

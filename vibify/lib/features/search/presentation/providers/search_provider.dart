@@ -56,7 +56,7 @@ class SearchNotifier extends StateNotifier<SearchState> {
   }
 
   void onQueryChanged(String query) {
-    state = state.copyWith(query: query, result: null);
+    state = state.copyWith(query: query, result: null, error: null);
     _debounce?.cancel();
     if (query.trim().isEmpty) return;
     _debounce = Timer(const Duration(milliseconds: 400), search);

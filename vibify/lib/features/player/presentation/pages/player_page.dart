@@ -6,6 +6,7 @@ import 'package:palette_generator/palette_generator.dart';
 
 import '../../../../core/extensions/duration_extensions.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/add_to_playlist_sheet.dart';
 import '../../../../features/library/presentation/providers/library_provider.dart';
 import '../../domain/entities/player_state.dart';
 import '../../domain/entities/track.dart';
@@ -119,13 +120,15 @@ class _PlayerPageState extends ConsumerState<PlayerPage>
   }
 }
 
-class _PlayerHeader extends StatelessWidget {
+class _PlayerHeader extends ConsumerWidget {
   final VoidCallback onClose;
 
   const _PlayerHeader({required this.onClose});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final track = ref.watch(playerNotifierProvider).currentTrack;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
@@ -152,13 +155,55 @@ class _PlayerHeader extends StatelessWidget {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: track == null
+                ? null
+                : () => _showMenu(context, ref, track!),
             icon: const Icon(
               Icons.more_vert_rounded,
               color: Colors.white,
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void _showMenu(BuildContext context, WidgetRef ref, Track track) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 8),
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey.withValues(alpha: 0.4),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 16),
+            ListTile(
+              leading: const Icon(Icons.playlist_add_rounded),
+              title: const Text('Add to Playlist'),
+              onTap: () {
+                Navigator.pop(context);
+                showAddToPlaylistSheet(context, ref, track);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.queue_music_rounded),
+              title: const Text('View Queue'),
+              onTap: () => Navigator.pop(context),
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
       ),
     );
   }

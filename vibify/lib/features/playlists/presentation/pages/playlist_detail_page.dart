@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/add_to_playlist_sheet.dart';
 import '../../../library/presentation/widgets/track_list_item.dart';
+import '../../../player/domain/entities/track.dart';
 import '../../../player/presentation/providers/player_provider.dart';
 import '../providers/playlists_provider.dart';
 
@@ -64,9 +66,25 @@ class PlaylistDetailPage extends ConsumerWidget {
                   ),
                 ),
                 actions: [
-                  IconButton(
-                    onPressed: () {},
+                  PopupMenuButton<String>(
                     icon: const Icon(Icons.more_vert_rounded),
+                    onSelected: (value) {
+                      if (value == 'delete') {
+                        _confirmDeletePlaylist(context, ref, playlist.id);
+                      }
+                    },
+                    itemBuilder: (_) => const [
+                      PopupMenuItem(
+                        value: 'delete',
+                        child: Row(
+                          children: [
+                            Icon(Icons.delete_outline_rounded, size: 20),
+                            SizedBox(width: 8),
+                            Text('Delete Playlist'),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -125,7 +143,7 @@ class PlaylistDetailPage extends ConsumerWidget {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              'Add songs from Search',
+                              'Add songs from Search or your local library',
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ],
@@ -145,6 +163,7 @@ class PlaylistDetailPage extends ConsumerWidget {
                           onMoreTap: () => _showTrackOptions(
                             context,
                             ref,
+                            playlist.tracks[index],
                             playlist.id,
                             index,
                           ),
@@ -162,27 +181,105 @@ class PlaylistDetailPage extends ConsumerWidget {
   void _showTrackOptions(
     BuildContext context,
     WidgetRef ref,
+    Track track,
     String playlistId,
     int index,
   ) {
     showModalBottomSheet(
       context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       builder: (_) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            const SizedBox(height: 8),
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey.withValues(alpha: 0.4),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 8),
             ListTile(
-              leading: const Icon(Icons.remove_circle_outline_rounded),
-              title: const Text('Remove from playlist'),
+              leading: const Icon(Icons.play_arrow_rounded),
+              title: const Text('Play Now'),
+              onTap: () {
+                Navigator.pop(context);
+                ref.read(playerNotifierProvider.notifier).play(track);
+                context.push(AppRoutes.player);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.queue_music_rounded),
+              title: const Text('Add to Queue'),
+              onTap: () {
+                Navigator.pop(context);
+                ref.read(playerNotifierProvider.notifier).addToQueue(track);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Added to queue'),
+                    duration: Duration(seconds: 2),
+                    backgroundColor: AppColors.primaryBeige,
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.playlist_add_rounded),
+              title: const Text('Add to another Playlist'),
+              onTap: () {
+                Navigator.pop(context);
+                showAddToPlaylistSheet(context, ref, track);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.remove_circle_outline_rounded,
+                  color: Colors.red),
+              title: const Text('Remove from this Playlist',
+                  style: TextStyle(color: Colors.red)),
               onTap: () {
                 Navigator.pop(context);
                 ref
                     .read(playlistsNotifierProvider.notifier)
-                    .deletePlaylist(playlistId); // simplified
+                    .removeTrackFromPlaylist(playlistId, index);
               },
             ),
+            const SizedBox(height: 8),
           ],
         ),
+      ),
+    );
+  }
+
+  void _confirmDeletePlaylist(
+      BuildContext context, WidgetRef ref, String id) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Delete Playlist'),
+        content: const Text(
+            'Are you sure you want to delete this playlist? This cannot be undone.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: () {
+              Navigator.pop(context);
+              ref
+                  .read(playlistsNotifierProvider.notifier)
+                  .deletePlaylist(id);
+              context.pop();
+            },
+            child: const Text('Delete'),
+          ),
+        ],
       ),
     );
   }

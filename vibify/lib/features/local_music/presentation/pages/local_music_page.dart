@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/add_to_playlist_sheet.dart';
 import '../../../library/presentation/widgets/track_list_item.dart';
+import '../../../player/domain/entities/track.dart';
 import '../../../player/presentation/providers/player_provider.dart';
 import '../providers/local_music_provider.dart';
 
@@ -130,6 +132,75 @@ class _SongsTab extends ConsumerWidget {
               .playAll(state.tracks, startIndex: index);
           context.push(AppRoutes.player);
         },
+        onMoreTap: () =>
+            _showTrackMenu(context, ref, state.tracks[index], state.tracks, index),
+      ),
+    );
+  }
+
+  void _showTrackMenu(
+    BuildContext context,
+    WidgetRef ref,
+    Track track,
+    List<Track> tracks,
+    int index,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 8),
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey.withValues(alpha: 0.4),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 8),
+            ListTile(
+              leading: const Icon(Icons.play_arrow_rounded),
+              title: const Text('Play Now'),
+              onTap: () {
+                Navigator.pop(context);
+                ref
+                    .read(playerNotifierProvider.notifier)
+                    .playAll(tracks, startIndex: index);
+                context.push(AppRoutes.player);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.queue_music_rounded),
+              title: const Text('Add to Queue'),
+              onTap: () {
+                Navigator.pop(context);
+                ref.read(playerNotifierProvider.notifier).addToQueue(track);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Added to queue'),
+                    duration: Duration(seconds: 2),
+                    backgroundColor: AppColors.primaryBeige,
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.playlist_add_rounded),
+              title: const Text('Add to Playlist'),
+              onTap: () {
+                Navigator.pop(context);
+                showAddToPlaylistSheet(context, ref, track);
+              },
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
       ),
     );
   }

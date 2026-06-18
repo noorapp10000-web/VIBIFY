@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/add_to_playlist_sheet.dart';
 import '../../../player/domain/entities/track.dart';
 import '../../../player/presentation/providers/player_provider.dart';
 import '../providers/search_provider.dart';
@@ -27,6 +28,14 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     super.dispose();
   }
 
+  void _searchGenre(String genre) {
+    _controller.text = genre;
+    final notifier = ref.read(searchNotifierProvider.notifier);
+    notifier.onQueryChanged(genre);
+    notifier.search();
+    _focusNode.unfocus();
+  }
+
   @override
   Widget build(BuildContext context) {
     final searchState = ref.watch(searchNotifierProvider);
@@ -36,7 +45,6 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       body: SafeArea(
         child: Column(
           children: [
-            // Search bar
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
               child: Row(
@@ -67,31 +75,37 @@ class _SearchPageState extends ConsumerState<SearchPage> {
               ),
             ),
 
-            // Content
             Expanded(
               child: searchState.isLoading
                   ? const Center(
                       child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation(AppColors.primaryBeige),
+                        valueColor:
+                            AlwaysStoppedAnimation(AppColors.primaryBeige),
                       ),
                     )
-                  : searchState.query.isEmpty
-                      ? _RecentSearches(
-                          recent: searchState.recentSearches,
-                          onTap: (q) {
-                            _controller.text = q;
-                            notifier.onQueryChanged(q);
-                            notifier.search();
-                          },
-                          onClear: notifier.clearRecentSearches,
+                  : searchState.error != null
+                      ? _ErrorWidget(
+                          error: searchState.error!,
+                          onRetry: notifier.search,
                         )
-                      : searchState.result == null
-                          ? const _BrowseCategories()
-                          : searchState.result!.isEmpty
-                              ? const _EmptyResults()
-                              : _SearchResults(
-                                  result: searchState.result!,
-                                ),
+                      : searchState.query.isEmpty
+                          ? _RecentSearches(
+                              recent: searchState.recentSearches,
+                              onTap: (q) {
+                                _controller.text = q;
+                                notifier.onQueryChanged(q);
+                                notifier.search();
+                              },
+                              onClear: notifier.clearRecentSearches,
+                              onGenreTap: _searchGenre,
+                            )
+                          : searchState.result == null
+                              ? _BrowseCategories(onTap: _searchGenre)
+                              : searchState.result!.isEmpty
+                                  ? const _EmptyResults()
+                                  : _SearchResults(
+                                      result: searchState.result!,
+                                    ),
             ),
           ],
         ),
@@ -104,16 +118,18 @@ class _RecentSearches extends StatelessWidget {
   final List<String> recent;
   final void Function(String) onTap;
   final VoidCallback onClear;
+  final void Function(String) onGenreTap;
 
   const _RecentSearches({
     required this.recent,
     required this.onTap,
     required this.onClear,
+    required this.onGenreTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (recent.isEmpty) return const _BrowseCategories();
+    if (recent.isEmpty) return _BrowseCategories(onTap: onGenreTap);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,13 +161,45 @@ class _RecentSearches extends StatelessWidget {
               trailing: const Icon(Icons.north_west_rounded, size: 16),
               onTap: () => onTap(q),
             )),
+        const Divider(height: 24),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text('Browse Genres',
+              style: Theme.of(context).textTheme.titleSmall),
+        ),
+        const SizedBox(height: 8),
+        Expanded(child: _GenreGrid(onTap: onGenreTap)),
       ],
     );
   }
 }
 
 class _BrowseCategories extends StatelessWidget {
-  const _BrowseCategories();
+  final void Function(String) onTap;
+
+  const _BrowseCategories({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Browse Genres',
+              style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 12),
+          Expanded(child: _GenreGrid(onTap: onTap)),
+        ],
+      ),
+    );
+  }
+}
+
+class _GenreGrid extends StatelessWidget {
+  final void Function(String) onTap;
+
+  const _GenreGrid({required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -166,30 +214,19 @@ class _BrowseCategories extends StatelessWidget {
       ('Country', const Color(0xFF8BC34A)),
     ];
 
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Browse Genres', style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 12),
-          Expanded(
-            child: GridView.count(
-              crossAxisCount: 2,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-              childAspectRatio: 2.2,
-              physics: const BouncingScrollPhysics(),
-              children: categories
-                  .map((cat) => _CategoryTile(
-                        label: cat.$1,
-                        color: cat.$2,
-                      ))
-                  .toList(),
-            ),
-          ),
-        ],
-      ),
+    return GridView.count(
+      crossAxisCount: 2,
+      crossAxisSpacing: 12,
+      mainAxisSpacing: 12,
+      childAspectRatio: 2.2,
+      physics: const BouncingScrollPhysics(),
+      children: categories
+          .map((cat) => _CategoryTile(
+                label: cat.$1,
+                color: cat.$2,
+                onTap: () => onTap(cat.$1),
+              ))
+          .toList(),
     );
   }
 }
@@ -197,25 +234,34 @@ class _BrowseCategories extends StatelessWidget {
 class _CategoryTile extends StatelessWidget {
   final String label;
   final Color color;
+  final VoidCallback onTap;
 
-  const _CategoryTile({required this.label, required this.color});
+  const _CategoryTile({
+    required this.label,
+    required this.color,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
-      ),
-      alignment: Alignment.center,
-      child: Text(
-        label,
-        style: TextStyle(
-          color: color,
-          fontFamily: 'Inter',
-          fontWeight: FontWeight.w700,
-          fontSize: 15,
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: color.withValues(alpha: 0.3)),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          label,
+          style: TextStyle(
+            color: color,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w700,
+            fontSize: 15,
+          ),
         ),
       ),
     );
@@ -312,11 +358,9 @@ class _TrackList extends ConsumerWidget {
             maxLines: 1,
           ),
           trailing: IconButton(
-            onPressed: () => ref
-                .read(playerNotifierProvider.notifier)
-                .addToQueue(track),
+            onPressed: () => _showTrackMenu(context, ref, track, tracks, index),
             icon: Icon(
-              Icons.add_rounded,
+              Icons.more_vert_rounded,
               color: Theme.of(context)
                   .colorScheme
                   .onSurface
@@ -325,6 +369,114 @@ class _TrackList extends ConsumerWidget {
           ),
         );
       },
+    );
+  }
+
+  void _showTrackMenu(
+    BuildContext context,
+    WidgetRef ref,
+    Track track,
+    List<Track> tracks,
+    int index,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 8),
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey.withValues(alpha: 0.4),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: track.thumbnailUrl != null
+                        ? CachedNetworkImage(
+                            imageUrl: track.thumbnailUrl!,
+                            width: 44,
+                            height: 44,
+                            fit: BoxFit.cover,
+                          )
+                        : Container(
+                            width: 44,
+                            height: 44,
+                            color: AppColors.primaryBeige.withValues(alpha: 0.2),
+                            child: const Icon(Icons.music_note_rounded,
+                                color: AppColors.primaryBeige),
+                          ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(track.title,
+                            style: Theme.of(context).textTheme.titleSmall,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis),
+                        Text(track.artist,
+                            style: Theme.of(context).textTheme.bodySmall,
+                            maxLines: 1),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1),
+            ListTile(
+              leading: const Icon(Icons.play_arrow_rounded),
+              title: const Text('Play Now'),
+              onTap: () {
+                Navigator.pop(context);
+                ref
+                    .read(playerNotifierProvider.notifier)
+                    .playAll(tracks, startIndex: index);
+                context.push(AppRoutes.player);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.queue_music_rounded),
+              title: const Text('Add to Queue'),
+              onTap: () {
+                Navigator.pop(context);
+                ref.read(playerNotifierProvider.notifier).addToQueue(track);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Added to queue'),
+                    duration: Duration(seconds: 2),
+                    backgroundColor: AppColors.primaryBeige,
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.playlist_add_rounded),
+              title: const Text('Add to Playlist'),
+              onTap: () {
+                Navigator.pop(context);
+                showAddToPlaylistSheet(context, ref, track);
+              },
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
     );
   }
 
@@ -406,6 +558,51 @@ class _PlaylistList extends StatelessWidget {
               : null,
         );
       },
+    );
+  }
+}
+
+class _ErrorWidget extends StatelessWidget {
+  final String error;
+  final VoidCallback onRetry;
+
+  const _ErrorWidget({required this.error, required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.wifi_off_rounded, size: 64,
+                color: AppColors.primaryBeige),
+            const SizedBox(height: 16),
+            Text(
+              'Search failed',
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Check your internet connection and try again.',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withValues(alpha: 0.6),
+                  ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton.icon(
+              onPressed: onRetry,
+              icon: const Icon(Icons.refresh_rounded),
+              label: const Text('Retry'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

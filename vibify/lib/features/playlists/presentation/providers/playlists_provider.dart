@@ -36,6 +36,11 @@ class PlaylistsNotifier extends StateNotifier<AsyncValue<List<Playlist>>> {
     await _usecases.addTrack(playlistId, track);
     await load();
   }
+
+  Future<void> removeTrackFromPlaylist(String playlistId, int index) async {
+    await _usecases.removeTrack(playlistId, index);
+    await load();
+  }
 }
 
 final playlistsNotifierProvider =
@@ -43,7 +48,15 @@ final playlistsNotifierProvider =
   return PlaylistsNotifier(sl<PlaylistUsecases>());
 });
 
+/// Derives from playlistsNotifierProvider so it auto-refreshes on any
+/// add / remove / delete operation without a separate network call.
 final singlePlaylistProvider =
-    FutureProvider.family<Playlist?, String>((ref, id) async {
-  return sl<PlaylistUsecases>().getById(id);
+    Provider.family<AsyncValue<Playlist?>, String>((ref, id) {
+  return ref.watch(playlistsNotifierProvider).whenData((playlists) {
+    try {
+      return playlists.firstWhere((p) => p.id == id);
+    } catch (_) {
+      return null;
+    }
+  });
 });

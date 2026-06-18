@@ -42,8 +42,9 @@ Future<void> setupDependencies() async {
   sl.registerLazySingleton<Dio>(() => NetworkClient.createDio());
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl());
 
-  // Audio handler — init runs in background, does NOT block startup
-  final audioHandler = VibifyAudioHandler.create();
+  // Audio handler — await init so the media session + notification controls
+  // are fully registered before the UI starts playing audio.
+  final audioHandler = await VibifyAudioHandler.createAndInit();
   sl.registerSingleton<VibifyAudioHandler>(audioHandler);
 
   // Search / YouTube
