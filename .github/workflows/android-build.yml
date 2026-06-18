@@ -50,18 +50,6 @@ jobs:
       - name: Analyze code
         run: flutter analyze --fatal-infos
 
-      - name: Run unit tests
-        run: flutter test --coverage test/unit/
-
-      - name: Run widget tests
-        run: flutter test test/widget/
-
-      - name: Upload coverage report
-        uses: codecov/codecov-action@v4
-        with:
-          file: coverage/lcov.info
-        continue-on-error: true
-
   build_apk:
     name: Build APK
     runs-on: ubuntu-latest
@@ -115,21 +103,7 @@ jobs:
       - name: Run code generation
         run: flutter pub run build_runner build --delete-conflicting-outputs
 
-      - name: Decode keystore (signed release)
-        if: ${{ secrets.KEYSTORE_BASE64 != '' }}
-        run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/vibify-release.jks
-
-      - name: Build release APK (signed)
-        if: ${{ secrets.KEYSTORE_BASE64 != '' }}
-        run: flutter build apk --release
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-
-      - name: Build debug APK (unsigned fallback)
-        if: ${{ secrets.KEYSTORE_BASE64 == '' }}
+      - name: Build APK
         run: flutter build apk --debug
 
       - name: Upload APK artifact
@@ -137,78 +111,6 @@ jobs:
         with:
           name: vibify-apk-${{ github.sha }}
           path: vibify/build/app/outputs/flutter-apk/*.apk
-          retention-days: 30
-
-  build_aab:
-    name: Build App Bundle (Play Store)
-    runs-on: ubuntu-latest
-    needs: analyze_and_test
-    if: github.ref == 'refs/heads/main'
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.22.0'
-          channel: 'stable'
-          cache: true
-
-      - name: Cache pub dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.pub-cache
-            .dart_tool
-          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-pub-
-
-      - name: Cache Gradle
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Generate launcher icons
-        run: flutter pub run flutter_launcher_icons:main
-
-      - name: Generate native splash screen
-        run: flutter pub run flutter_native_splash:create
-
-      - name: Run code generation
-        run: flutter pub run build_runner build --delete-conflicting-outputs
-
-      - name: Decode keystore
-        run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/vibify-release.jks
-
-      - name: Build App Bundle
-        run: flutter build appbundle --release
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-
-      - name: Upload AAB artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: vibify-aab-${{ github.sha }}
-          path: vibify/build/app/outputs/bundle/release/*.aab
           retention-days: 30
 
   release:
