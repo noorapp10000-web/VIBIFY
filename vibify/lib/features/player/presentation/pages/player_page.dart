@@ -9,6 +9,8 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/add_to_playlist_sheet.dart';
 import '../../../../core/widgets/download_option.dart';
 import '../../../../features/library/presentation/providers/library_provider.dart';
+import '../../data/datasources/audio_handler.dart';
+import '../../data/datasources/youtube_iframe_extractor.dart';
 import '../../domain/entities/player_state.dart';
 import '../../domain/entities/track.dart';
 import '../providers/player_provider.dart';
@@ -214,7 +216,7 @@ class _PlayerHeader extends ConsumerWidget {
   }
 }
 
-class _PlayerContent extends ConsumerWidget {
+class _PlayerContent extends ConsumerStatefulWidget {
   final Track? track;
   final VibifyPlayerState state;
   final Animation<double> artworkScale;
@@ -228,8 +230,79 @@ class _PlayerContent extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_PlayerContent> createState() => _PlayerContentState();
+}
+
+class _PlayerContentState extends ConsumerState<_PlayerContent> {
+  bool _iframeExtracting = false;
+  bool _iframeFailed = false;
+
+  @override
+  void didUpdateWidget(_PlayerContent old) {
+    super.didUpdateWidget(old);
+    // When a new error state starts for a YouTube track, begin iframe extraction
+    final isNewError = old.state.status != PlayerStatus.error &&
+        widget.state.status == PlayerStatus.error;
+    final isYouTube = widget.track?.source == TrackSource.youtube;
+    if (isNewError && isYouTube && !_iframeExtracting) {
+      setState(() {
+        _iframeExtracting = true;
+        _iframeFailed = false;
+      });
+    }
+    // Reset when a new track starts
+    if (old.track?.id != widget.track?.id) {
+      setState(() {
+        _iframeExtracting = false;
+        _iframeFailed = false;
+      });
+    }
+  }
+
+  void _onStreamFound(String url) {
+    if (!mounted) return;
+    final handler = ref.read(audioHandlerProvider);
+    setState(() => _iframeExtracting = false);
+    // Feed the intercepted URL back to just_audio
+    handler.injectIframeStreamUrl(url);
+  }
+
+  void _onIframeFailed() {
+    if (!mounted) return;
+    setState(() {
+      _iframeExtracting = false;
+      _iframeFailed = true;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final notifier = ref.read(playerNotifierProvider.notifier);
+    final track = widget.track;
+    final state = widget.state;
+
+    // Show error state with iframe extractor running in background
+    if (state.status == PlayerStatus.error &&
+        track?.source == TrackSource.youtube) {
+      return _YoutubeErrorFallback(
+        track: track!,
+        isExtracting: _iframeExtracting,
+        iframeFailed: _iframeFailed,
+        extractor: _iframeExtracting
+            ? YoutubeStreamExtractorWidget(
+                videoId: track.youtubeVideoId!,
+                onStreamFound: _onStreamFound,
+                onFailed: _onIframeFailed,
+              )
+            : null,
+        onRetry: () {
+          setState(() {
+            _iframeExtracting = true;
+            _iframeFailed = false;
+          });
+        },
+      );
+    }
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -239,7 +312,7 @@ class _PlayerContent extends ConsumerWidget {
 
           // Artwork
           ScaleTransition(
-            scale: artworkScale,
+            scale: widget.artworkScale,
             child: AspectRatio(
               aspectRatio: 1,
               child: AnimatedContainer(
@@ -331,7 +404,7 @@ class _PlayerContent extends ConsumerWidget {
           _SecondaryControls(
             state: state,
             notifier: notifier,
-            onQueueTap: onQueueTap,
+            onQueueTap: widget.onQueueTap,
           ),
 
           const SizedBox(height: 24),
@@ -543,6 +616,160 @@ class _SecondaryControls extends StatelessWidget {
     }
   }
 }
+
+// ── YouTube iframe fallback UI ────────────────────────────────────────────
+
+class _YoutubeErrorFallback extends StatelessWidget {
+  final Track track;
+  final bool isExtracting;
+  final bool iframeFailed;
+  final Widget? extractor;
+  final VoidCallback onRetry;
+
+  const _YoutubeErrorFallback({
+    required this.track,
+    required this.isExtracting,
+    required this.iframeFailed,
+    required this.extractor,
+    required this.onRetry,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        // Background iframe extractor (1×1 px, invisible)
+        if (extractor != null)
+          Positioned(
+            left: -10,
+            top: -10,
+            child: extractor!,
+          ),
+
+        // Visible UI
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(height: 32),
+
+              // Thumbnail
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: track.thumbnailUrl != null
+                    ? Image.network(
+                        track.thumbnailUrl!,
+                        width: 220,
+                        height: 220,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => _placeholder(),
+                      )
+                    : _placeholder(),
+              ),
+
+              const SizedBox(height: 24),
+
+              Text(
+                track.title,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Inter',
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+
+              const SizedBox(height: 8),
+
+              Text(
+                track.artist,
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.6),
+                  fontSize: 14,
+                  fontFamily: 'Inter',
+                ),
+              ),
+
+              const SizedBox(height: 32),
+
+              if (isExtracting) ...[
+                const CircularProgressIndicator(
+                  color: AppColors.primaryBeige,
+                  strokeWidth: 2.5,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'جاري تحميل الرابط في الخلفية...',
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.7),
+                    fontSize: 13,
+                    fontFamily: 'Inter',
+                  ),
+                ),
+              ] else if (iframeFailed) ...[
+                Icon(
+                  Icons.error_outline_rounded,
+                  color: Colors.white.withValues(alpha: 0.5),
+                  size: 40,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'تعذّر تحميل هذا المقطع',
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.7),
+                    fontSize: 14,
+                    fontFamily: 'Inter',
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextButton.icon(
+                  onPressed: onRetry,
+                  icon: const Icon(Icons.refresh_rounded, color: AppColors.primaryBeige),
+                  label: const Text(
+                    'إعادة المحاولة',
+                    style: TextStyle(color: AppColors.primaryBeige, fontFamily: 'Inter'),
+                  ),
+                ),
+              ] else ...[
+                Icon(
+                  Icons.signal_wifi_bad_rounded,
+                  color: Colors.white.withValues(alpha: 0.4),
+                  size: 40,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'لا يمكن الاتصال بـ YouTube',
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.6),
+                    fontSize: 14,
+                    fontFamily: 'Inter',
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _placeholder() => Container(
+        width: 220,
+        height: 220,
+        decoration: BoxDecoration(
+          color: AppColors.primaryBeige.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: const Icon(Icons.music_note_rounded,
+            color: AppColors.primaryBeige, size: 60),
+      );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 class _IconBtn extends StatelessWidget {
   final IconData icon;
