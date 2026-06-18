@@ -23,16 +23,15 @@ class YoutubeDatasourceImpl implements YoutubeDatasource {
 
       for (final result in searchList.take(limit)) {
         if (result is yt.SearchVideo) {
-          tracks.add(_videoToTrack(result as yt.Video));
+          tracks.add(_videoToTrack(result));
         } else if (result is yt.SearchChannel) {
-          final channel = result as yt.Video;
           artists.add(SearchArtist(
-            id: channel.id.value,
-            name: channel.title,
-            thumbnailUrl: _thumbnailUrl(channel.thumbnails),
+            id: result.id.value,
+            name: result.title,
+            thumbnailUrl: _thumbnailUrl(result.thumbnails),
           ));
         } else if (result is yt.SearchPlaylist) {
-          final pl = result as yt.Video;
+          final pl = result;
           playlists.add(SearchPlaylist(
             id: pl.id.value,
             title: pl.title,

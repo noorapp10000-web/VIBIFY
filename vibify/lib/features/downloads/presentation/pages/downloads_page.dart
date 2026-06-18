@@ -39,7 +39,7 @@ class DownloadsPage extends ConsumerWidget {
         ),
         error: (e, _) => Center(child: Text('Error: $e')),
         data: (downloads) => downloads.isEmpty
-            ? const _EmptyDownloads()
+            ? _EmptyDownloads()
             : ListView.separated(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 itemCount: downloads.length,
@@ -118,7 +118,7 @@ class _DownloadTile extends StatelessWidget {
               backgroundColor:
                   Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
               valueColor:
-                  AlwaysStoppedAnimation<Color>(AppColors.primaryBeige),
+                  const AlwaysStoppedAnimation<Color>(AppColors.primaryBeige),
               minHeight: 2,
             ),
             const SizedBox(height: 2),
