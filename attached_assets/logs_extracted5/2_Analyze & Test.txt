@@ -1,0 +1,766 @@
+﻿2026-06-18T00:57:34.9213981Z Current runner version: '2.335.1'
+2026-06-18T00:57:34.9239708Z ##[group]Runner Image Provisioner
+2026-06-18T00:57:34.9240620Z Hosted Compute Agent
+2026-06-18T00:57:34.9241257Z Version: 20260611.554
+2026-06-18T00:57:34.9241958Z Commit: 5e0782fdc9014723d3be820dd114dd31555c2bd1
+2026-06-18T00:57:34.9242782Z Build Date: 2026-06-11T21:40:46Z
+2026-06-18T00:57:34.9243867Z Worker ID: {eab33a05-f2ff-4a7f-b8a6-f1464ea30761}
+2026-06-18T00:57:34.9244613Z Azure Region: eastus
+2026-06-18T00:57:34.9245360Z ##[endgroup]
+2026-06-18T00:57:34.9246872Z ##[group]Operating System
+2026-06-18T00:57:34.9247574Z Ubuntu
+2026-06-18T00:57:34.9248190Z 24.04.4
+2026-06-18T00:57:34.9248703Z LTS
+2026-06-18T00:57:34.9249317Z ##[endgroup]
+2026-06-18T00:57:34.9249967Z ##[group]Runner Image
+2026-06-18T00:57:34.9250646Z Image: ubuntu-24.04
+2026-06-18T00:57:34.9251253Z Version: 20260615.205.1
+2026-06-18T00:57:34.9252957Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260615.205/images/ubuntu/Ubuntu2404-Readme.md
+2026-06-18T00:57:34.9254946Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260615.205
+2026-06-18T00:57:34.9256005Z ##[endgroup]
+2026-06-18T00:57:34.9257223Z ##[group]GITHUB_TOKEN Permissions
+2026-06-18T00:57:34.9259606Z Contents: read
+2026-06-18T00:57:34.9260297Z Metadata: read
+2026-06-18T00:57:34.9260876Z Packages: read
+2026-06-18T00:57:34.9261512Z ##[endgroup]
+2026-06-18T00:57:34.9264329Z Secret source: Actions
+2026-06-18T00:57:34.9265290Z Prepare workflow directory
+2026-06-18T00:57:34.9654336Z Prepare all required actions
+2026-06-18T00:57:34.9691737Z Getting action download info
+2026-06-18T00:57:35.2327588Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+2026-06-18T00:57:35.3235081Z Download action repository 'subosito/flutter-action@v2' (SHA:1a449444c387b1966244ae4d4f8c696479add0b2)
+2026-06-18T00:57:35.4301213Z Download action repository 'actions/cache@v4' (SHA:0057852bfaa89a56745cba8c7296529d2fc39830)
+2026-06-18T00:57:35.6727018Z Getting action download info
+2026-06-18T00:57:35.7281458Z Download action repository 'actions/cache@v5' (SHA:27d5ce7f107fe9357f9df03efb73ab90386fccae)
+2026-06-18T00:57:35.8727869Z Complete job name: Analyze & Test
+2026-06-18T00:57:35.9473078Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-06-18T00:57:35.9482598Z ##[group]Run actions/checkout@v4
+2026-06-18T00:57:35.9483579Z with:
+2026-06-18T00:57:35.9484077Z   repository: noorapp10000-web/VIBIFY
+2026-06-18T00:57:35.9488926Z   token: ***
+2026-06-18T00:57:35.9489399Z   ssh-strict: true
+2026-06-18T00:57:35.9489872Z   ssh-user: git
+2026-06-18T00:57:35.9490347Z   persist-credentials: true
+2026-06-18T00:57:35.9490864Z   clean: true
+2026-06-18T00:57:35.9491344Z   sparse-checkout-cone-mode: true
+2026-06-18T00:57:35.9491944Z   fetch-depth: 1
+2026-06-18T00:57:35.9492400Z   fetch-tags: false
+2026-06-18T00:57:35.9492905Z   show-progress: true
+2026-06-18T00:57:35.9493796Z   lfs: false
+2026-06-18T00:57:35.9494307Z   submodules: false
+2026-06-18T00:57:35.9494788Z   set-safe-directory: true
+2026-06-18T00:57:35.9495629Z ##[endgroup]
+2026-06-18T00:57:36.0482983Z Syncing repository: noorapp10000-web/VIBIFY
+2026-06-18T00:57:36.0485136Z ##[group]Getting Git version info
+2026-06-18T00:57:36.0485903Z Working directory is '/home/runner/work/VIBIFY/VIBIFY'
+2026-06-18T00:57:36.0486996Z [command]/usr/bin/git version
+2026-06-18T00:57:36.0529094Z git version 2.54.0
+2026-06-18T00:57:36.0580842Z ##[endgroup]
+2026-06-18T00:57:36.0594655Z Temporarily overriding HOME='/home/runner/work/_temp/bc6fda09-9989-4f46-86cf-c95ee7d47b42' before making global git config changes
+2026-06-18T00:57:36.0596241Z Adding repository directory to the temporary git global config as a safe directory
+2026-06-18T00:57:36.0599760Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/VIBIFY/VIBIFY
+2026-06-18T00:57:36.0642431Z Deleting the contents of '/home/runner/work/VIBIFY/VIBIFY'
+2026-06-18T00:57:36.0646716Z ##[group]Initializing the repository
+2026-06-18T00:57:36.0650579Z [command]/usr/bin/git init /home/runner/work/VIBIFY/VIBIFY
+2026-06-18T00:57:36.0720378Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-06-18T00:57:36.0722467Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-06-18T00:57:36.0724627Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-06-18T00:57:36.0726063Z hint: call:
+2026-06-18T00:57:36.0727039Z hint:
+2026-06-18T00:57:36.0727998Z hint: 	git config --global init.defaultBranch <name>
+2026-06-18T00:57:36.0729151Z hint:
+2026-06-18T00:57:36.0730207Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-06-18T00:57:36.0731930Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-06-18T00:57:36.0733638Z hint:
+2026-06-18T00:57:36.0734437Z hint: 	git branch -m <name>
+2026-06-18T00:57:36.0735228Z hint:
+2026-06-18T00:57:36.0735950Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-06-18T00:57:36.0737064Z Initialized empty Git repository in /home/runner/work/VIBIFY/VIBIFY/.git/
+2026-06-18T00:57:36.0738968Z [command]/usr/bin/git remote add origin https://github.com/noorapp10000-web/VIBIFY
+2026-06-18T00:57:36.0774079Z ##[endgroup]
+2026-06-18T00:57:36.0775512Z ##[group]Disabling automatic garbage collection
+2026-06-18T00:57:36.0778562Z [command]/usr/bin/git config --local gc.auto 0
+2026-06-18T00:57:36.0808273Z ##[endgroup]
+2026-06-18T00:57:36.0809601Z ##[group]Setting up auth
+2026-06-18T00:57:36.0815258Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-06-18T00:57:36.0849324Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-06-18T00:57:36.1155458Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-06-18T00:57:36.1186934Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-06-18T00:57:36.1415750Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-06-18T00:57:36.1447605Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-06-18T00:57:36.1677815Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-06-18T00:57:36.1711945Z ##[endgroup]
+2026-06-18T00:57:36.1712786Z ##[group]Fetching the repository
+2026-06-18T00:57:36.1721331Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +c1a83b467e8fa05ec756001db48f38bd23a29f51:refs/remotes/origin/main
+2026-06-18T00:57:36.4516877Z From https://github.com/noorapp10000-web/VIBIFY
+2026-06-18T00:57:36.4518401Z  * [new ref]         c1a83b467e8fa05ec756001db48f38bd23a29f51 -> origin/main
+2026-06-18T00:57:36.4548226Z ##[endgroup]
+2026-06-18T00:57:36.4549765Z ##[group]Determining the checkout info
+2026-06-18T00:57:36.4551482Z ##[endgroup]
+2026-06-18T00:57:36.4555738Z [command]/usr/bin/git sparse-checkout disable
+2026-06-18T00:57:36.4599357Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-06-18T00:57:36.4626512Z ##[group]Checking out the ref
+2026-06-18T00:57:36.4629719Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-06-18T00:57:36.4907658Z Switched to a new branch 'main'
+2026-06-18T00:57:36.4909386Z branch 'main' set up to track 'origin/main'.
+2026-06-18T00:57:36.4919581Z ##[endgroup]
+2026-06-18T00:57:36.4961200Z [command]/usr/bin/git log -1 --format=%H
+2026-06-18T00:57:36.4985215Z c1a83b467e8fa05ec756001db48f38bd23a29f51
+2026-06-18T00:57:36.5586687Z ##[group]Run subosito/flutter-action@v2
+2026-06-18T00:57:36.5587795Z with:
+2026-06-18T00:57:36.5588546Z   channel: stable
+2026-06-18T00:57:36.5589359Z   cache: true
+2026-06-18T00:57:36.5590157Z   architecture: X64
+2026-06-18T00:57:36.5591023Z   pub-cache-path: default
+2026-06-18T00:57:36.5591940Z   dry-run: false
+2026-06-18T00:57:36.5592955Z   git-source: https://github.com/flutter/flutter.git
+2026-06-18T00:57:36.5594574Z ##[endgroup]
+2026-06-18T00:57:36.5739865Z ##[group]Run chmod +x "$GITHUB_ACTION_PATH/setup.sh"
+2026-06-18T00:57:36.5741265Z [36;1mchmod +x "$GITHUB_ACTION_PATH/setup.sh"[0m
+2026-06-18T00:57:36.5881502Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-06-18T00:57:36.5882808Z ##[endgroup]
+2026-06-18T00:57:36.6056144Z ##[group]Run $GITHUB_ACTION_PATH/setup.sh -p \
+2026-06-18T00:57:36.6057448Z [36;1m$GITHUB_ACTION_PATH/setup.sh -p \[0m
+2026-06-18T00:57:36.6058591Z [36;1m  -n '' \[0m
+2026-06-18T00:57:36.6059439Z [36;1m  -f '' \[0m
+2026-06-18T00:57:36.6060314Z [36;1m  -a 'X64' \[0m
+2026-06-18T00:57:36.6061173Z [36;1m  -k '' \[0m
+2026-06-18T00:57:36.6062005Z [36;1m  -c '' \[0m
+2026-06-18T00:57:36.6062827Z [36;1m  -l '' \[0m
+2026-06-18T00:57:36.6063897Z [36;1m  -d 'default' \[0m
+2026-06-18T00:57:36.6065006Z [36;1m  -g 'https://github.com/flutter/flutter.git' \[0m
+2026-06-18T00:57:36.6066251Z [36;1m  stable[0m
+2026-06-18T00:57:36.6101044Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-06-18T00:57:36.6102295Z ##[endgroup]
+2026-06-18T00:57:36.8192914Z ##[group]Run actions/cache@v5
+2026-06-18T00:57:36.8194276Z with:
+2026-06-18T00:57:36.8195295Z   path: /opt/hostedtoolcache/flutter/stable-3.44.2-x64
+2026-06-18T00:57:36.8197065Z   key: flutter-linux-stable-3.44.2-x64-c9a6c484230f8b5e408ec57be1ef71dee1e77020
+2026-06-18T00:57:36.8198732Z   enableCrossOsArchive: false
+2026-06-18T00:57:36.8199791Z   fail-on-cache-miss: false
+2026-06-18T00:57:36.8200827Z   lookup-only: false
+2026-06-18T00:57:36.8201770Z   save-always: false
+2026-06-18T00:57:36.8202701Z ##[endgroup]
+2026-06-18T00:57:37.0092611Z Cache not found for input keys: flutter-linux-stable-3.44.2-x64-c9a6c484230f8b5e408ec57be1ef71dee1e77020
+2026-06-18T00:57:37.1200063Z ##[group]Run actions/cache@v5
+2026-06-18T00:57:37.1201079Z with:
+2026-06-18T00:57:37.1201911Z   path: /home/runner/.pub-cache
+2026-06-18T00:57:37.1203720Z   key: flutter-pub-linux-stable-3.44.2-x64-c9a6c484230f8b5e408ec57be1ef71dee1e77020-
+2026-06-18T00:57:37.1205428Z   enableCrossOsArchive: false
+2026-06-18T00:57:37.1206455Z   fail-on-cache-miss: false
+2026-06-18T00:57:37.1207419Z   lookup-only: false
+2026-06-18T00:57:37.1208307Z   save-always: false
+2026-06-18T00:57:37.1209173Z ##[endgroup]
+2026-06-18T00:57:37.3064957Z Cache not found for input keys: flutter-pub-linux-stable-3.44.2-x64-c9a6c484230f8b5e408ec57be1ef71dee1e77020-
+2026-06-18T00:57:37.3211433Z ##[group]Run $GITHUB_ACTION_PATH/setup.sh \
+2026-06-18T00:57:37.3212669Z [36;1m$GITHUB_ACTION_PATH/setup.sh \[0m
+2026-06-18T00:57:37.3213919Z [36;1m  -n '3.44.2' \[0m
+2026-06-18T00:57:37.3214842Z [36;1m  -a 'x64' \[0m
+2026-06-18T00:57:37.3215978Z [36;1m  -c '/opt/hostedtoolcache/flutter/stable-3.44.2-x64' \[0m
+2026-06-18T00:57:37.3217337Z [36;1m  -d '/home/runner/.pub-cache' \[0m
+2026-06-18T00:57:37.3218400Z [36;1m  stable[0m
+2026-06-18T00:57:37.3256610Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-06-18T00:57:37.3257879Z ##[endgroup]
+2026-06-18T00:57:37.4845615Z   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+2026-06-18T00:57:37.4848262Z                                  Dload  Upload   Total   Spent    Left  Speed
+2026-06-18T00:57:37.4849429Z 
+2026-06-18T00:57:38.2837193Z   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-06-18T00:57:39.2819968Z   9 1471M    9  146M    0     0   182M      0  0:00:08 --:--:--  0:00:08  182M
+2026-06-18T00:57:40.2808025Z  27 1471M   27  410M    0     0   228M      0  0:00:06  0:00:01  0:00:05  228M
+2026-06-18T00:57:41.2811684Z  43 1471M   43  642M    0     0   229M      0  0:00:06  0:00:02  0:00:04  229M
+2026-06-18T00:57:42.2809816Z  62 1471M   62  916M    0     0   241M      0  0:00:06  0:00:03  0:00:03  241M
+2026-06-18T00:57:43.2809135Z  79 1471M   79 1171M    0     0   244M      0  0:00:06  0:00:04  0:00:02  244M
+2026-06-18T00:57:43.5049473Z  96 1471M   96 1423M    0     0   245M      0  0:00:05  0:00:05 --:--:--  255M
+2026-06-18T00:57:43.5050764Z 100 1471M  100 1471M    0     0   244M      0  0:00:06  0:00:06 --:--:--  251M
+2026-06-18T00:58:36.3363604Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-06-18T00:58:36.3365006Z ##[group]Run actions/cache@v4
+2026-06-18T00:58:36.3365304Z with:
+2026-06-18T00:58:36.3365531Z   path: ~/.pub-cache
+.dart_tool
+
+2026-06-18T00:58:36.3365797Z   key: Linux-pub-
+2026-06-18T00:58:36.3366032Z   restore-keys: Linux-pub-
+
+2026-06-18T00:58:36.3366299Z   enableCrossOsArchive: false
+2026-06-18T00:58:36.3366579Z   fail-on-cache-miss: false
+2026-06-18T00:58:36.3366814Z   lookup-only: false
+2026-06-18T00:58:36.3367030Z   save-always: false
+2026-06-18T00:58:36.3367246Z env:
+2026-06-18T00:58:36.3367560Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.44.2-x64/flutter
+2026-06-18T00:58:36.3367945Z   PUB_CACHE: /home/runner/.pub-cache
+2026-06-18T00:58:36.3368249Z ##[endgroup]
+2026-06-18T00:58:36.4400756Z (node:2560) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-06-18T00:58:36.4401898Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-06-18T00:58:36.5170098Z Cache not found for input keys: Linux-pub-, Linux-pub-
+2026-06-18T00:58:36.5250202Z ##[group]Run flutter pub get
+2026-06-18T00:58:36.5250525Z [36;1mflutter pub get[0m
+2026-06-18T00:58:36.5285258Z shell: /usr/bin/bash -e {0}
+2026-06-18T00:58:36.5285540Z env:
+2026-06-18T00:58:36.5285902Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.44.2-x64/flutter
+2026-06-18T00:58:36.5286338Z   PUB_CACHE: /home/runner/.pub-cache
+2026-06-18T00:58:36.5286611Z ##[endgroup]
+2026-06-18T00:58:40.1957334Z Resolving dependencies...
+2026-06-18T00:58:41.1972070Z Downloading packages...
+2026-06-18T00:58:48.5247733Z + _fe_analyzer_shared 67.0.0 (104.0.0 available)
+2026-06-18T00:58:48.5248441Z + analyzer 6.4.1 (14.0.0 available)
+2026-06-18T00:58:48.5251444Z + analyzer_plugin 0.11.3 (0.14.13 available)
+2026-06-18T00:58:48.5254080Z + animations 2.2.0
+2026-06-18T00:58:48.5254574Z + ansicolor 2.0.3
+2026-06-18T00:58:48.5254981Z + archive 4.0.9
+2026-06-18T00:58:48.5255324Z + args 2.7.0
+2026-06-18T00:58:48.5255699Z + async 2.13.1
+2026-06-18T00:58:48.5256071Z + audio_service 0.18.18
+2026-06-18T00:58:48.5256621Z + audio_service_platform_interface 0.1.3
+2026-06-18T00:58:48.5257175Z + audio_service_web 0.1.4
+2026-06-18T00:58:48.5257620Z + audio_session 0.1.25 (0.2.3 available)
+2026-06-18T00:58:48.5258141Z + boolean_selector 2.1.2
+2026-06-18T00:58:48.5258531Z + build 2.4.1 (4.0.6 available)
+2026-06-18T00:58:48.5259004Z + build_config 1.1.2 (1.3.0 available)
+2026-06-18T00:58:48.5259482Z + build_daemon 4.1.1
+2026-06-18T00:58:48.5259896Z + build_resolvers 2.4.2 (3.0.4 available)
+2026-06-18T00:58:48.5260394Z + build_runner 2.4.13 (2.15.0 available)
+2026-06-18T00:58:48.5260907Z + build_runner_core 7.3.2 (9.3.2 available)
+2026-06-18T00:58:48.5261424Z + built_collection 5.1.1
+2026-06-18T00:58:48.5261843Z + built_value 8.12.6
+2026-06-18T00:58:48.5262228Z + cached_network_image 3.4.1
+2026-06-18T00:58:48.5262710Z + cached_network_image_platform_interface 4.1.1
+2026-06-18T00:58:48.5263538Z + cached_network_image_web 1.3.1
+2026-06-18T00:58:48.5263919Z + characters 1.4.1
+2026-06-18T00:58:48.5264248Z + checked_yaml 2.0.4
+2026-06-18T00:58:48.5264578Z + cli_util 0.4.2 (0.5.1 available)
+2026-06-18T00:58:48.5265326Z + clock 1.1.2
+2026-06-18T00:58:48.5265624Z + code_assets 1.2.1
+2026-06-18T00:58:48.5265923Z + code_builder 4.11.1
+2026-06-18T00:58:48.5266266Z + collection 1.19.1
+2026-06-18T00:58:48.5266627Z + connectivity_plus 6.1.5 (7.1.1 available)
+2026-06-18T00:58:48.5267121Z + connectivity_plus_platform_interface 2.1.0
+2026-06-18T00:58:48.5267570Z + convert 3.1.2
+2026-06-18T00:58:48.5267878Z + crypto 3.0.7
+2026-06-18T00:58:48.5268198Z + csslib 1.0.2
+2026-06-18T00:58:48.5268523Z + custom_lint_core 0.6.3 (0.8.2 available)
+2026-06-18T00:58:48.5268964Z + dart_style 2.3.6 (3.1.9 available)
+2026-06-18T00:58:48.5269356Z + dbus 0.7.14
+2026-06-18T00:58:48.5269645Z + dio 5.9.2
+2026-06-18T00:58:48.5269942Z + dio_web_adapter 2.1.2
+2026-06-18T00:58:48.5270286Z + equatable 2.0.8
+2026-06-18T00:58:48.5270599Z + fake_async 1.3.3
+2026-06-18T00:58:48.5270908Z + ffi 2.2.0
+2026-06-18T00:58:48.5271182Z + file 7.0.1
+2026-06-18T00:58:48.5271485Z + fixnum 1.1.1
+2026-06-18T00:58:48.5271804Z + flutter 0.0.0 from sdk flutter
+2026-06-18T00:58:48.5272209Z + flutter_cache_manager 3.4.1
+2026-06-18T00:58:48.5272604Z + flutter_launcher_icons 0.14.4
+2026-06-18T00:58:48.5273009Z + flutter_lints 4.0.0 (6.0.0 available)
+2026-06-18T00:58:48.5273595Z + flutter_native_splash 2.4.8
+2026-06-18T00:58:48.5273995Z + flutter_riverpod 2.6.1 (3.3.2 available)
+2026-06-18T00:58:48.5274498Z + flutter_secure_storage 9.2.4 (10.3.1 available)
+2026-06-18T00:58:48.5275041Z + flutter_secure_storage_linux 1.2.3 (3.0.1 available)
+2026-06-18T00:58:48.5275642Z + flutter_secure_storage_macos 3.1.3 (4.0.0 available)
+2026-06-18T00:58:48.5276268Z + flutter_secure_storage_platform_interface 1.1.2 (2.0.1 available)
+2026-06-18T00:58:48.5276904Z + flutter_secure_storage_web 1.2.1 (2.1.1 available)
+2026-06-18T00:58:48.5277465Z + flutter_secure_storage_windows 3.1.2 (4.2.2 available)
+2026-06-18T00:58:48.5277985Z + flutter_staggered_animations 1.1.1
+2026-06-18T00:58:48.5278667Z + flutter_svg 2.3.0
+2026-06-18T00:58:48.5279009Z + flutter_test 0.0.0 from sdk flutter
+2026-06-18T00:58:48.5279463Z + flutter_web_plugins 0.0.0 from sdk flutter
+2026-06-18T00:58:48.5279918Z + freezed 2.5.2 (3.2.5 available)
+2026-06-18T00:58:48.5280335Z + freezed_annotation 2.4.4 (3.1.0 available)
+2026-06-18T00:58:48.5280790Z + frontend_server_client 4.0.0
+2026-06-18T00:58:48.5281265Z + get_it 7.7.0 (9.2.1 available)
+2026-06-18T00:58:48.5281674Z + glob 2.1.3
+2026-06-18T00:58:48.5281990Z + go_router 13.2.5 (17.3.0 available)
+2026-06-18T00:58:48.5282383Z + graphs 2.3.2
+2026-06-18T00:58:48.5282694Z + hive 2.2.3
+2026-06-18T00:58:48.5282990Z + hive_flutter 1.1.0
+2026-06-18T00:58:48.5283477Z + hive_generator 2.0.1
+2026-06-18T00:58:48.5283819Z + hooks 2.0.2
+2026-06-18T00:58:48.5284124Z + html 0.15.6
+2026-06-18T00:58:48.5284408Z + http 1.6.0
+2026-06-18T00:58:48.5284723Z + http_multi_server 3.2.2
+2026-06-18T00:58:48.5285104Z + http_parser 4.1.2
+2026-06-18T00:58:48.5285424Z + iconsax 0.0.8
+2026-06-18T00:58:48.5285724Z + id3 1.0.2
+2026-06-18T00:58:48.5286027Z + image 4.8.0 (4.9.1 available)
+2026-06-18T00:58:48.5286436Z + intl 0.19.0 (0.20.2 available)
+2026-06-18T00:58:48.5286801Z + io 1.0.5
+2026-06-18T00:58:48.5287077Z + jni 1.0.0
+2026-06-18T00:58:48.5287372Z + jni_flutter 1.0.1
+2026-06-18T00:58:48.5287684Z + js 0.6.7 (0.7.2 available)
+2026-06-18T00:58:48.5288058Z + json_annotation 4.9.0 (4.12.0 available)
+2026-06-18T00:58:48.5288465Z + json_serializable 6.8.0 (6.14.0 available)
+2026-06-18T00:58:48.5288878Z + just_audio 0.9.46 (0.10.5 available)
+2026-06-18T00:58:48.5289300Z + just_audio_background 0.0.1-beta.17
+2026-06-18T00:58:48.5289725Z + just_audio_platform_interface 4.6.0
+2026-06-18T00:58:48.5290132Z + just_audio_web 0.4.16
+2026-06-18T00:58:48.5290470Z + leak_tracker 11.0.2
+2026-06-18T00:58:48.5290824Z + leak_tracker_flutter_testing 3.0.10
+2026-06-18T00:58:48.5291246Z + leak_tracker_testing 3.0.2
+2026-06-18T00:58:48.5291612Z + lints 4.0.0 (6.1.0 available)
+2026-06-18T00:58:48.5291966Z + logger 2.7.0
+2026-06-18T00:58:48.5292261Z + logging 1.3.0
+2026-06-18T00:58:48.5292555Z + lottie 3.3.3
+2026-06-18T00:58:48.5293071Z + matcher 0.12.19 (0.12.20 available)
+2026-06-18T00:58:48.5293661Z + material_color_utilities 0.13.0
+2026-06-18T00:58:48.5294053Z + meta 1.18.0 (1.18.3 available)
+2026-06-18T00:58:48.5294410Z + mime 2.0.0
+2026-06-18T00:58:48.5294704Z + mockito 5.4.4 (5.7.0 available)
+2026-06-18T00:58:48.5295051Z + nm 0.5.0
+2026-06-18T00:58:48.5295323Z + objective_c 9.4.1
+2026-06-18T00:58:48.5295631Z + octo_image 2.1.0
+2026-06-18T00:58:48.5295929Z + on_audio_query 2.9.0
+2026-06-18T00:58:48.5296261Z + on_audio_query_android 1.1.0
+2026-06-18T00:58:48.5296626Z + on_audio_query_ios 1.1.0
+2026-06-18T00:58:48.5297008Z + on_audio_query_platform_interface 1.7.0
+2026-06-18T00:58:48.5297429Z + on_audio_query_web 1.6.0
+2026-06-18T00:58:48.5297791Z + package_config 2.2.0 (3.0.0 available)
+2026-06-18T00:58:48.5298232Z + palette_generator 0.3.3+7 (discontinued)
+2026-06-18T00:58:48.5298647Z + path 1.9.1
+2026-06-18T00:58:48.5298942Z + path_parsing 1.1.0
+2026-06-18T00:58:48.5299291Z + path_provider 2.1.6
+2026-06-18T00:58:48.5299639Z + path_provider_android 2.3.1
+2026-06-18T00:58:48.5300029Z + path_provider_foundation 2.6.0
+2026-06-18T00:58:48.5300420Z + path_provider_linux 2.2.1
+2026-06-18T00:58:48.5300803Z + path_provider_platform_interface 2.1.3
+2026-06-18T00:58:48.5301229Z + path_provider_windows 2.3.0
+2026-06-18T00:58:48.5301637Z + permission_handler 11.4.0 (12.0.3 available)
+2026-06-18T00:58:48.5302145Z + permission_handler_android 12.1.0 (13.0.1 available)
+2026-06-18T00:58:48.5302641Z + permission_handler_apple 9.4.10
+2026-06-18T00:58:48.5303035Z + permission_handler_html 0.1.3+5
+2026-06-18T00:58:48.5303639Z + permission_handler_platform_interface 4.3.0
+2026-06-18T00:58:48.5304104Z + permission_handler_windows 0.2.1
+2026-06-18T00:58:48.5304496Z + petitparser 7.0.2
+2026-06-18T00:58:48.5304809Z + platform 3.1.6
+2026-06-18T00:58:48.5305136Z + plugin_platform_interface 2.1.8
+2026-06-18T00:58:48.5305505Z + pool 1.5.2
+2026-06-18T00:58:48.5305781Z + posix 6.5.0
+2026-06-18T00:58:48.5306265Z + pub_semver 2.2.0
+2026-06-18T00:58:48.5306591Z + pubspec_parse 1.5.0
+2026-06-18T00:58:48.5306923Z + record_use 0.6.0
+2026-06-18T00:58:48.5307244Z + riverpod 2.6.1 (3.3.2 available)
+2026-06-18T00:58:48.5307664Z + riverpod_analyzer_utils 0.5.1 (0.5.10 available)
+2026-06-18T00:58:48.5308154Z + riverpod_annotation 2.6.1 (4.0.3 available)
+2026-06-18T00:58:48.5308612Z + riverpod_generator 2.4.0 (4.0.4 available)
+2026-06-18T00:58:48.5309038Z + rxdart 0.27.7 (0.28.0 available)
+2026-06-18T00:58:48.5309484Z + shelf 1.4.2
+2026-06-18T00:58:48.5309799Z + shelf_web_socket 2.0.1 (3.0.0 available)
+2026-06-18T00:58:48.5310198Z + shimmer 3.0.0
+2026-06-18T00:58:48.5310510Z + simple_sparse_list 0.1.4
+2026-06-18T00:58:48.5310875Z + sky_engine 0.0.0 from sdk flutter
+2026-06-18T00:58:48.5311270Z + source_gen 1.5.0 (4.2.3 available)
+2026-06-18T00:58:48.5311672Z + source_helper 1.3.5 (1.3.12 available)
+2026-06-18T00:58:48.5312069Z + source_span 1.10.2
+2026-06-18T00:58:48.5312394Z + sqflite 2.4.3
+2026-06-18T00:58:48.5312703Z + sqflite_android 2.4.3
+2026-06-18T00:58:48.5313041Z + sqflite_common 2.5.11
+2026-06-18T00:58:48.5313538Z + sqflite_darwin 2.4.3
+2026-06-18T00:58:48.5313884Z + sqflite_platform_interface 2.4.1
+2026-06-18T00:58:48.5314265Z + stack_trace 1.12.1
+2026-06-18T00:58:48.5314576Z + state_notifier 1.0.0
+2026-06-18T00:58:48.5314898Z + stream_channel 2.1.4
+2026-06-18T00:58:48.5315228Z + stream_transform 2.1.1
+2026-06-18T00:58:48.5315569Z + string_scanner 1.4.1
+2026-06-18T00:58:48.5315892Z + synchronized 3.4.1
+2026-06-18T00:58:48.5316200Z + term_glyph 1.2.2
+2026-06-18T00:58:48.5316514Z + test_api 0.7.11 (0.7.12 available)
+2026-06-18T00:58:48.5316888Z + timing 1.0.2
+2026-06-18T00:58:48.5317182Z + typed_data 1.4.0
+2026-06-18T00:58:48.5317484Z + unicode 1.1.9
+2026-06-18T00:58:48.5317782Z + universal_io 2.3.1
+2026-06-18T00:58:48.5318086Z + uuid 4.5.3
+2026-06-18T00:58:48.5318379Z + vector_graphics 1.2.2
+2026-06-18T00:58:48.5318731Z + vector_graphics_codec 1.1.13
+2026-06-18T00:58:48.5319123Z + vector_graphics_compiler 1.2.6
+2026-06-18T00:58:48.5319519Z + vector_math 2.2.0 (2.4.0 available)
+2026-06-18T00:58:48.5320101Z + vm_service 15.2.0
+2026-06-18T00:58:48.5320406Z + watcher 1.2.1
+2026-06-18T00:58:48.5320695Z + web 1.1.1
+2026-06-18T00:58:48.5320970Z + web_socket 1.0.1
+2026-06-18T00:58:48.5321280Z + web_socket_channel 3.0.3
+2026-06-18T00:58:48.5321627Z + win32 5.15.0 (6.3.0 available)
+2026-06-18T00:58:48.5321988Z + xdg_directories 1.1.0
+2026-06-18T00:58:48.5322318Z + xml 6.6.1 (7.0.1 available)
+2026-06-18T00:58:48.5322664Z + yaml 3.1.3
+2026-06-18T00:58:48.5322991Z + youtube_explode_dart 2.5.3 (3.1.0 available)
+2026-06-18T00:58:48.5323601Z Changed 180 dependencies!
+2026-06-18T00:58:48.5323964Z 1 package is discontinued.
+2026-06-18T00:58:48.5324499Z 51 packages have newer versions incompatible with dependency constraints.
+2026-06-18T00:58:48.5325155Z Try `flutter pub outdated` for more information.
+2026-06-18T00:58:49.0742483Z ##[group]Run flutter pub run flutter_launcher_icons:main
+2026-06-18T00:58:49.0742939Z [36;1mflutter pub run flutter_launcher_icons:main[0m
+2026-06-18T00:58:49.0743960Z [36;1mflutter pub run flutter_native_splash:create[0m
+2026-06-18T00:58:49.0777198Z shell: /usr/bin/bash -e {0}
+2026-06-18T00:58:49.0777450Z env:
+2026-06-18T00:58:49.0777756Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.44.2-x64/flutter
+2026-06-18T00:58:49.0778136Z   PUB_CACHE: /home/runner/.pub-cache
+2026-06-18T00:58:49.0778395Z ##[endgroup]
+2026-06-18T00:58:50.6393130Z This command is deprecated and replaced with "flutter pub run flutter_launcher_icons"
+2026-06-18T00:58:50.6397224Z   ════════════════════════════════════════════
+2026-06-18T00:58:50.6397957Z      FLUTTER LAUNCHER ICONS (v0.14.4)                               
+2026-06-18T00:58:50.6398757Z   ════════════════════════════════════════════
+2026-06-18T00:58:50.6399280Z   
+2026-06-18T00:58:50.7132154Z • Creating default icons Android
+2026-06-18T00:58:50.7142199Z • Creating adaptive icons Android
+2026-06-18T00:58:50.8362227Z • Adding a new Android launcher icon
+2026-06-18T00:58:51.1108272Z • No colors.xml file found in your Android project
+2026-06-18T00:58:51.1109105Z • Creating colors.xml file and adding it to your Android project
+2026-06-18T00:58:51.3338787Z • Creating mipmap xml file Android
+2026-06-18T00:58:51.3370719Z Creating Icons for Web...
+2026-06-18T00:58:51.3386455Z ⚠️Requirements failed for platform Web. Skipped
+2026-06-18T00:58:51.3388357Z 
+2026-06-18T00:58:51.3388808Z ✓ Successfully generated launcher icons
+2026-06-18T00:58:53.3801378Z [Android] Creating default splash images
+2026-06-18T00:58:53.5198131Z [Android] Creating dark mode splash images
+2026-06-18T00:58:53.8516616Z [Android] Creating default android12splash images
+2026-06-18T00:58:54.2924520Z [Android] Creating dark mode android12splash images
+2026-06-18T00:58:54.6977304Z [Android] Updating launch background(s) with splash image path...
+2026-06-18T00:58:54.7029283Z [Android]  - android/app/src/main/res/drawable/launch_background.xml
+2026-06-18T00:58:55.0914340Z [Android]  - android/app/src/main/res/drawable-night/launch_background.xml
+2026-06-18T00:58:55.0973841Z [Android]  - android/app/src/main/res/drawable-v21/launch_background.xml
+2026-06-18T00:58:55.1053886Z [Android]  - android/app/src/main/res/drawable-night-v21/launch_background.xml
+2026-06-18T00:58:55.1093652Z [Android] Updating styles...
+2026-06-18T00:58:55.1153783Z [Android]  - android/app/src/main/res/values-v31/styles.xml
+2026-06-18T00:58:55.1243852Z [Android] No android/app/src/main/res/values-v31/styles.xml found in your Android project
+2026-06-18T00:58:55.1293902Z [Android] Creating android/app/src/main/res/values-v31/styles.xml and adding it to your Android project
+2026-06-18T00:58:55.1353652Z [Android]  - android/app/src/main/res/values-night-v31/styles.xml
+2026-06-18T00:58:55.1424046Z [Android] No android/app/src/main/res/values-night-v31/styles.xml found in your Android project
+2026-06-18T00:58:55.1483998Z [Android] Creating android/app/src/main/res/values-night-v31/styles.xml and adding it to your Android project
+2026-06-18T00:58:55.1513712Z [Android]  - android/app/src/main/res/values/styles.xml
+2026-06-18T00:58:55.1549393Z [Android]  - android/app/src/main/res/values-night/styles.xml
+2026-06-18T00:58:55.1603966Z [Android] No android/app/src/main/res/values-night/styles.xml found in your Android project
+2026-06-18T00:58:55.1634010Z [Android] Creating android/app/src/main/res/values-night/styles.xml and adding it to your Android project
+2026-06-18T00:58:55.1693686Z Web folder not found, skipping web splash update...
+2026-06-18T00:58:55.1723468Z 
+2026-06-18T00:58:55.1783876Z ✅ Native splash complete.
+2026-06-18T00:58:55.1813805Z Now go finish building something awesome! 💪 You rock! 🤘🤩
+2026-06-18T00:58:55.1874023Z Like the package? Please give it a 👍 here: https://pub.dev/packages/flutter_native_splash
+2026-06-18T00:58:55.1903401Z 
+2026-06-18T00:58:55.8674500Z ##[group]Run flutter pub run build_runner build --delete-conflicting-outputs
+2026-06-18T00:58:55.8675066Z [36;1mflutter pub run build_runner build --delete-conflicting-outputs[0m
+2026-06-18T00:58:55.8708837Z shell: /usr/bin/bash -e {0}
+2026-06-18T00:58:55.8709122Z env:
+2026-06-18T00:58:55.8709432Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.44.2-x64/flutter
+2026-06-18T00:58:55.8709822Z   PUB_CACHE: /home/runner/.pub-cache
+2026-06-18T00:58:55.8710078Z ##[endgroup]
+2026-06-18T00:59:00.4818896Z [INFO] Generating build script...
+2026-06-18T00:59:00.7827607Z [INFO] Generating build script completed, took 309ms
+2026-06-18T00:59:00.7828052Z 
+2026-06-18T00:59:00.8245510Z [INFO] Precompiling build script......
+2026-06-18T00:59:05.5206102Z [INFO] Precompiling build script... completed, took 4.7s
+2026-06-18T00:59:05.5206582Z 
+2026-06-18T00:59:06.0704745Z [INFO] Initializing inputs
+2026-06-18T00:59:06.4749454Z [INFO] Building new asset graph...
+2026-06-18T00:59:07.9042279Z [INFO] Building new asset graph completed, took 1.4s
+2026-06-18T00:59:07.9042777Z 
+2026-06-18T00:59:07.9057465Z [INFO] Checking for unexpected pre-existing outputs....
+2026-06-18T00:59:07.9070720Z [INFO] Checking for unexpected pre-existing outputs. completed, took 1ms
+2026-06-18T00:59:07.9071686Z 
+2026-06-18T00:59:07.9147948Z [INFO] Running build...
+2026-06-18T00:59:07.9538740Z [INFO] Generating SDK summary...
+2026-06-18T00:59:09.7309598Z [INFO] 1.8s elapsed, 0/16 actions completed.
+2026-06-18T00:59:09.8062919Z [WARNING] riverpod_generator on test/widget/mini_player_test.dart:
+2026-06-18T00:59:09.8064328Z Your current `analyzer` version may not fully support your current SDK version.
+2026-06-18T00:59:09.8064994Z 
+2026-06-18T00:59:09.8065208Z Analyzer language version: 3.4.0
+2026-06-18T00:59:09.8065891Z SDK language version: 3.12.0
+2026-06-18T00:59:09.8066220Z 
+2026-06-18T00:59:09.8066505Z Please update to the latest `analyzer` version (14.0.0) by running
+2026-06-18T00:59:09.8067221Z `flutter packages upgrade`.
+2026-06-18T00:59:09.8067537Z 
+2026-06-18T00:59:09.8067963Z If you are not getting the latest version by running the above command, you
+2026-06-18T00:59:09.8068787Z can try adding a constraint like the following to your pubspec to start
+2026-06-18T00:59:09.8069579Z diagnosing why you can't get the latest version:
+2026-06-18T00:59:09.8069949Z 
+2026-06-18T00:59:09.8084995Z dev_dependencies:
+2026-06-18T00:59:09.8085389Z   analyzer: ^14.0.0
+2026-06-18T00:59:09.8085592Z 
+2026-06-18T00:59:11.5405396Z [INFO] 3.6s elapsed, 0/16 actions completed.
+2026-06-18T00:59:12.5762417Z [INFO] 4.7s elapsed, 0/16 actions completed.
+2026-06-18T00:59:12.6272894Z [INFO] Generating SDK summary completed, took 4.7s
+2026-06-18T00:59:12.6273423Z 
+2026-06-18T00:59:13.7484831Z [INFO] 5.8s elapsed, 34/86 actions completed.
+2026-06-18T00:59:14.8139474Z [INFO] 6.9s elapsed, 80/113 actions completed.
+2026-06-18T00:59:15.8568341Z [INFO] 7.9s elapsed, 128/138 actions completed.
+2026-06-18T00:59:26.2175556Z [INFO] 18.3s elapsed, 165/166 actions completed.
+2026-06-18T00:59:27.2542138Z [INFO] 19.3s elapsed, 267/284 actions completed.
+2026-06-18T00:59:28.5731439Z [INFO] 20.7s elapsed, 330/334 actions completed.
+2026-06-18T00:59:28.7225173Z [INFO] Running build completed, took 20.8s
+2026-06-18T00:59:28.7225918Z 
+2026-06-18T00:59:28.7226067Z [INFO] Caching finalized dependency graph...
+2026-06-18T00:59:28.8222797Z [INFO] Caching finalized dependency graph completed, took 99ms
+2026-06-18T00:59:28.8223120Z 
+2026-06-18T00:59:28.8248813Z [INFO] Succeeded after 20.9s with 132 outputs (605 actions)
+2026-06-18T00:59:28.8249153Z 
+2026-06-18T00:59:28.9421349Z ##[group]Run flutter analyze --fatal-infos
+2026-06-18T00:59:28.9421917Z [36;1mflutter analyze --fatal-infos[0m
+2026-06-18T00:59:28.9470725Z shell: /usr/bin/bash -e {0}
+2026-06-18T00:59:28.9471136Z env:
+2026-06-18T00:59:28.9471624Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.44.2-x64/flutter
+2026-06-18T00:59:28.9472263Z   PUB_CACHE: /home/runner/.pub-cache
+2026-06-18T00:59:28.9472683Z ##[endgroup]
+2026-06-18T00:59:39.8764734Z Analyzing vibify...                                             
+2026-06-18T00:59:39.8771023Z 
+2026-06-18T00:59:39.8820486Z warning • 'avoid_returning_null_for_future' was removed in Dart '3.3.0' Try removing the reference to 'avoid_returning_null_for_future' • analysis_options.yaml:20:7 • removed_lint
+2026-06-18T00:59:39.8822212Z    info • Sort directive sections alphabetically. Try sorting the directives • lib/core/di/injection.dart:3:1 • directives_ordering
+2026-06-18T00:59:39.8825310Z    info • Sort directive sections alphabetically. Try sorting the directives • lib/core/di/injection.dart:7:1 • directives_ordering
+2026-06-18T00:59:39.8826913Z    info • Sort directive sections alphabetically. Try sorting the directives • lib/core/di/injection.dart:11:1 • directives_ordering
+2026-06-18T00:59:39.8828312Z    info • Sort directive sections alphabetically. Try sorting the directives • lib/core/di/injection.dart:16:1 • directives_ordering
+2026-06-18T00:59:39.8829567Z    info • Sort directive sections alphabetically. Try sorting the directives • lib/core/di/injection.dart:24:1 • directives_ordering
+2026-06-18T00:59:39.8830885Z    info • Statement should be on a separate line. Try moving the statement to a new line • lib/core/extensions/string_extensions.dart:11:30 • always_put_control_body_on_new_line
+2026-06-18T00:59:39.8833382Z    info • The type of the right operand ('ConnectivityResult') isn't a subtype or a supertype of the left operand ('List<ConnectivityResult>'). Try changing one or both of the operands • lib/core/network/network_info.dart:14:19 • unrelated_type_equality_checks
+2026-06-18T00:59:39.8836458Z    info • The type of the right operand ('ConnectivityResult') isn't a subtype or a supertype of the left operand ('List<ConnectivityResult>'). Try changing one or both of the operands • lib/core/network/network_info.dart:20:28 • unrelated_type_equality_checks
+2026-06-18T00:59:39.8841059Z    info • The import of 'package:flutter_riverpod/flutter_riverpod.dart' is unnecessary because all of the used elements are also provided by the import of 'package:riverpod_annotation/riverpod_annotation.dart'. Try removing the import directive • lib/core/router/app_router.dart:2:8 • unnecessary_import
+2026-06-18T00:59:39.8842665Z    info • Sort directive sections alphabetically. Try sorting the directives • lib/core/router/app_router.dart:11:1 • directives_ordering
+2026-06-18T00:59:39.8844278Z    info • Sort directive sections alphabetically. Try sorting the directives • lib/core/router/app_router.dart:13:1 • directives_ordering
+2026-06-18T00:59:39.8846194Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/router/app_router.dart:87:42 • prefer_const_constructors
+2026-06-18T00:59:39.8848680Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/core/theme/app_colors.dart:28:54 • deprecated_member_use
+2026-06-18T00:59:39.8851372Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/core/theme/app_colors.dart:29:55 • deprecated_member_use
+2026-06-18T00:59:39.8854664Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/core/theme/app_text_styles.dart:104:28 • deprecated_member_use
+2026-06-18T00:59:39.8856319Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:13:22 • prefer_const_constructors
+2026-06-18T00:59:39.8857892Z    info • 'background' is deprecated and shouldn't be used. Use surface instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/core/theme/app_theme.dart:20:11 • deprecated_member_use
+2026-06-18T00:59:39.8860929Z    info • 'onBackground' is deprecated and shouldn't be used. Use onSurface instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/core/theme/app_theme.dart:21:11 • deprecated_member_use
+2026-06-18T00:59:39.8864516Z    info • 'surfaceVariant' is deprecated and shouldn't be used. Use surfaceContainerHighest instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/core/theme/app_theme.dart:24:11 • deprecated_member_use
+2026-06-18T00:59:39.8866927Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:40:35 • prefer_const_constructors
+2026-06-18T00:59:39.8868368Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/core/theme/app_theme.dart:51:50 • deprecated_member_use
+2026-06-18T00:59:39.8870566Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:54:22 • prefer_const_constructors
+2026-06-18T00:59:39.8872789Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:56:20 • prefer_const_constructors
+2026-06-18T00:59:39.8875161Z   error • The argument type 'CardTheme' can't be assigned to the parameter type 'CardThemeData?'.  • lib/core/theme/app_theme.dart:70:20 • argument_type_not_assignable
+2026-06-18T00:59:39.8877251Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:102:25 • prefer_const_constructors
+2026-06-18T00:59:39.8879462Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:107:22 • prefer_const_constructors
+2026-06-18T00:59:39.8881640Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:128:20 • prefer_const_constructors
+2026-06-18T00:59:39.8884228Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/core/theme/app_theme.dart:130:38 • deprecated_member_use
+2026-06-18T00:59:39.8886848Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/core/theme/app_theme.dart:142:45 • deprecated_member_use
+2026-06-18T00:59:39.8889427Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/core/theme/app_theme.dart:144:49 • deprecated_member_use
+2026-06-18T00:59:39.8891131Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/core/theme/app_theme.dart:149:60 • deprecated_member_use
+2026-06-18T00:59:39.8894551Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/core/theme/app_theme.dart:151:48 • deprecated_member_use
+2026-06-18T00:59:39.8895661Z   error • Invalid constant value • lib/core/theme/app_theme.dart:157:37 • invalid_constant
+2026-06-18T00:59:39.8896979Z   error • The method 'CupertinoPageTransitionsBuilder' isn't defined for the type 'AppTheme'. Try correcting the name to the name of an existing method, or defining a method named 'CupertinoPageTransitionsBuilder' • lib/core/theme/app_theme.dart:157:37 • undefined_method
+2026-06-18T00:59:39.8898464Z   error • The values in a const map literal must be constant. Try removing the keyword 'const' from the map literal • lib/core/theme/app_theme.dart:157:37 • non_constant_map_value
+2026-06-18T00:59:39.8900002Z   error • The method 'CupertinoPageTransitionsBuilder' isn't defined for the type 'AppTheme'. Try correcting the name to the name of an existing method, or defining a method named 'CupertinoPageTransitionsBuilder' • lib/core/theme/app_theme.dart:158:33 • undefined_method
+2026-06-18T00:59:39.8901487Z   error • The values in a const map literal must be constant. Try removing the keyword 'const' from the map literal • lib/core/theme/app_theme.dart:158:33 • non_constant_map_value
+2026-06-18T00:59:39.8902710Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:166:22 • prefer_const_constructors
+2026-06-18T00:59:39.8904790Z    info • 'background' is deprecated and shouldn't be used. Use surface instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/core/theme/app_theme.dart:173:11 • deprecated_member_use
+2026-06-18T00:59:39.8906538Z    info • 'onBackground' is deprecated and shouldn't be used. Use onSurface instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/core/theme/app_theme.dart:174:11 • deprecated_member_use
+2026-06-18T00:59:39.8908491Z    info • 'surfaceVariant' is deprecated and shouldn't be used. Use surfaceContainerHighest instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/core/theme/app_theme.dart:177:11 • deprecated_member_use
+2026-06-18T00:59:39.8911182Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:193:35 • prefer_const_constructors
+2026-06-18T00:59:39.8914070Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/core/theme/app_theme.dart:202:50 • deprecated_member_use
+2026-06-18T00:59:39.8916760Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:205:22 • prefer_const_constructors
+2026-06-18T00:59:39.8919070Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:207:20 • prefer_const_constructors
+2026-06-18T00:59:39.8921135Z   error • The argument type 'CardTheme' can't be assigned to the parameter type 'CardThemeData?'.  • lib/core/theme/app_theme.dart:221:20 • argument_type_not_assignable
+2026-06-18T00:59:39.8923366Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:253:25 • prefer_const_constructors
+2026-06-18T00:59:39.8925635Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:258:22 • prefer_const_constructors
+2026-06-18T00:59:39.8928645Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/core/theme/app_theme.dart:279:20 • prefer_const_constructors
+2026-06-18T00:59:39.8931155Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/core/theme/app_theme.dart:281:37 • deprecated_member_use
+2026-06-18T00:59:39.8934051Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/core/theme/app_theme.dart:293:45 • deprecated_member_use
+2026-06-18T00:59:39.8936644Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/core/theme/app_theme.dart:295:48 • deprecated_member_use
+2026-06-18T00:59:39.8939294Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/core/theme/app_theme.dart:300:59 • deprecated_member_use
+2026-06-18T00:59:39.8941897Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/core/theme/app_theme.dart:302:48 • deprecated_member_use
+2026-06-18T00:59:39.8943783Z   error • Invalid constant value • lib/core/theme/app_theme.dart:308:37 • invalid_constant
+2026-06-18T00:59:39.8945986Z   error • The method 'CupertinoPageTransitionsBuilder' isn't defined for the type 'AppTheme'. Try correcting the name to the name of an existing method, or defining a method named 'CupertinoPageTransitionsBuilder' • lib/core/theme/app_theme.dart:308:37 • undefined_method
+2026-06-18T00:59:39.8948564Z   error • The values in a const map literal must be constant. Try removing the keyword 'const' from the map literal • lib/core/theme/app_theme.dart:308:37 • non_constant_map_value
+2026-06-18T00:59:39.8951203Z   error • The method 'CupertinoPageTransitionsBuilder' isn't defined for the type 'AppTheme'. Try correcting the name to the name of an existing method, or defining a method named 'CupertinoPageTransitionsBuilder' • lib/core/theme/app_theme.dart:309:33 • undefined_method
+2026-06-18T00:59:39.8955632Z   error • The values in a const map literal must be constant. Try removing the keyword 'const' from the map literal • lib/core/theme/app_theme.dart:309:33 • non_constant_map_value
+2026-06-18T00:59:39.8958501Z    info • 'printTime' is deprecated and shouldn't be used. Use `dateTimeFormat` with `DateTimeFormat.onlyTimeAndSinceStart` or `DateTimeFormat.none` instead. Try replacing the use of the deprecated member with the replacement • lib/core/utils/app_logger.dart:10:5 • deprecated_member_use
+2026-06-18T00:59:39.8961346Z    info • The type parameter name 'Type' matches a visible type name. Try changing the type parameter name to not match an existing type • lib/core/utils/usecase.dart:1:24 • avoid_types_as_parameter_names
+2026-06-18T00:59:39.8963771Z    info • The type parameter name 'Type' matches a visible type name. Try changing the type parameter name to not match an existing type • lib/core/utils/usecase.dart:5:32 • avoid_types_as_parameter_names
+2026-06-18T00:59:39.8965681Z    info • Sort directive sections alphabetically. Try sorting the directives • lib/core/widgets/main_scaffold.dart:7:1 • directives_ordering
+2026-06-18T00:59:39.8966988Z    info • Sort directive sections alphabetically. Try sorting the directives • lib/core/widgets/main_scaffold.dart:8:1 • directives_ordering
+2026-06-18T00:59:39.8968065Z    info • Statement should be on a separate line. Try moving the statement to a new line • lib/core/widgets/main_scaffold.dart:39:48 • always_put_control_body_on_new_line
+2026-06-18T00:59:39.8969761Z    info • Statement should be on a separate line. Try moving the statement to a new line • lib/core/widgets/main_scaffold.dart:40:49 • always_put_control_body_on_new_line
+2026-06-18T00:59:39.8970958Z    info • Statement should be on a separate line. Try moving the statement to a new line • lib/core/widgets/main_scaffold.dart:41:52 • always_put_control_body_on_new_line
+2026-06-18T00:59:39.8972026Z    info • Statement should be on a separate line. Try moving the statement to a new line • lib/core/widgets/main_scaffold.dart:42:50 • always_put_control_body_on_new_line
+2026-06-18T00:59:39.8973829Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/core/widgets/main_scaffold.dart:56:37 • deprecated_member_use
+2026-06-18T00:59:39.8976592Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/core/widgets/main_scaffold.dart:130:51 • deprecated_member_use
+2026-06-18T00:59:39.8979309Z    info • Missing an 'await' for the 'Future' computed by this expression. Try adding an 'await' or wrapping the expression with 'unawaited' • lib/features/downloads/data/datasources/download_datasource.dart:61:5 • unawaited_futures
+2026-06-18T00:59:39.8981997Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/downloads/data/datasources/download_datasource.dart:81:15 • prefer_const_constructors
+2026-06-18T00:59:39.8984681Z    info • Statement should be on a separate line. Try moving the statement to a new line • lib/features/downloads/data/datasources/download_datasource.dart:122:36 • always_put_control_body_on_new_line
+2026-06-18T00:59:39.8986468Z    info • Missing an 'await' for the 'Future' computed by this expression. Try adding an 'await' or wrapping the expression with 'unawaited' • lib/features/downloads/data/datasources/download_datasource.dart:155:7 • unawaited_futures
+2026-06-18T00:59:39.8988018Z    info • Missing an 'await' for the 'Future' computed by this expression. Try adding an 'await' or wrapping the expression with 'unawaited' • lib/features/downloads/data/datasources/download_datasource.dart:170:7 • unawaited_futures
+2026-06-18T00:59:39.8989442Z    info • Use of an async 'dart:io' method. Try using the synchronous version of the method • lib/features/downloads/data/datasources/download_datasource.dart:179:17 • avoid_slow_async_io
+2026-06-18T00:59:39.8990752Z    info • Statement should be on a separate line. Try moving the statement to a new line • lib/features/downloads/data/datasources/download_datasource.dart:179:32 • always_put_control_body_on_new_line
+2026-06-18T00:59:39.8992065Z    info • Statement should be on a separate line. Try moving the statement to a new line • lib/features/downloads/data/datasources/download_datasource.dart:186:23 • always_put_control_body_on_new_line
+2026-06-18T00:59:39.8994304Z    info • Use a function declaration rather than a variable assignment to bind a function to a name. Try rewriting the closure assignment as a function declaration • lib/features/downloads/data/datasources/download_datasource.dart:248:13 • prefer_function_declarations_over_variables
+2026-06-18T00:59:39.8997083Z    info • Sort directive sections alphabetically. Try sorting the directives • lib/features/downloads/data/repositories/download_repository_impl.dart:5:1 • directives_ordering
+2026-06-18T00:59:39.8999295Z warning • The value of the field '_networkInfo' isn't used. Try removing the field, or using it • lib/features/downloads/data/repositories/download_repository_impl.dart:9:21 • unused_field
+2026-06-18T00:59:39.9001487Z    info • Sort directive sections alphabetically. Try sorting the directives • lib/features/downloads/domain/repositories/download_repository.dart:2:1 • directives_ordering
+2026-06-18T00:59:39.9004067Z    info • Sort directive sections alphabetically. Try sorting the directives • lib/features/downloads/domain/usecases/download_usecases.dart:3:1 • directives_ordering
+2026-06-18T00:59:39.9006960Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/downloads/presentation/pages/downloads_page.dart:95:33 • deprecated_member_use
+2026-06-18T00:59:39.9010247Z    info • 'onBackground' is deprecated and shouldn't be used. Use onSurface instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/features/downloads/presentation/pages/downloads_page.dart:119:49 • deprecated_member_use
+2026-06-18T00:59:39.9013601Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/downloads/presentation/pages/downloads_page.dart:119:62 • deprecated_member_use
+2026-06-18T00:59:39.9016474Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/downloads/presentation/pages/downloads_page.dart:121:19 • prefer_const_constructors
+2026-06-18T00:59:39.9018831Z    info • Sort directive sections alphabetically. Try sorting the directives • lib/features/downloads/presentation/providers/downloads_provider.dart:6:1 • directives_ordering
+2026-06-18T00:59:39.9021570Z    info • 'onBackground' is deprecated and shouldn't be used. Use onSurface instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/features/home/presentation/pages/home_page.dart:75:34 • deprecated_member_use
+2026-06-18T00:59:39.9024763Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/home/presentation/pages/home_page.dart:76:34 • deprecated_member_use
+2026-06-18T00:59:39.9027743Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/home/presentation/pages/home_page.dart:94:49 • deprecated_member_use
+2026-06-18T00:59:39.9030421Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/home/presentation/pages/home_page.dart:129:28 • prefer_const_constructors
+2026-06-18T00:59:39.9032937Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/home/presentation/pages/home_page.dart:166:28 • prefer_const_constructors
+2026-06-18T00:59:39.9035633Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/home/presentation/pages/home_page.dart:256:20 • prefer_const_constructors
+2026-06-18T00:59:39.9038129Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/home/presentation/pages/home_page.dart:258:22 • prefer_const_constructors
+2026-06-18T00:59:39.9040834Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/home/presentation/pages/home_page.dart:326:41 • deprecated_member_use
+2026-06-18T00:59:39.9043844Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/home/presentation/pages/home_page.dart:356:24 • deprecated_member_use
+2026-06-18T00:59:39.9046999Z    info • 'onBackground' is deprecated and shouldn't be used. Use onSurface instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/features/library/presentation/pages/library_page.dart:62:20 • deprecated_member_use
+2026-06-18T00:59:39.9050491Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/library/presentation/pages/library_page.dart:63:20 • deprecated_member_use
+2026-06-18T00:59:39.9053623Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/library/presentation/pages/library_page.dart:125:53 • deprecated_member_use
+2026-06-18T00:59:39.9056838Z    info • 'onBackground' is deprecated and shouldn't be used. Use onSurface instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/features/library/presentation/pages/library_page.dart:234:47 • deprecated_member_use
+2026-06-18T00:59:39.9060025Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/library/presentation/pages/library_page.dart:234:60 • deprecated_member_use
+2026-06-18T00:59:39.9063306Z    info • 'onBackground' is deprecated and shouldn't be used. Use onSurface instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/features/library/presentation/pages/library_page.dart:285:18 • deprecated_member_use
+2026-06-18T00:59:39.9066501Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/library/presentation/pages/library_page.dart:286:18 • deprecated_member_use
+2026-06-18T00:59:39.9069677Z    info • 'onBackground' is deprecated and shouldn't be used. Use onSurface instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/features/library/presentation/pages/library_page.dart:294:24 • deprecated_member_use
+2026-06-18T00:59:39.9072866Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/library/presentation/pages/library_page.dart:295:24 • deprecated_member_use
+2026-06-18T00:59:39.9076195Z    info • 'onBackground' is deprecated and shouldn't be used. Use onSurface instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/features/library/presentation/widgets/track_list_item.dart:58:26 • deprecated_member_use
+2026-06-18T00:59:39.9079415Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/library/presentation/widgets/track_list_item.dart:59:26 • deprecated_member_use
+2026-06-18T00:59:39.9082651Z    info • 'onBackground' is deprecated and shouldn't be used. Use onSurface instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/features/library/presentation/widgets/track_list_item.dart:73:22 • deprecated_member_use
+2026-06-18T00:59:39.9085982Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/library/presentation/widgets/track_list_item.dart:74:22 • deprecated_member_use
+2026-06-18T00:59:39.9089026Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/library/presentation/widgets/track_list_item.dart:87:41 • deprecated_member_use
+2026-06-18T00:59:39.9092312Z warning • The left operand can't be null, so the right operand is never executed. Try removing the operator and the right operand • lib/features/local_music/data/datasources/local_music_datasource.dart:144:45 • dead_null_aware_expression
+2026-06-18T00:59:39.9094808Z    info • Sort directive sections alphabetically. Try sorting the directives • lib/features/local_music/domain/usecases/get_local_tracks_usecase.dart:3:1 • directives_ordering
+2026-06-18T00:59:39.9097640Z    info • 'onBackground' is deprecated and shouldn't be used. Use onSurface instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/features/local_music/presentation/pages/local_music_page.dart:68:20 • deprecated_member_use
+2026-06-18T00:59:39.9100875Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/local_music/presentation/pages/local_music_page.dart:69:20 • deprecated_member_use
+2026-06-18T00:59:39.9103135Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/local_music/presentation/pages/local_music_page.dart:185:53 • deprecated_member_use
+2026-06-18T00:59:39.9105113Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/local_music/presentation/pages/local_music_page.dart:228:45 • deprecated_member_use
+2026-06-18T00:59:39.9106871Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/local_music/presentation/pages/local_music_page.dart:267:47 • deprecated_member_use
+2026-06-18T00:59:39.9109252Z    info • 'onBackground' is deprecated and shouldn't be used. Use onSurface instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/features/local_music/presentation/pages/local_music_page.dart:333:26 • deprecated_member_use
+2026-06-18T00:59:39.9112433Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/local_music/presentation/pages/local_music_page.dart:334:26 • deprecated_member_use
+2026-06-18T00:59:39.9114584Z   error • A value of type 'int' can't be assigned to a parameter of type 'Color?' in a const constructor. Try using a subtype, or removing the keyword 'const' • lib/features/player/data/datasources/audio_handler.dart:31:9 • const_constructor_param_type_mismatch
+2026-06-18T00:59:39.9116036Z   error • The argument type 'int' can't be assigned to the parameter type 'Color?'.  • lib/features/player/data/datasources/audio_handler.dart:31:28 • argument_type_not_assignable
+2026-06-18T00:59:39.9117289Z   error • Undefined name 'hasNext'. Try correcting the name to one that is defined, or defining the name • lib/features/player/data/datasources/audio_handler.dart:66:16 • undefined_identifier
+2026-06-18T00:59:39.9118581Z    info • Statement should be on a separate line. Try moving the statement to a new line • lib/features/player/data/datasources/audio_handler.dart:208:51 • always_put_control_body_on_new_line
+2026-06-18T00:59:39.9119832Z    info • Statement should be on a separate line. Try moving the statement to a new line • lib/features/player/data/datasources/audio_handler.dart:213:25 • always_put_control_body_on_new_line
+2026-06-18T00:59:39.9121074Z    info • Statement should be on a separate line. Try moving the statement to a new line • lib/features/player/domain/entities/player_state.dart:46:39 • always_put_control_body_on_new_line
+2026-06-18T00:59:39.9122477Z    info • Sort directive sections alphabetically. Try sorting the directives • lib/features/player/domain/repositories/player_repository.dart:2:1 • directives_ordering
+2026-06-18T00:59:39.9124017Z    info • Sort directive sections alphabetically. Try sorting the directives • lib/features/player/domain/usecases/play_track_usecase.dart:3:1 • directives_ordering
+2026-06-18T00:59:39.9125164Z    info • Sort directive sections alphabetically. Try sorting the directives • lib/features/player/presentation/pages/player_page.dart:14:1 • directives_ordering
+2026-06-18T00:59:39.9126370Z    info • Statement should be on a separate line. Try moving the statement to a new line • lib/features/player/presentation/pages/player_page.dart:50:27 • always_put_control_body_on_new_line
+2026-06-18T00:59:39.9127931Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/player/presentation/pages/player_page.dart:87:30 • deprecated_member_use
+2026-06-18T00:59:39.9129669Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/player/presentation/pages/player_page.dart:88:28 • deprecated_member_use
+2026-06-18T00:59:39.9131360Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/player/presentation/pages/player_page.dart:238:45 • deprecated_member_use
+2026-06-18T00:59:39.9133323Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/player/presentation/pages/player_page.dart:257:38 • deprecated_member_use
+2026-06-18T00:59:39.9135097Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/player/presentation/pages/player_page.dart:291:41 • deprecated_member_use
+2026-06-18T00:59:39.9136788Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/player/presentation/pages/player_page.dart:314:46 • deprecated_member_use
+2026-06-18T00:59:39.9138473Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/player/presentation/pages/player_page.dart:316:40 • deprecated_member_use
+2026-06-18T00:59:39.9140147Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/player/presentation/pages/player_page.dart:339:39 • deprecated_member_use
+2026-06-18T00:59:39.9141984Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/player/presentation/pages/player_page.dart:347:39 • deprecated_member_use
+2026-06-18T00:59:39.9143892Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/player/presentation/pages/player_page.dart:440:30 • deprecated_member_use
+2026-06-18T00:59:39.9146294Z   error • The name 'RepeatMode' is defined in the libraries 'package:flutter/src/widgets/repeating_animation_builder.dart (via package:flutter/material.dart)' and 'package:vibify/features/player/domain/entities/player_state.dart'. Try using 'as prefix' for one of the import directives, or hiding the name from all but one of the imports • lib/features/player/presentation/pages/player_page.dart:446:38 • ambiguous_import
+2026-06-18T00:59:39.9148690Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/player/presentation/pages/player_page.dart:448:30 • deprecated_member_use
+2026-06-18T00:59:39.9150388Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/player/presentation/pages/player_page.dart:454:31 • deprecated_member_use
+2026-06-18T00:59:39.9152081Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/player/presentation/pages/player_page.dart:463:31 • deprecated_member_use
+2026-06-18T00:59:39.9153996Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/player/presentation/pages/player_page.dart:475:31 • deprecated_member_use
+2026-06-18T00:59:39.9156180Z   error • The body might complete normally, causing 'null' to be returned, but the return type, 'IconData', is a potentially non-nullable type. Try adding either a return or a throw statement at the end • lib/features/player/presentation/pages/player_page.dart:481:12 • body_might_complete_normally
+2026-06-18T00:59:39.9160151Z   error • The name 'RepeatMode' is defined in the libraries 'package:flutter/src/widgets/repeating_animation_builder.dart (via package:flutter/material.dart)' and 'package:vibify/features/player/domain/entities/player_state.dart'. Try using 'as prefix' for one of the import directives, or hiding the name from all but one of the imports • lib/features/player/presentation/pages/player_page.dart:481:24 • ambiguous_import
+2026-06-18T00:59:39.9163003Z   error • The name 'RepeatMode' is defined in the libraries 'package:flutter/src/widgets/repeating_animation_builder.dart (via package:flutter/material.dart)' and 'package:vibify/features/player/domain/entities/player_state.dart'. Try using 'as prefix' for one of the import directives, or hiding the name from all but one of the imports • lib/features/player/presentation/pages/player_page.dart:483:12 • ambiguous_import
+2026-06-18T00:59:39.9166015Z   error • The name 'RepeatMode' is defined in the libraries 'package:flutter/src/widgets/repeating_animation_builder.dart (via package:flutter/material.dart)' and 'package:vibify/features/player/domain/entities/player_state.dart'. Try using 'as prefix' for one of the import directives, or hiding the name from all but one of the imports • lib/features/player/presentation/pages/player_page.dart:485:12 • ambiguous_import
+2026-06-18T00:59:39.9168784Z   error • The name 'RepeatMode' is defined in the libraries 'package:flutter/src/widgets/repeating_animation_builder.dart (via package:flutter/material.dart)' and 'package:vibify/features/player/domain/entities/player_state.dart'. Try using 'as prefix' for one of the import directives, or hiding the name from all but one of the imports • lib/features/player/presentation/pages/player_page.dart:487:12 • ambiguous_import
+2026-06-18T00:59:39.9170944Z    info • Sort directive sections alphabetically. Try sorting the directives • lib/features/player/presentation/providers/player_provider.dart:9:1 • directives_ordering
+2026-06-18T00:59:39.9172222Z    info • Statement should be on a separate line. Try moving the statement to a new line • lib/features/player/presentation/widgets/mini_player.dart:19:24 • always_put_control_body_on_new_line
+2026-06-18T00:59:39.9173945Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/player/presentation/widgets/mini_player.dart:33:35 • deprecated_member_use
+2026-06-18T00:59:39.9175834Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/player/presentation/widgets/mini_player.dart:109:51 • deprecated_member_use
+2026-06-18T00:59:39.9177571Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/player/presentation/widgets/mini_player.dart:124:41 • deprecated_member_use
+2026-06-18T00:59:39.9179278Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/player/presentation/widgets/mini_player.dart:200:58 • deprecated_member_use
+2026-06-18T00:59:39.9181040Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/player/presentation/widgets/playback_speed_dialog.dart:47:36 • deprecated_member_use
+2026-06-18T00:59:39.9182849Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/player/presentation/widgets/queue_panel.dart:46:41 • deprecated_member_use
+2026-06-18T00:59:39.9185334Z    info • 'onReorder' is deprecated and shouldn't be used. Use the onReorderItem callback instead. The onReorderItem callback adjusts the newIndex parameter for a removed item at the oldIndex. This feature was deprecated after v3.41.0-0.0.pre. Try replacing the use of the deprecated member with the replacement • lib/features/player/presentation/widgets/queue_panel.dart:66:13 • deprecated_member_use
+2026-06-18T00:59:39.9187258Z    info • Statement should be on a separate line. Try moving the statement to a new line • lib/features/player/presentation/widgets/queue_panel.dart:67:40 • always_put_control_body_on_new_line
+2026-06-18T00:59:39.9188806Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/player/presentation/widgets/queue_panel.dart:142:31 • deprecated_member_use
+2026-06-18T00:59:39.9190530Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/player/presentation/widgets/queue_panel.dart:156:37 • deprecated_member_use
+2026-06-18T00:59:39.9192237Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/player/presentation/widgets/queue_panel.dart:166:35 • deprecated_member_use
+2026-06-18T00:59:39.9194107Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/player/presentation/widgets/queue_panel.dart:179:41 • deprecated_member_use
+2026-06-18T00:59:39.9195798Z    info • Statement should be on a separate line. Try moving the statement to a new line • lib/features/playlists/data/datasources/playlist_datasource.dart:47:23 • always_put_control_body_on_new_line
+2026-06-18T00:59:39.9197119Z    info • Statement should be on a separate line. Try moving the statement to a new line • lib/features/playlists/data/datasources/playlist_datasource.dart:80:27 • always_put_control_body_on_new_line
+2026-06-18T00:59:39.9198574Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/playlists/data/datasources/playlist_datasource.dart:80:33 • prefer_const_constructors
+2026-06-18T00:59:39.9199998Z    info • Statement should be on a separate line. Try moving the statement to a new line • lib/features/playlists/data/datasources/playlist_datasource.dart:88:27 • always_put_control_body_on_new_line
+2026-06-18T00:59:39.9201627Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/playlists/data/datasources/playlist_datasource.dart:88:33 • prefer_const_constructors
+2026-06-18T00:59:39.9203103Z    info • Statement should be on a separate line. Try moving the statement to a new line • lib/features/playlists/data/datasources/playlist_datasource.dart:97:27 • always_put_control_body_on_new_line
+2026-06-18T00:59:39.9204782Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/playlists/data/datasources/playlist_datasource.dart:97:33 • prefer_const_constructors
+2026-06-18T00:59:39.9206164Z    info • Sort directive sections alphabetically. Try sorting the directives • lib/features/playlists/domain/repositories/playlist_repository.dart:2:1 • directives_ordering
+2026-06-18T00:59:39.9207377Z    info • Sort directive sections alphabetically. Try sorting the directives • lib/features/playlists/domain/usecases/playlist_usecases.dart:3:1 • directives_ordering
+2026-06-18T00:59:39.9208919Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/playlists/presentation/pages/playlist_detail_page.dart:54:50 • deprecated_member_use
+2026-06-18T00:59:39.9210717Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/playlists/presentation/pages/playlist_detail_page.dart:55:50 • deprecated_member_use
+2026-06-18T00:59:39.9212485Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/playlists/presentation/pages/playlists_page.dart:112:41 • deprecated_member_use
+2026-06-18T00:59:39.9214204Z    info • Statement should be on a separate line. Try moving the statement to a new line • lib/features/playlists/presentation/pages/playlists_page.dart:126:34 • always_put_control_body_on_new_line
+2026-06-18T00:59:39.9215489Z    info • Sort directive sections alphabetically. Try sorting the directives • lib/features/playlists/presentation/providers/playlists_provider.dart:6:1 • directives_ordering
+2026-06-18T00:59:39.9217723Z   error • The name 'SearchResult' is defined in the libraries 'package:vibify/features/search/domain/entities/search_result.dart' and 'package:youtube_explode_dart/src/search/search_result.dart (via package:youtube_explode_dart/youtube_explode_dart.dart)'. Try using 'as prefix' for one of the import directives, or hiding the name from all but one of the imports • lib/features/search/data/datasources/youtube_datasource.dart:8:10 • ambiguous_import
+2026-06-18T00:59:39.9221018Z   error • The name 'SearchResult' is defined in the libraries 'package:vibify/features/search/domain/entities/search_result.dart' and 'package:youtube_explode_dart/src/search/search_result.dart (via package:youtube_explode_dart/youtube_explode_dart.dart)'. Try using 'as prefix' for one of the import directives, or hiding the name from all but one of the imports • lib/features/search/data/datasources/youtube_datasource.dart:17:10 • ambiguous_import
+2026-06-18T00:59:39.9224227Z   error • The name 'SearchPlaylist' is defined in the libraries 'package:vibify/features/search/domain/entities/search_result.dart' and 'package:youtube_explode_dart/src/search/search_result.dart (via package:youtube_explode_dart/youtube_explode_dart.dart)'. Try using 'as prefix' for one of the import directives, or hiding the name from all but one of the imports • lib/features/search/data/datasources/youtube_datasource.dart:22:26 • ambiguous_import
+2026-06-18T00:59:39.9226324Z   error • The argument type 'Video' can't be assigned to the parameter type 'SearchVideo'.  • lib/features/search/data/datasources/youtube_datasource.dart:26:36 • argument_type_not_assignable
+2026-06-18T00:59:39.9228011Z   error • The getter 'name' isn't defined for the type 'Video'. Try importing the library that defines 'name', correcting the name to the name of an existing getter, or defining a getter or field named 'name' • lib/features/search/data/datasources/youtube_datasource.dart:30:26 • undefined_getter
+2026-06-18T00:59:39.9230525Z   error • The name 'SearchPlaylist' is defined in the libraries 'package:vibify/features/search/domain/entities/search_result.dart' and 'package:youtube_explode_dart/src/search/search_result.dart (via package:youtube_explode_dart/youtube_explode_dart.dart)'. Try using 'as prefix' for one of the import directives, or hiding the name from all but one of the imports • lib/features/search/data/datasources/youtube_datasource.dart:33:30 • ambiguous_import
+2026-06-18T00:59:39.9232829Z   error • 'SearchPlaylist' isn't a function. Try correcting the name to match an existing function, or define a method or function named 'SearchPlaylist' • lib/features/search/data/datasources/youtube_datasource.dart:34:25 • invocation_of_non_function
+2026-06-18T00:59:39.9235464Z   error • The name 'SearchPlaylist' is defined in the libraries 'package:vibify/features/search/domain/entities/search_result.dart' and 'package:youtube_explode_dart/src/search/search_result.dart (via package:youtube_explode_dart/youtube_explode_dart.dart)'. Try using 'as prefix' for one of the import directives, or hiding the name from all but one of the imports • lib/features/search/data/datasources/youtube_datasource.dart:34:25 • ambiguous_import
+2026-06-18T00:59:39.9239326Z   error • 'SearchResult' isn't a function. Try correcting the name to match an existing function, or define a method or function named 'SearchResult' • lib/features/search/data/datasources/youtube_datasource.dart:42:14 • invocation_of_non_function
+2026-06-18T00:59:39.9241906Z   error • The name 'SearchResult' is defined in the libraries 'package:vibify/features/search/domain/entities/search_result.dart' and 'package:youtube_explode_dart/src/search/search_result.dart (via package:youtube_explode_dart/youtube_explode_dart.dart)'. Try using 'as prefix' for one of the import directives, or hiding the name from all but one of the imports • lib/features/search/data/datasources/youtube_datasource.dart:42:14 • ambiguous_import
+2026-06-18T00:59:39.9244311Z    info • Uses 'await' on an instance of 'Stream<Video>', which is not a subtype of 'Future'. Try removing the 'await' or changing the expression • lib/features/search/data/datasources/youtube_datasource.dart:75:24 • await_only_futures
+2026-06-18T00:59:39.9246172Z   error • The getter 'channelName' isn't defined for the type 'SearchVideo'. Try importing the library that defines 'channelName', correcting the name to the name of an existing getter, or defining a getter or field named 'channelName' • lib/features/search/data/datasources/youtube_datasource.dart:98:23 • undefined_getter
+2026-06-18T00:59:39.9248507Z   error • The argument type 'String' can't be assigned to the parameter type 'Duration?'.  • lib/features/search/data/datasources/youtube_datasource.dart:99:19 • argument_type_not_assignable
+2026-06-18T00:59:39.9250511Z   error • The getter 'highResUrl' isn't defined for the type 'List<Thumbnail>'. Try importing the library that defines 'highResUrl', correcting the name to the name of an existing getter, or defining a getter or field named 'highResUrl' • lib/features/search/data/datasources/youtube_datasource.dart:100:40 • undefined_getter
+2026-06-18T00:59:39.9252173Z    info • Sort directive sections alphabetically. Try sorting the directives • lib/features/search/data/repositories/search_repository_impl.dart:4:1 • directives_ordering
+2026-06-18T00:59:39.9253814Z   error • Target of URI doesn't exist: '../../player/domain/entities/track.dart'. Try creating the file referenced by the URI, or try using a URI for a file that does exist • lib/features/search/domain/entities/search_result.dart:3:8 • uri_does_not_exist
+2026-06-18T00:59:39.9255463Z   error • The name 'Track' isn't a type, so it can't be used as a type argument. Try correcting the name to an existing type, or defining a type named 'Track' • lib/features/search/domain/entities/search_result.dart:6:14 • non_type_as_type_argument
+2026-06-18T00:59:39.9256819Z    info • Sort directive sections alphabetically. Try sorting the directives • lib/features/search/domain/repositories/search_repository.dart:2:1 • directives_ordering
+2026-06-18T00:59:39.9257995Z    info • Sort directive sections alphabetically. Try sorting the directives • lib/features/search/domain/usecases/search_tracks_usecase.dart:3:1 • directives_ordering
+2026-06-18T00:59:39.9259281Z    info • Statement should be on a separate line. Try moving the statement to a new line • lib/features/search/presentation/pages/search_page.dart:116:25 • always_put_control_body_on_new_line
+2026-06-18T00:59:39.9260694Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/search/presentation/pages/search_page.dart:130:24 • prefer_const_constructors
+2026-06-18T00:59:39.9262170Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/search/presentation/pages/search_page.dart:132:26 • prefer_const_constructors
+2026-06-18T00:59:39.9263001Z 244 issues found. (ran in 10.2s)
+2026-06-18T00:59:39.9264316Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/search/presentation/pages/search_page.dart:207:22 • deprecated_member_use
+2026-06-18T00:59:39.9266084Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/search/presentation/pages/search_page.dart:209:41 • deprecated_member_use
+2026-06-18T00:59:39.9267926Z    info • 'onBackground' is deprecated and shouldn't be used. Use onSurface instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/features/search/presentation/pages/search_page.dart:241:47 • deprecated_member_use
+2026-06-18T00:59:39.9269766Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/search/presentation/pages/search_page.dart:241:60 • deprecated_member_use
+2026-06-18T00:59:39.9271238Z    info • Statement should be on a separate line. Try moving the statement to a new line • lib/features/search/presentation/pages/search_page.dart:275:25 • always_put_control_body_on_new_line
+2026-06-18T00:59:39.9272864Z    info • 'onBackground' is deprecated and shouldn't be used. Use onSurface instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/features/search/presentation/pages/search_page.dart:322:20 • deprecated_member_use
+2026-06-18T00:59:39.9275134Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/search/presentation/pages/search_page.dart:323:20 • deprecated_member_use
+2026-06-18T00:59:39.9276861Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/search/presentation/pages/search_page.dart:335:41 • deprecated_member_use
+2026-06-18T00:59:39.9278341Z    info • Statement should be on a separate line. Try moving the statement to a new line • lib/features/search/presentation/pages/search_page.dart:353:26 • always_put_control_body_on_new_line
+2026-06-18T00:59:39.9279857Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/search/presentation/pages/search_page.dart:361:53 • deprecated_member_use
+2026-06-18T00:59:39.9281324Z    info • Statement should be on a separate line. Try moving the statement to a new line • lib/features/search/presentation/pages/search_page.dart:385:28 • always_put_control_body_on_new_line
+2026-06-18T00:59:39.9282817Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/search/presentation/pages/search_page.dart:396:45 • deprecated_member_use
+2026-06-18T00:59:39.9284860Z    info • 'onBackground' is deprecated and shouldn't be used. Use onSurface instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/features/search/presentation/pages/search_page.dart:427:18 • deprecated_member_use
+2026-06-18T00:59:39.9286673Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/search/presentation/pages/search_page.dart:428:18 • deprecated_member_use
+2026-06-18T00:59:39.9288500Z    info • 'onBackground' is deprecated and shouldn't be used. Use onSurface instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/features/search/presentation/pages/search_page.dart:436:24 • deprecated_member_use
+2026-06-18T00:59:39.9290280Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/search/presentation/pages/search_page.dart:437:24 • deprecated_member_use
+2026-06-18T00:59:39.9291791Z    info • Statement should be on a separate line. Try moving the statement to a new line • lib/features/search/presentation/providers/search_provider.dart:61:31 • always_put_control_body_on_new_line
+2026-06-18T00:59:39.9293114Z    info • Statement should be on a separate line. Try moving the statement to a new line • lib/features/search/presentation/providers/search_provider.dart:67:20 • always_put_control_body_on_new_line
+2026-06-18T00:59:39.9294739Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/settings/presentation/pages/settings_page.dart:34:17 • prefer_const_constructors
+2026-06-18T00:59:39.9296239Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/settings/presentation/pages/settings_page.dart:42:17 • prefer_const_constructors
+2026-06-18T00:59:39.9297712Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/settings/presentation/pages/settings_page.dart:67:17 • prefer_const_constructors
+2026-06-18T00:59:39.9299519Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/settings/presentation/pages/settings_page.dart:87:17 • prefer_const_constructors
+2026-06-18T00:59:39.9300988Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/settings/presentation/pages/settings_page.dart:90:21 • prefer_const_constructors
+2026-06-18T00:59:39.9302481Z    info • Use 'const' with the constructor to improve performance. Try adding the 'const' keyword to the constructor invocation • lib/features/settings/presentation/pages/settings_page.dart:156:16 • prefer_const_constructors
+2026-06-18T00:59:39.9304304Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/settings/presentation/pages/settings_page.dart:209:41 • deprecated_member_use
+2026-06-18T00:59:39.9306204Z    info • 'onBackground' is deprecated and shouldn't be used. Use onSurface instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/features/settings/presentation/pages/settings_page.dart:224:24 • deprecated_member_use
+2026-06-18T00:59:39.9308040Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/settings/presentation/pages/settings_page.dart:225:24 • deprecated_member_use
+2026-06-18T00:59:39.9309754Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/settings/presentation/pages/settings_page.dart:250:49 • deprecated_member_use
+2026-06-18T00:59:39.9311603Z    info • 'background' is deprecated and shouldn't be used. Use surface instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/features/settings/presentation/pages/settings_page.dart:321:49 • deprecated_member_use
+2026-06-18T00:59:39.9313670Z    info • 'onBackground' is deprecated and shouldn't be used. Use onSurface instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/features/settings/presentation/pages/settings_page.dart:328:24 • deprecated_member_use
+2026-06-18T00:59:39.9315491Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/settings/presentation/pages/settings_page.dart:329:24 • deprecated_member_use
+2026-06-18T00:59:39.9317331Z    info • 'onBackground' is deprecated and shouldn't be used. Use onSurface instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/features/settings/presentation/pages/settings_page.dart:341:26 • deprecated_member_use
+2026-06-18T00:59:39.9319140Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/settings/presentation/pages/settings_page.dart:342:26 • deprecated_member_use
+2026-06-18T00:59:39.9320966Z    info • 'onBackground' is deprecated and shouldn't be used. Use onSurface instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/features/settings/presentation/pages/settings_page.dart:355:28 • deprecated_member_use
+2026-06-18T00:59:39.9322841Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/settings/presentation/pages/settings_page.dart:356:28 • deprecated_member_use
+2026-06-18T00:59:39.9326093Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/settings/presentation/pages/settings_page.dart:380:41 • deprecated_member_use
+2026-06-18T00:59:39.9329330Z    info • 'onBackground' is deprecated and shouldn't be used. Use onSurface instead. This feature was deprecated after v3.18.0-0.1.pre. Try replacing the use of the deprecated member with the replacement • lib/features/settings/presentation/pages/settings_page.dart:391:48 • deprecated_member_use
+2026-06-18T00:59:39.9331357Z    info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/features/settings/presentation/pages/settings_page.dart:391:61 • deprecated_member_use
+2026-06-18T00:59:39.9333573Z    info • 'groupValue' is deprecated and shouldn't be used. Use a RadioGroup ancestor to manage group value instead. This feature was deprecated after v3.32.0-0.0.pre. Try replacing the use of the deprecated member with the replacement • lib/features/settings/presentation/pages/settings_page.dart:419:21 • deprecated_member_use
+2026-06-18T00:59:39.9335695Z    info • 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre. Try replacing the use of the deprecated member with the replacement • lib/features/settings/presentation/pages/settings_page.dart:421:21 • deprecated_member_use
+2026-06-18T00:59:39.9337355Z    info • Type could be non-nullable. Try changing the type to be non-nullable • test/unit/duration_extension_test.dart:47:23 • unnecessary_nullable_for_final_variable_declarations
+2026-06-18T00:59:39.9338676Z    info • Use 'const' literals as arguments to constructors of '@immutable' classes. Try adding 'const' before the literal • test/unit/playlist_test.dart:38:17 • prefer_const_literals_to_create_immutables
+2026-06-18T00:59:39.9340013Z    info • Use 'const' literals as arguments to constructors of '@immutable' classes. Try adding 'const' before the literal • test/unit/playlist_test.dart:49:17 • prefer_const_literals_to_create_immutables
+2026-06-18T00:59:39.9340649Z 
+2026-06-18T00:59:39.9351311Z ##[error]Process completed with exit code 1.
+2026-06-18T00:59:39.9528930Z Post job cleanup.
+2026-06-18T00:59:39.9596025Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-06-18T00:59:39.9597199Z Post job cleanup.
+2026-06-18T00:59:40.0436063Z [command]/usr/bin/git version
+2026-06-18T00:59:40.0504108Z git version 2.54.0
+2026-06-18T00:59:40.0539373Z Temporarily overriding HOME='/home/runner/work/_temp/50f27669-1da3-45c5-a4e2-31beaeeec22d' before making global git config changes
+2026-06-18T00:59:40.0540635Z Adding repository directory to the temporary git global config as a safe directory
+2026-06-18T00:59:40.0545623Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/VIBIFY/VIBIFY
+2026-06-18T00:59:40.0581723Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-06-18T00:59:40.0615265Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-06-18T00:59:40.0849632Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-06-18T00:59:40.0875998Z http.https://github.com/.extraheader
+2026-06-18T00:59:40.0886077Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-06-18T00:59:40.0917627Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-06-18T00:59:40.1161631Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-06-18T00:59:40.1195685Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-06-18T00:59:40.1676503Z Cleaning up orphan processes
+2026-06-18T00:59:40.1954261Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/cache@v4, actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

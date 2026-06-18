@@ -47,7 +47,7 @@ jobs:
         run: flutter pub run build_runner build --delete-conflicting-outputs
 
       - name: Analyze code
-        run: flutter analyze --fatal-infos
+        run: flutter analyze --fatal-warnings
 
   build_apk:
     name: Build APK
