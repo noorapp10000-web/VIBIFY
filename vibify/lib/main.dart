@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'core/di/injection.dart';
 import 'core/router/app_router.dart';
@@ -29,9 +32,19 @@ void main() async {
 
   await Hive.initFlutter();
 
+  // Request notification permission on Android 13+ so media controls appear
+  if (Platform.isAndroid) {
+    final status = await Permission.notification.status;
+    if (!status.isGranted) {
+      await Permission.notification.request();
+    }
+  }
+
   try {
     await setupDependencies();
-  } catch (_) {}
+  } catch (e) {
+    debugPrint('[Setup] dependency error: $e');
+  }
 
   runApp(const ProviderScope(child: VibifyApp()));
 }

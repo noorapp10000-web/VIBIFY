@@ -21,6 +21,15 @@ class SearchPage extends ConsumerStatefulWidget {
 class _SearchPageState extends ConsumerState<SearchPage> {
   final _controller = TextEditingController();
   final _focusNode = FocusNode();
+  bool _isFocused = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(() {
+      if (mounted) setState(() => _isFocused = _focusNode.hasFocus);
+    });
+  }
 
   @override
   void dispose() {
@@ -42,72 +51,68 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     final searchState = ref.watch(searchNotifierProvider);
     final notifier = ref.read(searchNotifierProvider.notifier);
 
+    Widget body;
+
+    if (searchState.isLoading) {
+      body = const Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation(AppColors.primaryBeige),
+        ),
+      );
+    } else if (searchState.error != null) {
+      body = _ErrorWidget(
+        error: searchState.error!,
+        onRetry: notifier.search,
+      );
+    } else if (searchState.result != null) {
+      body = searchState.result!.isEmpty
+          ? const _EmptyResults()
+          : _SearchResults(result: searchState.result!);
+    } else if (_isFocused && searchState.query.isEmpty) {
+      // Search bar focused, nothing typed → show recents
+      body = _RecentSearches(
+        recent: searchState.recentSearches,
+        onTap: (q) {
+          _controller.text = q;
+          notifier.onQueryChanged(q);
+          notifier.search();
+        },
+        onClear: notifier.clearRecentSearches,
+        onGenreTap: _searchGenre,
+      );
+    } else {
+      // Default idle state → browse genres
+      body = _BrowseCategories(onTap: _searchGenre);
+    }
+
     return Scaffold(
       body: SafeArea(
         child: Column(
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _controller,
-                      focusNode: _focusNode,
-                      onChanged: notifier.onQueryChanged,
-                      onSubmitted: (_) => notifier.search(),
-                      textInputAction: TextInputAction.search,
-                      decoration: InputDecoration(
-                        hintText: 'Search songs, artists, playlists...',
-                        prefixIcon: const Icon(Icons.search_rounded),
-                        suffixIcon: searchState.query.isNotEmpty
-                            ? IconButton(
-                                onPressed: () {
-                                  _controller.clear();
-                                  notifier.clear();
-                                },
-                                icon: const Icon(Icons.close_rounded, size: 18),
-                              )
-                            : null,
-                      ),
-                    ),
-                  ),
-                ],
+              child: TextField(
+                controller: _controller,
+                focusNode: _focusNode,
+                onChanged: notifier.onQueryChanged,
+                onSubmitted: (_) => notifier.search(),
+                textInputAction: TextInputAction.search,
+                decoration: InputDecoration(
+                  hintText: 'Search songs, artists, playlists...',
+                  prefixIcon: const Icon(Icons.search_rounded),
+                  suffixIcon: searchState.query.isNotEmpty
+                      ? IconButton(
+                          onPressed: () {
+                            _controller.clear();
+                            notifier.clear();
+                          },
+                          icon: const Icon(Icons.close_rounded, size: 18),
+                        )
+                      : null,
+                ),
               ),
             ),
-
-            Expanded(
-              child: searchState.isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(
-                        valueColor:
-                            AlwaysStoppedAnimation(AppColors.primaryBeige),
-                      ),
-                    )
-                  : searchState.error != null
-                      ? _ErrorWidget(
-                          error: searchState.error!,
-                          onRetry: notifier.search,
-                        )
-                      : searchState.query.isEmpty
-                          ? _RecentSearches(
-                              recent: searchState.recentSearches,
-                              onTap: (q) {
-                                _controller.text = q;
-                                notifier.onQueryChanged(q);
-                                notifier.search();
-                              },
-                              onClear: notifier.clearRecentSearches,
-                              onGenreTap: _searchGenre,
-                            )
-                          : searchState.result == null
-                              ? _BrowseCategories(onTap: _searchGenre)
-                              : searchState.result!.isEmpty
-                                  ? const _EmptyResults()
-                                  : _SearchResults(
-                                      result: searchState.result!,
-                                    ),
-            ),
+            Expanded(child: body),
           ],
         ),
       ),

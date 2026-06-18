@@ -37,12 +37,15 @@ class VibifyAudioHandler extends BaseAudioHandler
           androidNotificationChannelId: 'com.vibify.audio',
           androidNotificationChannelName: 'Vibify',
           androidNotificationOngoing: true,
-          androidStopForegroundOnPause: true,
+          androidStopForegroundOnPause: false,
           notificationColor: Color(0xFFD6B48A),
           androidNotificationIcon: 'drawable/ic_notification',
+          androidNotificationChannelDescription: 'Vibify music playback',
         ),
-      ).timeout(const Duration(seconds: 10));
-    } catch (_) {}
+      ).timeout(const Duration(seconds: 15));
+    } catch (e) {
+      debugPrint('[AudioService] init error: $e');
+    }
 
     handler._listenToPlayerEvents();
     return handler;
