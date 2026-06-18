@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/add_to_playlist_sheet.dart';
+import '../../../../core/widgets/download_option.dart';
 import '../../../library/presentation/widgets/track_list_item.dart';
 import '../../../player/domain/entities/track.dart';
 import '../../../player/presentation/providers/player_provider.dart';
@@ -197,6 +198,10 @@ class _SongsTab extends ConsumerWidget {
                 Navigator.pop(context);
                 showAddToPlaylistSheet(context, ref, track);
               },
+            ),
+            DownloadOption(
+              track: track,
+              onDownloadStarted: () => Navigator.pop(context),
             ),
             const SizedBox(height: 8),
           ],

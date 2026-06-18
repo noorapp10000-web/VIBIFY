@@ -7,6 +7,7 @@ import 'package:palette_generator/palette_generator.dart';
 import '../../../../core/extensions/duration_extensions.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/add_to_playlist_sheet.dart';
+import '../../../../core/widgets/download_option.dart';
 import '../../../../features/library/presentation/providers/library_provider.dart';
 import '../../domain/entities/player_state.dart';
 import '../../domain/entities/track.dart';
@@ -200,6 +201,10 @@ class _PlayerHeader extends ConsumerWidget {
               leading: const Icon(Icons.queue_music_rounded),
               title: const Text('View Queue'),
               onTap: () => Navigator.pop(context),
+            ),
+            DownloadOption(
+              track: track,
+              onDownloadStarted: () => Navigator.pop(context),
             ),
             const SizedBox(height: 8),
           ],

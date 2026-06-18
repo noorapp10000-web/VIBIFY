@@ -70,3 +70,14 @@ final downloadsNotifierProvider =
         (ref) {
   return DownloadsNotifier(sl<DownloadUsecases>());
 });
+
+/// Returns the latest DownloadItem for the given track id, or null if never downloaded.
+final trackDownloadStatusProvider =
+    Provider.family<DownloadItem?, String>((ref, trackId) {
+  final downloads = ref.watch(downloadsNotifierProvider).valueOrNull ?? [];
+  try {
+    return downloads.firstWhere((d) => d.track.id == trackId);
+  } catch (_) {
+    return null;
+  }
+});
