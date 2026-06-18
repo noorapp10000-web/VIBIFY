@@ -13,6 +13,26 @@ subprojects {
     project.evaluationDependsOn(":app")
 }
 
+// Fix for older Flutter packages that don't specify 'namespace' in their build.gradle.
+// AGP 8.x requires a namespace; this reads it from AndroidManifest.xml as a fallback.
+subprojects {
+    afterEvaluate { project ->
+        if (project.plugins.hasPlugin("com.android.library")) {
+            def androidExt = project.extensions.findByName("android")
+            if (androidExt != null && androidExt.namespace == null) {
+                def manifestFile = androidExt.sourceSets["main"].manifest.srcFile
+                if (manifestFile.exists()) {
+                    def manifest = new groovy.xml.XmlSlurper().parse(manifestFile)
+                    def pkg = manifest.'@package'.text()
+                    if (pkg) {
+                        androidExt.namespace = pkg
+                    }
+                }
+            }
+        }
+    }
+}
+
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
