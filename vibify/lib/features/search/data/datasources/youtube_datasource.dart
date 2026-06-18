@@ -46,15 +46,52 @@ class YoutubeDatasourceImpl implements YoutubeDatasource {
   Future<SearchResult> search(String query, {int limit = 20}) async {
     try {
       final tracks = await _searchInnerTube(query, limit);
-      return SearchResult(
-        tracks: tracks,
-        artists: [],
-        playlists: [],
-        query: query,
-      );
-    } catch (e) {
-      throw StreamException(message: 'Search failed: $e');
+      if (tracks.isNotEmpty) {
+        return SearchResult(
+          tracks: tracks,
+          artists: [],
+          playlists: [],
+          query: query,
+        );
+      }
+      throw Exception('Empty results from InnerTube');
+    } catch (_) {
+      try {
+        final tracks = await _searchViaServer(query, limit);
+        return SearchResult(
+          tracks: tracks,
+          artists: [],
+          playlists: [],
+          query: query,
+        );
+      } catch (e2) {
+        throw StreamException(message: 'Search failed: $e2');
+      }
     }
+  }
+
+  Future<List<Track>> _searchViaServer(String query, int limit) async {
+    final resp = await _apiDio.get<Map<String, dynamic>>(
+      '/search',
+      queryParameters: {'q': query, 'limit': limit},
+    );
+    final data = resp.data ?? {};
+    final rawTracks = (data['tracks'] as List<dynamic>?) ?? [];
+    return rawTracks.map((item) {
+      final m = item as Map<String, dynamic>;
+      final vid = m['id'] as String? ?? '';
+      final durationText = m['duration_text'] as String?;
+      return Track(
+        id: vid,
+        title: m['title'] as String? ?? vid,
+        artist: m['artist'] as String? ?? 'Unknown',
+        duration: _parseDuration(durationText),
+        thumbnailUrl: m['thumbnail_url'] as String?,
+        source: TrackSource.youtube,
+        youtubeVideoId: vid,
+        addedAt: DateTime.now(),
+      );
+    }).toList();
   }
 
   Future<List<Track>> _searchInnerTube(String query, int limit) async {
