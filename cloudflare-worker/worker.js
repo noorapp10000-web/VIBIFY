@@ -216,48 +216,35 @@ async function handleInfo(url) {
   const id = url.searchParams.get('id') ?? '';
   if (!id) return json({ error: 'Missing "id" parameter' }, 400);
 
-  // Get basic info from InnerTube player (without needing stream URL)
+  // 1. Try YouTube oEmbed (works from any IP, gives title + author + thumbnail)
   try {
-    const payload = {
-      videoId: id,
-      context: {
-        client: {
-          clientName: 'WEB',
-          clientVersion: '2.20240101.01.00',
-          hl: 'en',
-          gl: 'US',
-        },
-      },
-    };
-
-    const resp = await fetch(INNERTUBE_PLAYER_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+    const oembedUrl =
+      `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`;
+    const resp = await fetch(oembedUrl, {
+      headers: { 'User-Agent': 'Mozilla/5.0' },
     });
+    if (resp.ok) {
+      const data = await resp.json();
+      return json({
+        id,
+        title: data.title ?? id,
+        artist: data.author_name ?? 'Unknown',
+        duration_seconds: 0,
+        youtube_video_id: id,
+        thumbnail_url: data.thumbnail_url ?? `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
+      });
+    }
+  } catch (_) {}
 
-    const data = await resp.json();
-    const details = data?.videoDetails;
-    if (!details) return json({ error: 'Video not found' }, 404);
-
-    const durationSec = parseInt(details.lengthSeconds ?? '0', 10);
-    const thumbs = details.thumbnail?.thumbnails ?? [];
-    const thumbUrl =
-      thumbs.length > 0
-        ? thumbs[thumbs.length - 1].url
-        : `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
-
-    return json({
-      id: details.videoId ?? id,
-      title: details.title ?? id,
-      artist: details.author ?? 'Unknown',
-      duration_seconds: durationSec,
-      youtube_video_id: details.videoId ?? id,
-      thumbnail_url: thumbUrl,
-    });
-  } catch (err) {
-    return json({ error: err.message }, 500);
-  }
+  // 2. Fallback: construct basic info from video ID
+  return json({
+    id,
+    title: id,
+    artist: 'Unknown',
+    duration_seconds: 0,
+    youtube_video_id: id,
+    thumbnail_url: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
+  });
 }
 
 // ── Main fetch handler ────────────────────────────────────────────────────────
