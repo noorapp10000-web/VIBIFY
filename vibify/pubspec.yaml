@@ -26,7 +26,6 @@ dependencies:
 
   # Audio
   just_audio: ^0.9.40
-  just_audio_background: ^0.0.1-beta.12
   audio_service: ^0.18.14
   audio_session: ^0.1.21
 
@@ -36,9 +35,6 @@ dependencies:
   # Local Database
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-
-  # Secure Storage
-  flutter_secure_storage: ^9.2.2
 
   # Local Music
   on_audio_query: ^2.9.0
