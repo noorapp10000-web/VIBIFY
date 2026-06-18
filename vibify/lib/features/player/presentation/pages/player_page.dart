@@ -6,6 +6,7 @@ import 'package:palette_generator/palette_generator.dart';
 
 import '../../../../core/extensions/duration_extensions.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../features/library/presentation/providers/library_provider.dart';
 import '../../domain/entities/player_state.dart';
 import '../../domain/entities/track.dart';
 import '../providers/player_provider.dart';
@@ -247,7 +248,10 @@ class _PlayerContent extends ConsumerWidget {
                 ),
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  ref.read(playerNotifierProvider.notifier).toggleFavorite();
+                  ref.read(favoritesVersionProvider.notifier).state++;
+                },
                 icon: Icon(
                   state.isFavorite
                       ? Icons.favorite_rounded

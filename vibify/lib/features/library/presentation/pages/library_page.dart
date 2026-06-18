@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../player/presentation/providers/player_provider.dart';
+import '../../../playlists/presentation/providers/playlists_provider.dart';
 import '../providers/library_provider.dart';
 import '../widgets/track_list_item.dart';
 
@@ -96,7 +97,7 @@ class _PlaylistsTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final playlistsAsync = ref.watch(playlistsProvider);
+    final playlistsAsync = ref.watch(playlistsNotifierProvider);
 
     return playlistsAsync.when(
       loading: () => const Center(

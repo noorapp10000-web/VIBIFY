@@ -24,4 +24,5 @@ abstract class PlayerRepository {
   Future<void> setVolume(double volume);
   Future<void> setSleepTimer(Duration duration);
   Future<void> cancelSleepTimer();
+  Future<void> toggleFavorite(Track track);
 }

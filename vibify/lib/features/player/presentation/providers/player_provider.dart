@@ -66,6 +66,11 @@ class PlayerNotifier extends StateNotifier<VibifyPlayerState> {
   Future<void> setSleepTimer(Duration duration) =>
       _manageQueue.setSleepTimer(duration);
   Future<void> cancelSleepTimer() => _manageQueue.cancelSleepTimer();
+  Future<void> toggleFavorite() {
+    final track = state.currentTrack;
+    if (track == null) return Future.value();
+    return _repository.toggleFavorite(track);
+  }
 }
 
 final playerNotifierProvider =

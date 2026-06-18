@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
+import 'package:hive/hive.dart';
 
+import '../../../../core/constants/app_constants.dart';
 import '../../domain/entities/player_state.dart';
 import '../../domain/entities/track.dart';
 import '../../domain/repositories/player_repository.dart';
@@ -98,23 +100,83 @@ class PlayerRepositoryImpl implements PlayerRepository {
 
   @override
   Future<void> playTrack(Track track) async {
+    final isFav = _isFavorite(track.id);
     _currentState = _currentState.copyWith(
       currentTrack: track,
       status: PlayerStatus.loading,
+      isFavorite: isFav,
     );
     _stateController.add(_currentState);
+    _saveHistory(track);
     await _audioHandler.playTrack(track);
+  }
+
+  bool _isFavorite(String trackId) {
+    try {
+      final box = Hive.box(AppConstants.favoritesBox);
+      return box.containsKey(trackId);
+    } catch (_) {
+      return false;
+    }
+  }
+
+  void _saveHistory(Track track) {
+    try {
+      final box = Hive.box(AppConstants.historyBox);
+      final map = {
+        'id': track.id,
+        'title': track.title,
+        'artist': track.artist,
+        'album': track.album,
+        'thumbnailUrl': track.thumbnailUrl,
+        'durationMs': track.duration?.inMilliseconds,
+        'source': track.source.name,
+        'localPath': track.localPath,
+        'youtubeVideoId': track.youtubeVideoId,
+      };
+      box.delete(track.id);
+      box.put(track.id, map);
+    } catch (_) {}
+  }
+
+  @override
+  Future<void> toggleFavorite(Track track) async {
+    try {
+      final box = Hive.box(AppConstants.favoritesBox);
+      if (box.containsKey(track.id)) {
+        await box.delete(track.id);
+        _currentState = _currentState.copyWith(isFavorite: false);
+      } else {
+        await box.put(track.id, {
+          'id': track.id,
+          'title': track.title,
+          'artist': track.artist,
+          'album': track.album,
+          'thumbnailUrl': track.thumbnailUrl,
+          'durationMs': track.duration?.inMilliseconds,
+          'source': track.source.name,
+          'localPath': track.localPath,
+          'youtubeVideoId': track.youtubeVideoId,
+        });
+        _currentState = _currentState.copyWith(isFavorite: true);
+      }
+      _stateController.add(_currentState);
+    } catch (_) {}
   }
 
   @override
   Future<void> playQueue(List<Track> tracks, {int startIndex = 0}) async {
+    final track = tracks.isNotEmpty ? tracks[startIndex] : null;
+    final isFav = track != null ? _isFavorite(track.id) : false;
     _currentState = _currentState.copyWith(
       queue: tracks,
       currentIndex: startIndex,
-      currentTrack: tracks.isNotEmpty ? tracks[startIndex] : null,
+      currentTrack: track,
       status: PlayerStatus.loading,
+      isFavorite: isFav,
     );
     _stateController.add(_currentState);
+    if (track != null) _saveHistory(track);
     await _audioHandler.setQueueFromTracks(tracks, startIndex: startIndex);
   }
 
