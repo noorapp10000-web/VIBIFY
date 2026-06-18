@@ -11,20 +11,8 @@ class SearchRepositoryImpl implements SearchRepository {
   SearchRepositoryImpl(this._datasource, this._networkInfo);
 
   @override
-  Future<SearchResult> search(String query, {int limit = 20}) async {
-    // Don't block search on connectivity check — YouTube client handles errors
-    try {
-      return await _datasource.search(query, limit: limit);
-    } catch (e) {
-      // If offline, return empty result instead of crashing
-      return SearchResult(
-        tracks: const [],
-        artists: const [],
-        playlists: const [],
-        query: query,
-      );
-    }
-  }
+  Future<SearchResult> search(String query, {int limit = 20}) =>
+      _datasource.search(query, limit: limit);
 
   @override
   Future<Track> getTrackDetails(String videoId) =>
