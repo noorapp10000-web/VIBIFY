@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
@@ -21,17 +23,21 @@ class VibifyAudioHandler extends BaseAudioHandler
       player: AudioPlayer(),
       yt: YoutubeExplode(),
     );
-    await AudioService.init(
-      builder: () => handler,
-      config: const AudioServiceConfig(
-        androidNotificationChannelId: 'com.vibify.audio',
-        androidNotificationChannelName: 'Vibify',
-        androidNotificationOngoing: true,
-        androidStopForegroundOnPause: true,
-        notificationColor: Color(0xFFD6B48A),
-        androidNotificationIcon: 'drawable/ic_notification',
-      ),
-    );
+    try {
+      await AudioService.init(
+        builder: () => handler,
+        config: const AudioServiceConfig(
+          androidNotificationChannelId: 'com.vibify.audio',
+          androidNotificationChannelName: 'Vibify',
+          androidNotificationOngoing: true,
+          androidStopForegroundOnPause: true,
+          notificationColor: Color(0xFFD6B48A),
+          androidNotificationIcon: 'drawable/ic_notification',
+        ),
+      ).timeout(const Duration(seconds: 8));
+    } catch (_) {
+      // Audio service failed to init — app still opens, playback unavailable
+    }
     handler._listenToPlayerEvents();
     return handler;
   }
