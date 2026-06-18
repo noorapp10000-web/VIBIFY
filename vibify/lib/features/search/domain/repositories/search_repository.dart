@@ -5,4 +5,5 @@ abstract class SearchRepository {
   Future<SearchResult> search(String query, {int limit = 20});
   Future<Track> getTrackDetails(String videoId);
   Future<List<Track>> getPlaylistTracks(String playlistId);
+  Future<String?> getPipedStreamUrl(String videoId);
 }

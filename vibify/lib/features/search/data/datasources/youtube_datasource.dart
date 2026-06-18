@@ -1,11 +1,21 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../../../core/errors/exceptions.dart';
 import '../../../player/domain/entities/track.dart';
 import '../../domain/entities/search_result.dart';
+
+// Piped API instances — tried in order until one returns valid JSON.
+// Public instances go up/down; keep this list up-to-date.
+const List<String> _kPipedInstances = [
+  'https://pipedapi.kavin.rocks',
+  'https://pipedapi.adminforge.de',
+  'https://api.piped.yt',
+  'https://piped-api.cass.si',
+  'https://pipedapi.reallyaweso.me',
+  'https://pipedapi.aeong.one',
+  'https://piped-api.mint.lgbt',
+];
 
 // Primary: HuggingFace Space (yt-dlp HTML scraping — not blocked like InnerTube API)
 const String _kHfBase = 'https://seifooooooo-vibify-api.hf.space';
@@ -22,9 +32,18 @@ abstract class YoutubeDatasource {
   Future<SearchResult> search(String query, {int limit = 20});
   Future<Track> getTrackDetails(String videoId);
   Future<List<Track>> getPlaylistTracks(String playlistId);
+  Future<String?> getPipedStreamUrl(String videoId);
 }
 
 class YoutubeDatasourceImpl implements YoutubeDatasource {
+  // Creates a short-lived Dio pointed at a specific Piped instance
+  Dio _pipedDioFor(String base) => Dio(BaseOptions(
+        baseUrl: base,
+        connectTimeout: const Duration(seconds: 7),
+        receiveTimeout: const Duration(seconds: 12),
+        headers: {'Accept': 'application/json'},
+      ));
+
   // Short-timeout Dio for device-side InnerTube (fast path)
   final Dio _innerTubeDio = Dio(BaseOptions(
     connectTimeout: const Duration(seconds: 6),
@@ -68,7 +87,18 @@ class YoutubeDatasourceImpl implements YoutubeDatasource {
       debugPrint('[Search] InnerTube WEB failed: $e');
     }
 
-    // ── 2. HuggingFace Space — yt-dlp (HTML scraping, harder to block) ──
+    // ── 2. Piped API — open-source YouTube proxy (reliable, no bot-detection) ──
+    try {
+      final tracks = await _searchViaPiped(query, limit);
+      if (tracks.isNotEmpty) {
+        debugPrint('[Search] Piped API ✓ (${tracks.length} results)');
+        return _result(tracks, query);
+      }
+    } catch (e) {
+      debugPrint('[Search] Piped API failed: $e');
+    }
+
+    // ── 3. HuggingFace Space — yt-dlp (HTML scraping, harder to block) ──
     try {
       final tracks = await _searchViaHF(query, limit);
       if (tracks.isNotEmpty) {
@@ -79,7 +109,7 @@ class YoutubeDatasourceImpl implements YoutubeDatasource {
       debugPrint('[Search] HuggingFace failed: $e');
     }
 
-    // ── 3. Cloudflare Worker — InnerTube from server ──
+    // ── 4. Cloudflare Worker — InnerTube from server ──
     try {
       final tracks = await _searchViaCF(query, limit);
       if (tracks.isNotEmpty) {
@@ -101,6 +131,92 @@ class YoutubeDatasourceImpl implements YoutubeDatasource {
         playlists: [],
         query: query,
       );
+
+  // ── Piped API (open-source YouTube proxy) ────────────────────────────────
+  // Tries each instance in _kPipedInstances until one returns valid results.
+
+  Future<List<Track>> _searchViaPiped(String query, int limit) async {
+    for (final base in _kPipedInstances) {
+      try {
+        final resp = await _pipedDioFor(base).get<Map<String, dynamic>>(
+          '/search',
+          queryParameters: {'q': query, 'filter': 'all'},
+        );
+
+        final items = (resp.data?['items'] as List<dynamic>?) ?? [];
+        final tracks = <Track>[];
+
+        for (final item in items) {
+          final m = item as Map<String, dynamic>?;
+          if (m == null) continue;
+          if (m['type'] != 'stream') continue;
+
+          final rawUrl = m['url'] as String? ?? '';
+          final videoId = Uri.tryParse(rawUrl)?.queryParameters['v'] ?? '';
+          if (videoId.isEmpty) continue;
+
+          tracks.add(Track(
+            id: videoId,
+            title: m['title'] as String? ?? videoId,
+            artist: m['uploaderName'] as String? ?? 'Unknown',
+            duration: (m['duration'] as num?) != null
+                ? Duration(seconds: (m['duration'] as num).toInt())
+                : null,
+            thumbnailUrl: m['thumbnail'] as String? ??
+                'https://i.ytimg.com/vi/$videoId/hqdefault.jpg',
+            source: TrackSource.youtube,
+            youtubeVideoId: videoId,
+            addedAt: DateTime.now(),
+          ));
+          if (tracks.length >= limit) break;
+        }
+
+        if (tracks.isNotEmpty) {
+          debugPrint('[Piped Search] ✓ $base (${tracks.length} results)');
+          return tracks;
+        }
+      } catch (e) {
+        debugPrint('[Piped Search] ✗ $base → $e');
+      }
+    }
+    return []; // all instances failed
+  }
+
+  /// Fetch a direct audio stream URL from Piped for [videoId].
+  /// Tries every instance in [_kPipedInstances] until one works.
+  /// Does NOT cache — URLs expire and must be fetched fresh on each play.
+  @override
+  Future<String?> getPipedStreamUrl(String videoId) async {
+    for (final base in _kPipedInstances) {
+      try {
+        final resp = await _pipedDioFor(base).get<Map<String, dynamic>>(
+          '/streams/$videoId',
+        );
+
+        final audioStreams =
+            (resp.data?['audioStreams'] as List<dynamic>?) ?? [];
+        if (audioStreams.isEmpty) continue;
+
+        final sorted = List<Map<String, dynamic>>.from(
+          audioStreams.whereType<Map<String, dynamic>>().where(
+                (s) => (s['url'] as String?)?.isNotEmpty == true,
+              ),
+        )..sort((a, b) =>
+            ((b['bitrate'] as num?) ?? 0)
+                .compareTo((a['bitrate'] as num?) ?? 0));
+
+        if (sorted.isEmpty) continue;
+
+        final url = sorted.first['url'] as String;
+        debugPrint('[Piped Stream] ✓ $base → ${url.substring(0, url.length.clamp(0, 80))}...');
+        return url;
+      } catch (e) {
+        debugPrint('[Piped Stream] ✗ $base → $e');
+      }
+    }
+    debugPrint('[Piped Stream] All instances failed for $videoId');
+    return null;
+  }
 
   // ── InnerTube WEB direct (device IP) ──────────────────────────────────────
 

@@ -13,6 +13,18 @@ const String _kPlayerUrl =
     'https://www.youtube.com/youtubei/v1/player'
     '?key=AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w';
 
+// Piped API instances — tried in order until one returns a valid audio URL.
+// Public instances go up/down frequently; keep this list up-to-date.
+const List<String> _kPipedInstances = [
+  'https://pipedapi.kavin.rocks',
+  'https://pipedapi.adminforge.de',
+  'https://api.piped.yt',
+  'https://piped-api.cass.si',
+  'https://pipedapi.reallyaweso.me',
+  'https://pipedapi.aeong.one',
+  'https://piped-api.mint.lgbt',
+];
+
 // Cloudflare Worker — stream fallback
 const String _kApiBase = 'https://broken-unit-a21e.noor-app-8000.workers.dev';
 
@@ -46,6 +58,13 @@ class VibifyAudioHandler extends BaseAudioHandler
       'User-Agent': 'com.google.android.youtube/19.09.37 (Linux; U; Android 12; GB) gzip',
     },
   ));
+  // Creates a short-lived Dio for a specific Piped instance
+  Dio _pipedDioFor(String base) => Dio(BaseOptions(
+        baseUrl: base,
+        connectTimeout: const Duration(seconds: 7),
+        receiveTimeout: const Duration(seconds: 12),
+        headers: {'Accept': 'application/json'},
+      ));
   final Dio _fallbackDio = Dio(BaseOptions(
     baseUrl: _kApiBase,
     connectTimeout: const Duration(seconds: 10),
@@ -154,7 +173,16 @@ class VibifyAudioHandler extends BaseAudioHandler
       debugPrint('[Stream] InnerTube failed: $e');
     }
 
-    // 2. youtube_explode_dart (pure Dart, works on real device IPs)
+    // 2. Piped API (open-source proxy — reliable, no expiry issues)
+    try {
+      final url = await _getStreamViaPiped(videoId);
+      debugPrint('[Stream] Piped API ✓');
+      return StreamResolution(directUrl: url, source: 'piped_api');
+    } catch (e) {
+      debugPrint('[Stream] Piped API failed: $e');
+    }
+
+    // 3. youtube_explode_dart (pure Dart, works on real device IPs)
     try {
       final url = await _getStreamViaYoutubeExplode(videoId);
       debugPrint('[Stream] youtube_explode_dart ✓');
@@ -163,7 +191,7 @@ class VibifyAudioHandler extends BaseAudioHandler
       debugPrint('[Stream] youtube_explode_dart failed: $e');
     }
 
-    // 3. Server fallback
+    // 4. Server fallback
     try {
       final resolution = await _getStreamViaServer(videoId);
       debugPrint('[Stream] Server ✓ source=${resolution.source}');
@@ -172,7 +200,7 @@ class VibifyAudioHandler extends BaseAudioHandler
       debugPrint('[Stream] Server failed: $e');
     }
 
-    // 4. Embed fallback — return iframe URLs for WebView
+    // 5. Embed fallback — return iframe URLs for WebView
     debugPrint('[Stream] All direct methods failed — returning embed fallback');
     return StreamResolution(
       embedUrl: 'https://www.youtube.com/embed/$videoId?autoplay=1',
@@ -180,6 +208,38 @@ class VibifyAudioHandler extends BaseAudioHandler
           'https://www.youtube-nocookie.com/embed/$videoId?autoplay=1&controls=0&mute=0',
       source: 'embed_fallback',
     );
+  }
+
+  /// Fetch audio stream URL from Piped — tries every instance until one works.
+  Future<String> _getStreamViaPiped(String videoId) async {
+    for (final base in _kPipedInstances) {
+      try {
+        final resp = await _pipedDioFor(base).get<Map<String, dynamic>>(
+          '/streams/$videoId',
+        );
+
+        final audioStreams =
+            (resp.data?['audioStreams'] as List<dynamic>?) ?? [];
+        if (audioStreams.isEmpty) continue;
+
+        final sorted = List<Map<String, dynamic>>.from(
+          audioStreams.whereType<Map<String, dynamic>>().where(
+                (s) => (s['url'] as String?)?.isNotEmpty == true,
+              ),
+        )..sort((a, b) =>
+            ((b['bitrate'] as num?) ?? 0)
+                .compareTo((a['bitrate'] as num?) ?? 0));
+
+        if (sorted.isEmpty) continue;
+
+        final url = sorted.first['url'] as String;
+        debugPrint('[Piped] ✓ $base → ${url.substring(0, url.length.clamp(0, 80))}...');
+        return url;
+      } catch (e) {
+        debugPrint('[Piped] ✗ $base → $e');
+      }
+    }
+    throw Exception('Piped: all ${_kPipedInstances.length} instances failed for $videoId');
   }
 
   Future<String> _getStreamViaInnerTube(String videoId) async {

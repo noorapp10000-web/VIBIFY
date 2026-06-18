@@ -1,15 +1,20 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/di/injection.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/add_to_playlist_sheet.dart';
 import '../../../../core/widgets/download_option.dart';
 import '../../../player/domain/entities/track.dart';
 import '../../../player/presentation/providers/player_provider.dart';
+import '../../data/datasources/youtube_datasource.dart';
 import '../providers/search_provider.dart';
+
+const String _kDefaultQuery = 'حمو المرشدي';
 
 class SearchPage extends ConsumerStatefulWidget {
   const SearchPage({super.key});
@@ -22,6 +27,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   final _controller = TextEditingController();
   final _focusNode = FocusNode();
   bool _isFocused = false;
+  bool _isAutoTesting = false;
 
   @override
   void initState() {
@@ -29,6 +35,78 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     _focusNode.addListener(() {
       if (mounted) setState(() => _isFocused = _focusNode.hasFocus);
     });
+    // Auto-fill and search for the default query on first load
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _controller.text = _kDefaultQuery;
+      final notifier = ref.read(searchNotifierProvider.notifier);
+      notifier.onQueryChanged(_kDefaultQuery);
+      notifier.search();
+    });
+  }
+
+  /// Auto-test: search Piped for [_kDefaultQuery], pick the first result,
+  /// fetch its stream URL, and print it to the console.
+  Future<void> _runPipedAutoTest() async {
+    if (_isAutoTesting) return;
+    setState(() => _isAutoTesting = true);
+
+    final messenger = ScaffoldMessenger.of(context);
+
+    try {
+      debugPrint('═══════════════════════════════════════════════════════');
+      debugPrint('[Piped AutoTest] Searching: $_kDefaultQuery');
+
+      final datasource = sl<YoutubeDatasource>();
+
+      // 1. Search via Piped
+      final result = await datasource.search(_kDefaultQuery, limit: 5);
+      if (result.tracks.isEmpty) {
+        debugPrint('[Piped AutoTest] ✗ No search results returned');
+        messenger.showSnackBar(const SnackBar(
+          content: Text('Piped search returned no results'),
+          backgroundColor: Colors.red,
+        ));
+        return;
+      }
+
+      final firstTrack = result.tracks.first;
+      debugPrint('[Piped AutoTest] First result → "${firstTrack.title}" '
+          'by ${firstTrack.artist} (videoId=${firstTrack.youtubeVideoId})');
+
+      // 2. Fetch stream URL from Piped
+      final videoId = firstTrack.youtubeVideoId ?? firstTrack.id;
+      debugPrint('[Piped AutoTest] Fetching stream URL for videoId=$videoId …');
+
+      final streamUrl = await datasource.getPipedStreamUrl(videoId);
+
+      if (streamUrl != null && streamUrl.isNotEmpty) {
+        debugPrint('[Piped AutoTest] ✓ STREAM URL EXTRACTED:');
+        debugPrint('  $streamUrl');
+        debugPrint('═══════════════════════════════════════════════════════');
+        messenger.showSnackBar(SnackBar(
+          content: Text('✓ Piped stream OK! "${firstTrack.title}"'),
+          backgroundColor: Colors.green,
+          duration: const Duration(seconds: 4),
+        ));
+      } else {
+        debugPrint('[Piped AutoTest] ✗ Piped returned null stream URL');
+        debugPrint('═══════════════════════════════════════════════════════');
+        messenger.showSnackBar(const SnackBar(
+          content: Text('Piped stream URL was null — check console'),
+          backgroundColor: Colors.orange,
+        ));
+      }
+    } catch (e) {
+      debugPrint('[Piped AutoTest] ✗ Exception: $e');
+      debugPrint('═══════════════════════════════════════════════════════');
+      messenger.showSnackBar(SnackBar(
+        content: Text('Piped test failed: $e'),
+        backgroundColor: Colors.red,
+      ));
+    } finally {
+      if (mounted) setState(() => _isAutoTesting = false);
+    }
   }
 
   @override
@@ -90,7 +168,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
               child: TextField(
                 controller: _controller,
                 focusNode: _focusNode,
@@ -112,6 +190,39 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                 ),
               ),
             ),
+            // ── Piped API debug test button ──────────────────────────────
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+              child: SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: _isAutoTesting ? null : _runPipedAutoTest,
+                  icon: _isAutoTesting
+                      ? const SizedBox(
+                          width: 14,
+                          height: 14,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.biotech_rounded, size: 16),
+                  label: Text(
+                    _isAutoTesting
+                        ? 'Testing Piped API…'
+                        : 'Test Piped API (حمو المرشدي)',
+                    style: const TextStyle(fontSize: 12, fontFamily: 'Inter'),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.primaryBeige,
+                    side: const BorderSide(
+                        color: AppColors.primaryBeige, width: 1),
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            // ─────────────────────────────────────────────────────────────
             Expanded(child: body),
           ],
         ),
