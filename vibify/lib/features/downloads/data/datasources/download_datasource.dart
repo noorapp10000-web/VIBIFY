@@ -5,11 +5,18 @@ import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 import '../../../../core/errors/exceptions.dart';
 import '../../../player/domain/entities/track.dart';
 import '../../domain/entities/download_item.dart';
+
+// InnerTube ANDROID client — returns unencrypted stream URLs directly
+const String _kPlayerUrl =
+    'https://www.youtube.com/youtubei/v1/player'
+    '?key=AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w';
+
+// HuggingFace fallback
+const String _kApiBase = 'https://Seifooooooo-vibify-api.hf.space';
 
 abstract class DownloadDatasource {
   Future<List<DownloadItem>> getAllDownloads();
@@ -24,8 +31,24 @@ abstract class DownloadDatasource {
 
 class DownloadDatasourceImpl implements DownloadDatasource {
   final Box _box;
-  final YoutubeExplode _yt = YoutubeExplode();
-  final Dio _dio = Dio();
+  final Dio _dio = Dio(BaseOptions(
+    connectTimeout: const Duration(seconds: 15),
+    receiveTimeout: const Duration(seconds: 120),
+  ));
+  final Dio _innerTubeDio = Dio(BaseOptions(
+    connectTimeout: const Duration(seconds: 10),
+    receiveTimeout: const Duration(seconds: 20),
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent':
+          'com.google.android.youtube/19.09.37 (Linux; U; Android 12; GB) gzip',
+    },
+  ));
+  final Dio _apiDio = Dio(BaseOptions(
+    baseUrl: _kApiBase,
+    connectTimeout: const Duration(seconds: 10),
+    receiveTimeout: const Duration(seconds: 40),
+  ));
   final _uuid = const Uuid();
 
   final Map<String, CancelToken> _cancelTokens = {};
@@ -72,10 +95,7 @@ class DownloadDatasourceImpl implements DownloadDatasource {
       String downloadUrl;
       if (item.track.source == TrackSource.youtube &&
           item.track.youtubeVideoId != null) {
-        final manifest = await _yt.videos.streamsClient
-            .getManifest(item.track.youtubeVideoId!);
-        final stream = manifest.audioOnly.withHighestBitrate();
-        downloadUrl = stream.url.toString();
+        downloadUrl = await _resolveYoutubeUrl(item.track.youtubeVideoId!);
       } else if (item.track.localPath != null) {
         return;
       } else {
@@ -135,6 +155,63 @@ class DownloadDatasourceImpl implements DownloadDatasource {
       await _saveItem(failed);
       _progressController.add(failed);
     }
+  }
+
+  /// Resolves a YouTube video ID to a downloadable audio URL.
+  /// Primary: InnerTube ANDROID client (fast, no cipher needed).
+  /// Fallback: HuggingFace server with yt-dlp.
+  Future<String> _resolveYoutubeUrl(String videoId) async {
+    // Primary: InnerTube ANDROID
+    try {
+      final payload = {
+        'videoId': videoId,
+        'context': {
+          'client': {
+            'clientName': 'ANDROID',
+            'clientVersion': '19.09.37',
+            'androidSdkVersion': 30,
+            'hl': 'en',
+            'gl': 'US',
+          }
+        },
+      };
+      final resp = await _innerTubeDio.post<Map<String, dynamic>>(
+        _kPlayerUrl,
+        data: payload,
+      );
+      final streamingData = resp.data?['streamingData'] as Map?;
+      if (streamingData != null) {
+        final adaptive =
+            (streamingData['adaptiveFormats'] as List<dynamic>?) ?? [];
+        final audioFmts = adaptive
+            .whereType<Map>()
+            .where((f) =>
+                (f['mimeType'] as String? ?? '').startsWith('audio/') &&
+                f['url'] != null)
+            .toList();
+        if (audioFmts.isNotEmpty) {
+          audioFmts.sort((a, b) => ((b['bitrate'] as num?) ?? 0)
+              .compareTo((a['bitrate'] as num?) ?? 0));
+          return audioFmts.first['url'] as String;
+        }
+        final fmts = (streamingData['formats'] as List<dynamic>?) ?? [];
+        final first =
+            fmts.whereType<Map>().firstWhere((f) => f['url'] != null,
+                orElse: () => {});
+        if (first.isNotEmpty) return first['url'] as String;
+      }
+    } catch (_) {}
+
+    // Fallback: HuggingFace server
+    final resp = await _apiDio.get<Map<String, dynamic>>(
+      '/stream',
+      queryParameters: {'id': videoId},
+    );
+    final url = resp.data?['url'] as String?;
+    if (url == null || url.isEmpty) {
+      throw const DownloadException(message: 'Could not resolve stream URL');
+    }
+    return url;
   }
 
   @override

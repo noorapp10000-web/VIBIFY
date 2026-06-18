@@ -1,34 +1,48 @@
 import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 import '../../domain/entities/track.dart';
+
+// InnerTube ANDROID client — returns unencrypted stream URLs directly
+// (no JS cipher needed), works on Android without bot-detection issues.
+const String _kPlayerUrl =
+    'https://www.youtube.com/youtubei/v1/player'
+    '?key=AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w';
+
+// HuggingFace fallback for resilience
+const String _kApiBase = 'https://Seifooooooo-vibify-api.hf.space';
 
 class VibifyAudioHandler extends BaseAudioHandler
     with QueueHandler, SeekHandler {
   final AudioPlayer _player;
-  final YoutubeExplode _yt;
+  final Dio _innerTubeDio = Dio(BaseOptions(
+    connectTimeout: const Duration(seconds: 10),
+    receiveTimeout: const Duration(seconds: 20),
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': 'com.google.android.youtube/19.09.37 (Linux; U; Android 12; GB) gzip',
+    },
+  ));
+  final Dio _fallbackDio = Dio(BaseOptions(
+    baseUrl: _kApiBase,
+    connectTimeout: const Duration(seconds: 10),
+    receiveTimeout: const Duration(seconds: 40),
+  ));
 
   // Track queue index ourselves — _player.currentIndex is always 0
   // because we load individual AudioSources, not a ConcatenatingAudioSource.
   int _currentQueueIndex = 0;
 
-  VibifyAudioHandler._({
-    required AudioPlayer player,
-    required YoutubeExplode yt,
-  })  : _player = player,
-        _yt = yt;
+  VibifyAudioHandler._({required AudioPlayer player}) : _player = player;
 
   /// Creates the handler and awaits AudioService.init() so the media session
   /// and lock-screen / notification controls are registered before playback.
   static Future<VibifyAudioHandler> createAndInit() async {
-    final handler = VibifyAudioHandler._(
-      player: AudioPlayer(),
-      yt: YoutubeExplode(),
-    );
+    final handler = VibifyAudioHandler._(player: AudioPlayer());
 
     try {
       await AudioService.init(
@@ -100,23 +114,81 @@ class VibifyAudioHandler extends BaseAudioHandler
     }
   }
 
-  /// Fetches the best audio stream URL for a YouTube video.
-  /// Tries high-bitrate first, falls back to any audio stream on error.
+  /// Gets audio stream URL using the InnerTube ANDROID client.
+  /// The ANDROID client returns direct (unencrypted) URLs without JS cipher.
+  /// Falls back to the HuggingFace server if InnerTube fails.
   Future<String> _getYoutubeStreamUrl(String videoId,
       {bool useFallback = false}) async {
-    final manifest = await _yt.videos.streamsClient.getManifest(videoId);
-    final audioStreams = manifest.audioOnly;
-    if (audioStreams.isEmpty) {
-      throw Exception('No audio streams available for $videoId');
+    if (!useFallback) {
+      try {
+        return await _getStreamViaInnerTube(videoId);
+      } catch (e) {
+        debugPrint('[Stream] InnerTube failed: $e — trying server fallback');
+      }
     }
-    if (useFallback) {
-      // Fallback: lowest bitrate (most compatible)
-      final sorted = List.of(audioStreams)
-        ..sort((a, b) =>
-            a.bitrate.bitsPerSecond.compareTo(b.bitrate.bitsPerSecond));
-      return sorted.first.url.toString();
+    return await _getStreamViaServer(videoId);
+  }
+
+  Future<String> _getStreamViaInnerTube(String videoId) async {
+    final payload = {
+      'videoId': videoId,
+      'context': {
+        'client': {
+          'clientName': 'ANDROID',
+          'clientVersion': '19.09.37',
+          'androidSdkVersion': 30,
+          'hl': 'en',
+          'gl': 'US',
+        }
+      },
+    };
+
+    final resp = await _innerTubeDio.post<Map<String, dynamic>>(
+      _kPlayerUrl,
+      data: payload,
+    );
+
+    final streamingData = resp.data?['streamingData'] as Map?;
+    if (streamingData == null) throw Exception('No streamingData');
+
+    // Try adaptive formats (audio-only) first for best quality
+    final adaptive =
+        (streamingData['adaptiveFormats'] as List<dynamic>?) ?? [];
+    final audioFormats = adaptive
+        .whereType<Map>()
+        .where((f) =>
+            (f['mimeType'] as String? ?? '').startsWith('audio/') &&
+            f['url'] != null)
+        .toList();
+
+    if (audioFormats.isNotEmpty) {
+      // Pick highest bitrate audio format
+      audioFormats.sort((a, b) => ((b['bitrate'] as num?) ?? 0)
+          .compareTo((a['bitrate'] as num?) ?? 0));
+      return audioFormats.first['url'] as String;
     }
-    return audioStreams.withHighestBitrate().url.toString();
+
+    // Fallback: combined formats
+    final formats = (streamingData['formats'] as List<dynamic>?) ?? [];
+    final combined =
+        formats.whereType<Map>().where((f) => f['url'] != null).toList();
+    if (combined.isNotEmpty) {
+      return combined.first['url'] as String;
+    }
+
+    throw Exception('No playable stream found in InnerTube response');
+  }
+
+  Future<String> _getStreamViaServer(String videoId) async {
+    final resp = await _fallbackDio.get<Map<String, dynamic>>(
+      '/stream',
+      queryParameters: {'id': videoId},
+    );
+    final url = resp.data?['url'] as String?;
+    if (url == null || url.isEmpty) {
+      throw Exception('Server returned no stream URL for $videoId');
+    }
+    return url;
   }
 
   Future<void> _playYoutubeTrack(String videoId) async {
@@ -125,7 +197,7 @@ class VibifyAudioHandler extends BaseAudioHandler
       await _player.setAudioSource(AudioSource.uri(Uri.parse(streamUrl)));
       await _player.play();
     } catch (e) {
-      // On error, try fallback to lowest bitrate stream
+      debugPrint('[Player] Primary stream failed: $e — trying fallback');
       try {
         final streamUrl =
             await _getYoutubeStreamUrl(videoId, useFallback: true);
@@ -287,6 +359,7 @@ class VibifyAudioHandler extends BaseAudioHandler
 
   void dispose() {
     _player.dispose();
-    _yt.close();
+    _innerTubeDio.close();
+    _fallbackDio.close();
   }
 }

@@ -1,0 +1,2 @@
+- [Vibify HuggingFace API](vibify-hf-api.md) — HF Space `Seifooooooo/vibify-api`; search/stream both client-side via InnerTube; server is fallback only.
+- [HuggingFace Commit API](hf-commit-api.md) — JSON body `{"summary":"...","files":[{"path":"...","content":"<raw-utf8>"}]}`; content must NOT be base64.

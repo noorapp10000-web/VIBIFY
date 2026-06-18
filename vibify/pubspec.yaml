@@ -29,9 +29,6 @@ dependencies:
   audio_service: ^0.18.14
   audio_session: ^0.1.21
 
-  # YouTube
-  youtube_explode_dart: ^2.2.1
-
   # Local Database
   hive: ^2.2.3
   hive_flutter: ^1.1.0
