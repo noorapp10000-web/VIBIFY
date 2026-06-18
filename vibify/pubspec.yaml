@@ -84,20 +84,31 @@ dev_dependencies:
   flutter_native_splash: ^2.4.1
 
 flutter_launcher_icons:
-  android: true
+  android: "launcher_icon"
   ios: true
   image_path: "assets/icons/app_icon.png"
   min_sdk_android: 21
-  adaptive_icon_background: "#111111"
+  adaptive_icon_background: "#D6B48A"
   adaptive_icon_foreground: "assets/icons/app_icon_foreground.png"
+  web:
+    generate: false
 
 flutter_native_splash:
-  color: "#111111"
+  # Light mode splash
+  color: "#F6F1EB"
+  image: assets/icons/app_icon_foreground.png
+  image_dark: assets/icons/app_icon_foreground.png
+  # Dark mode splash
   color_dark: "#111111"
-  image: assets/icons/app_icon.png
   android: true
-  ios: true
+  ios: false
   fullscreen: true
+  android_gravity: center
+  android_12:
+    image: assets/icons/app_icon_foreground.png
+    icon_background_color: "#F6F1EB"
+    image_dark: assets/icons/app_icon_foreground.png
+    icon_background_color_dark: "#111111"
 
 flutter:
   uses-material-design: true
