@@ -1,0 +1,26 @@
+﻿2026-06-18T00:51:14.0592110Z ##[group]Run flutter pub get
+2026-06-18T00:51:14.0592652Z [36;1mflutter pub get[0m
+2026-06-18T00:51:14.0627671Z shell: /usr/bin/bash -e {0}
+2026-06-18T00:51:14.0627948Z env:
+2026-06-18T00:51:14.0628258Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.44.2-x64/flutter
+2026-06-18T00:51:14.0628684Z   PUB_CACHE: /home/runner/.pub-cache
+2026-06-18T00:51:14.0628979Z ##[endgroup]
+2026-06-18T00:51:18.0341652Z Resolving dependencies...
+2026-06-18T00:51:19.5998996Z Because custom_lint_core ^0.6.9 depends on analyzer ^6.10.0 and custom_lint_core >=0.6.5 <0.6.9 depends on analyzer ^6.6.0, custom_lint_core ^0.6.5 requires analyzer ^6.6.0.
+2026-06-18T00:51:19.6001667Z And because riverpod_analyzer_utils >=0.5.4 <0.5.6 depends on custom_lint_core ^0.6.5 and riverpod_generator >=2.4.3 <2.4.4 depends on riverpod_analyzer_utils ^0.5.4, riverpod_generator >=2.4.3 <2.4.4 requires analyzer ^6.6.0 or riverpod_analyzer_utils ^0.5.6.
+2026-06-18T00:51:19.6005809Z And because riverpod_generator >=2.4.4 <2.6.0 depends on riverpod_analyzer_utils ^0.5.5 and riverpod_generator >=2.6.0 <2.6.1 depends on riverpod_analyzer_utils 0.5.5, riverpod_generator >=2.4.3 <2.6.1 requires analyzer ^6.6.0 or riverpod_analyzer_utils ^0.5.5.
+2026-06-18T00:51:19.6009040Z And because riverpod_analyzer_utils >=0.5.5 <0.5.6 depends on analyzer ^6.9.0 and riverpod_analyzer_utils >=0.5.7 <1.0.0-dev.0 depends on custom_lint_core ^0.7.0, riverpod_generator >=2.4.3 <2.6.1 requires analyzer ^6.6.0 or custom_lint_core ^0.7.0 or riverpod_analyzer_utils >=0.5.6 <0.5.7.
+2026-06-18T00:51:19.6011484Z And because riverpod_generator >=2.6.1 <2.6.4 depends on analyzer ^6.7.0 and riverpod_analyzer_utils >=0.5.6 <0.5.9 depends on analyzer ^6.7.0, riverpod_generator >=2.4.3 <2.6.4 requires analyzer ^6.6.0 or custom_lint_core ^0.7.0.
+2026-06-18T00:51:19.6013642Z And because custom_lint_core >=0.7.0 <0.7.1 depends on analyzer ^6.7.0 and analyzer >=6.6.0 <6.9.0 depends on macros >=0.1.2-main.3 <0.1.3, riverpod_generator >=2.4.3 <2.6.4 requires custom_lint_core ^0.7.1 or macros >=0.1.2-main.3 <0.1.3 or analyzer ^6.9.0.
+2026-06-18T00:51:19.6016013Z Because macros >=0.1.2-main.4 <0.1.3-main.0 depends on _macros 0.3.2 from sdk and macros >=0.1.2-main.2 <0.1.2-main.4 depends on _macros 0.3.1 from sdk, macros >=0.1.2-main.2 <0.1.3-main.0 requires _macros 0.3.1 or 0.3.2 from sdk.
+2026-06-18T00:51:19.6018029Z Thus, riverpod_generator >=2.4.3 <2.6.4 requires custom_lint_core ^0.7.1 or analyzer ^6.9.0 or _macros 0.3.1 or 0.3.2 from sdk.
+2026-06-18T00:51:19.6019803Z And because riverpod_generator >=2.6.4 <3.0.0-dev.2 depends on analyzer ^7.0.0 and custom_lint_core ^0.7.1 depends on analyzer ^7.0.0, riverpod_generator >=2.4.3 <3.0.0-dev.2 requires analyzer ^6.9.0 or >=7.0.0 <8.0.0 or _macros 0.3.1 or 0.3.2 from sdk.
+2026-06-18T00:51:19.6022105Z And because hive_generator >=2.0.1 depends on analyzer >=4.6.0 <7.0.0 and analyzer >=6.9.0 <7.3.0 depends on macros >=0.1.3-main.0 <0.1.4, if riverpod_generator >=2.4.3 <3.0.0-dev.2 and hive_generator >=2.0.1 then _macros 0.3.1 or 0.3.2 from sdk or macros >=0.1.3-main.0 <0.1.4.
+2026-06-18T00:51:19.6024199Z And because macros >=0.1.3-main.0 depends on _macros from sdk which doesn't exist (could not find package _macros in the Dart SDK), riverpod_generator >=2.4.3 <3.0.0-dev.2 is incompatible with hive_generator >=2.0.1.
+2026-06-18T00:51:19.6046476Z So, because vibify depends on both riverpod_generator ^2.4.3 and hive_generator ^2.0.1, version solving failed.
+2026-06-18T00:51:19.6047347Z 
+2026-06-18T00:51:19.6047361Z 
+2026-06-18T00:51:19.6047725Z You can try the following suggestion to make the pubspec resolve:
+2026-06-18T00:51:19.6048790Z * Consider downgrading your constraint on riverpod_generator: flutter pub add dev:riverpod_generator:^2.4.0
+2026-06-18T00:51:19.6315215Z Failed to update packages.
+2026-06-18T00:51:19.6383635Z ##[error]Process completed with exit code 69.
