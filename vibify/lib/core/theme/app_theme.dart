@@ -17,8 +17,6 @@ class AppTheme {
           onSecondary: AppColors.darkBackground,
           surface: AppColors.lightSurface,
           onSurface: AppColors.lightText,
-          background: AppColors.lightBackground,
-          onBackground: AppColors.lightText,
           error: AppColors.error,
           onError: Colors.white,
           surfaceVariant: AppColors.lightSurface,
@@ -48,7 +46,7 @@ class AppTheme {
         ),
         navigationBarTheme: NavigationBarThemeData(
           backgroundColor: AppColors.lightSurface,
-          indicatorColor: AppColors.primaryBeige.withOpacity(0.2),
+          indicatorColor: AppColors.primaryBeige.withValues(alpha: 0.2),
           iconTheme: WidgetStateProperty.resolveWith((states) {
             if (states.contains(WidgetState.selected)) {
               return IconThemeData(color: AppColors.primaryBeige);
@@ -127,7 +125,7 @@ class AppTheme {
         ),
         iconTheme: IconThemeData(color: AppColors.lightText, size: 24),
         dividerTheme: DividerThemeData(
-          color: AppColors.lightText.withOpacity(0.08),
+          color: AppColors.lightText.withValues(alpha: 0.08),
           thickness: 1,
         ),
         switchTheme: SwitchThemeData(
@@ -139,24 +137,18 @@ class AppTheme {
           }),
           trackColor: WidgetStateProperty.resolveWith((states) {
             if (states.contains(WidgetState.selected)) {
-              return AppColors.primaryBeige.withOpacity(0.4);
+              return AppColors.primaryBeige.withValues(alpha: 0.4);
             }
-            return AppColors.lightSecondaryText.withOpacity(0.2);
+            return AppColors.lightSecondaryText.withValues(alpha: 0.2);
           }),
         ),
         sliderTheme: SliderThemeData(
           activeTrackColor: AppColors.primaryBeige,
-          inactiveTrackColor: AppColors.lightSecondaryText.withOpacity(0.2),
+          inactiveTrackColor: AppColors.lightSecondaryText.withValues(alpha: 0.2),
           thumbColor: AppColors.primaryBeige,
-          overlayColor: AppColors.primaryBeige.withOpacity(0.2),
+          overlayColor: AppColors.primaryBeige.withValues(alpha: 0.2),
           trackHeight: 3,
           thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
-        ),
-        pageTransitionsTheme: const PageTransitionsTheme(
-          builders: {
-            TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-          },
         ),
       );
 
@@ -170,8 +162,6 @@ class AppTheme {
           onSecondary: AppColors.darkBackground,
           surface: AppColors.darkSurface,
           onSurface: AppColors.darkText,
-          background: AppColors.darkBackground,
-          onBackground: AppColors.darkText,
           error: AppColors.error,
           onError: Colors.white,
           surfaceVariant: AppColors.darkSurface,
@@ -199,7 +189,7 @@ class AppTheme {
         ),
         navigationBarTheme: NavigationBarThemeData(
           backgroundColor: AppColors.darkSurface,
-          indicatorColor: AppColors.primaryBeige.withOpacity(0.2),
+          indicatorColor: AppColors.primaryBeige.withValues(alpha: 0.2),
           iconTheme: WidgetStateProperty.resolveWith((states) {
             if (states.contains(WidgetState.selected)) {
               return IconThemeData(color: AppColors.primaryBeige);
@@ -278,7 +268,7 @@ class AppTheme {
         ),
         iconTheme: IconThemeData(color: AppColors.darkText, size: 24),
         dividerTheme: DividerThemeData(
-          color: AppColors.darkText.withOpacity(0.08),
+          color: AppColors.darkText.withValues(alpha: 0.08),
           thickness: 1,
         ),
         switchTheme: SwitchThemeData(
@@ -290,24 +280,18 @@ class AppTheme {
           }),
           trackColor: WidgetStateProperty.resolveWith((states) {
             if (states.contains(WidgetState.selected)) {
-              return AppColors.primaryBeige.withOpacity(0.4);
+              return AppColors.primaryBeige.withValues(alpha: 0.4);
             }
-            return AppColors.darkSecondaryText.withOpacity(0.2);
+            return AppColors.darkSecondaryText.withValues(alpha: 0.2);
           }),
         ),
         sliderTheme: SliderThemeData(
           activeTrackColor: AppColors.primaryBeige,
-          inactiveTrackColor: AppColors.darkSecondaryText.withOpacity(0.2),
+          inactiveTrackColor: AppColors.darkSecondaryText.withValues(alpha: 0.2),
           thumbColor: AppColors.primaryBeige,
-          overlayColor: AppColors.primaryBeige.withOpacity(0.2),
+          overlayColor: AppColors.primaryBeige.withValues(alpha: 0.2),
           trackHeight: 3,
           thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
-        ),
-        pageTransitionsTheme: const PageTransitionsTheme(
-          builders: {
-            TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-          },
         ),
       );
 }

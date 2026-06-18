@@ -55,8 +55,8 @@ class TrackListItem extends StatelessWidget {
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Theme.of(context)
                         .colorScheme
-                        .onBackground
-                        .withOpacity(0.4),
+                        .onSurface
+                        .withValues(alpha: 0.4),
                   ),
             ),
           const SizedBox(width: 4),
@@ -70,8 +70,8 @@ class TrackListItem extends StatelessWidget {
                 size: 20,
                 color: Theme.of(context)
                     .colorScheme
-                    .onBackground
-                    .withOpacity(0.4),
+                    .onSurface
+                    .withValues(alpha: 0.4),
               ),
             ),
           ),
@@ -84,7 +84,7 @@ class TrackListItem extends StatelessWidget {
         width: 48,
         height: 48,
         decoration: BoxDecoration(
-          color: AppColors.primaryBeige.withOpacity(0.15),
+          color: AppColors.primaryBeige.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(8),
         ),
         child: const Icon(

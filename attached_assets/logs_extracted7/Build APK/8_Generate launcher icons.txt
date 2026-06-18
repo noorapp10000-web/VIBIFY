@@ -1,0 +1,24 @@
+﻿2026-06-18T01:08:07.7842629Z ##[group]Run flutter pub run flutter_launcher_icons:main
+2026-06-18T01:08:07.7843141Z [36;1mflutter pub run flutter_launcher_icons:main[0m
+2026-06-18T01:08:07.7875121Z shell: /usr/bin/bash -e {0}
+2026-06-18T01:08:07.7875420Z env:
+2026-06-18T01:08:07.7875765Z   JAVA_HOME: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.19-10/x64
+2026-06-18T01:08:07.7876235Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.19-10/x64
+2026-06-18T01:08:07.7876732Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.44.2-x64/flutter
+2026-06-18T01:08:07.7877148Z   PUB_CACHE: /home/runner/.pub-cache
+2026-06-18T01:08:07.7877810Z ##[endgroup]
+2026-06-18T01:08:09.4156082Z This command is deprecated and replaced with "flutter pub run flutter_launcher_icons"
+2026-06-18T01:08:09.4159977Z   ════════════════════════════════════════════
+2026-06-18T01:08:09.4160599Z      FLUTTER LAUNCHER ICONS (v0.14.4)                               
+2026-06-18T01:08:09.4161062Z   ════════════════════════════════════════════
+2026-06-18T01:08:09.4161407Z   
+2026-06-18T01:08:09.5024000Z • Creating default icons Android
+2026-06-18T01:08:09.5034926Z • Creating adaptive icons Android
+2026-06-18T01:08:09.6273100Z • Adding a new Android launcher icon
+2026-06-18T01:08:09.8968408Z • No colors.xml file found in your Android project
+2026-06-18T01:08:09.8969413Z • Creating colors.xml file and adding it to your Android project
+2026-06-18T01:08:10.0970492Z • Creating mipmap xml file Android
+2026-06-18T01:08:10.1006501Z Creating Icons for Web...
+2026-06-18T01:08:10.1024544Z ⚠️Requirements failed for platform Web. Skipped
+2026-06-18T01:08:10.1026355Z 
+2026-06-18T01:08:10.1026799Z ✓ Successfully generated launcher icons

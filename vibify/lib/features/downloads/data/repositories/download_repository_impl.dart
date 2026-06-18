@@ -6,9 +6,8 @@ import '../../../../core/network/network_info.dart';
 
 class DownloadRepositoryImpl implements DownloadRepository {
   final DownloadDatasource _datasource;
-  final NetworkInfo _networkInfo;
 
-  DownloadRepositoryImpl(this._datasource, this._networkInfo);
+  DownloadRepositoryImpl(this._datasource, NetworkInfo _);
 
   @override
   Future<List<DownloadItem>> getAllDownloads() => _datasource.getAllDownloads();

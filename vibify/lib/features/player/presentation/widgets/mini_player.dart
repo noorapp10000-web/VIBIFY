@@ -30,7 +30,7 @@ class MiniPlayer extends ConsumerWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.12),
+              color: Colors.black.withValues(alpha: 0.12),
               blurRadius: 20,
               offset: const Offset(0, 4),
             ),
@@ -106,7 +106,7 @@ class MiniPlayer extends ConsumerWidget {
               child: LinearProgressIndicator(
                 value: progress,
                 minHeight: 2,
-                backgroundColor: scheme.onSurface.withOpacity(0.08),
+                backgroundColor: scheme.onSurface.withValues(alpha: 0.08),
                 valueColor:
                     const AlwaysStoppedAnimation<Color>(AppColors.primaryBeige),
               ),
@@ -121,7 +121,7 @@ class MiniPlayer extends ConsumerWidget {
         width: 46,
         height: 46,
         decoration: BoxDecoration(
-          color: AppColors.primaryBeige.withOpacity(0.2),
+          color: AppColors.primaryBeige.withValues(alpha: 0.2),
           borderRadius: BorderRadius.circular(10),
         ),
         child: const Icon(
@@ -197,7 +197,7 @@ class _ControlButton extends StatelessWidget {
         child: Icon(
           icon,
           size: size,
-          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
         ),
       ),
     );

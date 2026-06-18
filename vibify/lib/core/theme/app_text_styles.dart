@@ -101,7 +101,7 @@ class AppTextStyles {
           fontFamily: 'Inter',
           fontSize: 12,
           fontWeight: FontWeight.w400,
-          color: textColor.withOpacity(0.7),
+          color: textColor.withValues(alpha: 0.7),
           letterSpacing: 0.4,
           height: 1.33,
         ),

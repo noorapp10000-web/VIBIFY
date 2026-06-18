@@ -92,7 +92,7 @@ class _DownloadTile extends StatelessWidget {
         width: 48,
         height: 48,
         decoration: BoxDecoration(
-          color: _statusColor().withOpacity(0.15),
+          color: _statusColor().withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Icon(_statusIcon(), color: _statusColor(), size: 24),
@@ -116,7 +116,7 @@ class _DownloadTile extends StatelessWidget {
             LinearProgressIndicator(
               value: item.progress,
               backgroundColor:
-                  Theme.of(context).colorScheme.onBackground.withOpacity(0.1),
+                  Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
               valueColor:
                   AlwaysStoppedAnimation<Color>(AppColors.primaryBeige),
               minHeight: 2,

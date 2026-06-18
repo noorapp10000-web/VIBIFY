@@ -141,7 +141,7 @@ class LocalMusicDatasourceImpl implements LocalMusicDatasource {
           .map((g) => LocalGenre(
                 id: g.id,
                 name: g.genre,
-                numOfSongs: g.numOfSongs ?? 0,
+                numOfSongs: g.numOfSongs,
               ))
           .toList();
     } catch (e) {

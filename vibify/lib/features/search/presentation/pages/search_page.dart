@@ -204,9 +204,9 @@ class _CategoryTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: color.withOpacity(0.15),
+        color: color.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       alignment: Alignment.center,
       child: Text(
@@ -238,7 +238,7 @@ class _SearchResults extends ConsumerWidget {
             indicatorColor: AppColors.primaryBeige,
             labelColor: AppColors.primaryBeige,
             unselectedLabelColor:
-                Theme.of(context).colorScheme.onBackground.withOpacity(0.5),
+                Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
             labelStyle: const TextStyle(
               fontFamily: 'Inter',
               fontWeight: FontWeight.w600,
@@ -319,8 +319,8 @@ class _TrackList extends ConsumerWidget {
               Icons.add_rounded,
               color: Theme.of(context)
                   .colorScheme
-                  .onBackground
-                  .withOpacity(0.5),
+                  .onSurface
+                  .withValues(alpha: 0.5),
             ),
           ),
         );
@@ -332,7 +332,7 @@ class _TrackList extends ConsumerWidget {
         width: 48,
         height: 48,
         decoration: BoxDecoration(
-          color: AppColors.primaryBeige.withOpacity(0.15),
+          color: AppColors.primaryBeige.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(8),
         ),
         child: const Icon(
@@ -358,7 +358,7 @@ class _ArtistList extends StatelessWidget {
         return ListTile(
           leading: CircleAvatar(
             radius: 24,
-            backgroundColor: AppColors.primaryBeige.withOpacity(0.2),
+            backgroundColor: AppColors.primaryBeige.withValues(alpha: 0.2),
             backgroundImage: artist.thumbnailUrl != null
                 ? CachedNetworkImageProvider(artist.thumbnailUrl!)
                 : null,
@@ -393,7 +393,7 @@ class _PlaylistList extends StatelessWidget {
             child: Container(
               width: 48,
               height: 48,
-              color: AppColors.primaryBeige.withOpacity(0.2),
+              color: AppColors.primaryBeige.withValues(alpha: 0.2),
               child: const Icon(Icons.playlist_play_rounded,
                   color: AppColors.primaryBeige),
             ),
@@ -424,8 +424,8 @@ class _EmptyResults extends StatelessWidget {
             size: 64,
             color: Theme.of(context)
                 .colorScheme
-                .onBackground
-                .withOpacity(0.3),
+                .onSurface
+                .withValues(alpha: 0.3),
           ),
           const SizedBox(height: 12),
           Text(
@@ -433,8 +433,8 @@ class _EmptyResults extends StatelessWidget {
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   color: Theme.of(context)
                       .colorScheme
-                      .onBackground
-                      .withOpacity(0.5),
+                      .onSurface
+                      .withValues(alpha: 0.5),
                 ),
           ),
         ],

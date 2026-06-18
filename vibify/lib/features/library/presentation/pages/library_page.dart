@@ -59,8 +59,8 @@ class _LibraryPageState extends ConsumerState<LibraryPage>
               labelColor: AppColors.primaryBeige,
               unselectedLabelColor: Theme.of(context)
                   .colorScheme
-                  .onBackground
-                  .withOpacity(0.5),
+                  .onSurface
+                  .withValues(alpha: 0.5),
               labelStyle: const TextStyle(
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w600,
@@ -122,7 +122,7 @@ class _PlaylistsTab extends ConsumerWidget {
                     width: 48,
                     height: 48,
                     decoration: BoxDecoration(
-                      color: AppColors.primaryBeige.withOpacity(0.15),
+                      color: AppColors.primaryBeige.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: const Icon(
@@ -231,7 +231,7 @@ class _DownloadsTab extends ConsumerWidget {
             Icons.download_rounded,
             size: 56,
             color:
-                Theme.of(context).colorScheme.onBackground.withOpacity(0.3),
+                Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
           ),
           const SizedBox(height: 12),
           Text('Downloads',
@@ -282,8 +282,8 @@ class _EmptyLibraryState extends StatelessWidget {
             size: 64,
             color: Theme.of(context)
                 .colorScheme
-                .onBackground
-                .withOpacity(0.25),
+                .onSurface
+                .withValues(alpha: 0.25),
           ),
           const SizedBox(height: 16),
           Text(
@@ -291,8 +291,8 @@ class _EmptyLibraryState extends StatelessWidget {
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   color: Theme.of(context)
                       .colorScheme
-                      .onBackground
-                      .withOpacity(0.5),
+                      .onSurface
+                      .withValues(alpha: 0.5),
                 ),
           ),
           if (action != null && onAction != null) ...[

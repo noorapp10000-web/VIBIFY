@@ -1,4 +1,5 @@
 import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -28,7 +29,7 @@ class VibifyAudioHandler extends BaseAudioHandler
         androidNotificationChannelName: 'Vibify',
         androidNotificationOngoing: true,
         androidStopForegroundOnPause: true,
-        notificationColor: 0xFFD6B48A,
+        notificationColor: const Color(0xFFD6B48A),
         androidNotificationIcon: 'drawable/ic_notification',
       ),
     );
@@ -63,7 +64,7 @@ class VibifyAudioHandler extends BaseAudioHandler
     if (currentRepeatMode == AudioServiceRepeatMode.one) {
       seek(Duration.zero);
       play();
-    } else if (hasNext) {
+    } else if ((_player.currentIndex ?? 0) < queue.value.length - 1) {
       skipToNext();
     } else if (currentRepeatMode == AudioServiceRepeatMode.all) {
       skipToQueueItem(0);

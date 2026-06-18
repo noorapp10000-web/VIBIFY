@@ -72,8 +72,8 @@ class _HomeAppBar extends StatelessWidget {
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: Theme.of(context)
                                 .colorScheme
-                                .onBackground
-                                .withOpacity(0.6),
+                                .onSurface
+                                .withValues(alpha: 0.6),
                           ),
                     ),
                     const SizedBox(height: 2),
@@ -91,7 +91,7 @@ class _HomeAppBar extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: AppColors.primaryBeige.withOpacity(0.15),
+                  color: AppColors.primaryBeige.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -323,7 +323,7 @@ class _TrackCard extends ConsumerWidget {
         width: 120,
         height: 120,
         decoration: BoxDecoration(
-          color: AppColors.primaryBeige.withOpacity(0.15),
+          color: AppColors.primaryBeige.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(12),
         ),
         child: const Icon(
@@ -353,7 +353,7 @@ class _QuickPlayTile extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: color.withOpacity(0.15),
+          color: color.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(

@@ -65,8 +65,8 @@ class _LocalMusicPageState extends ConsumerState<LocalMusicPage>
               labelColor: AppColors.primaryBeige,
               unselectedLabelColor: Theme.of(context)
                   .colorScheme
-                  .onBackground
-                  .withOpacity(0.5),
+                  .onSurface
+                  .withValues(alpha: 0.5),
               labelStyle: const TextStyle(
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w600,
@@ -182,7 +182,7 @@ class _ArtistsTab extends StatelessWidget {
         final artist = state.artists[index];
         return ListTile(
           leading: CircleAvatar(
-            backgroundColor: AppColors.primaryBeige.withOpacity(0.2),
+            backgroundColor: AppColors.primaryBeige.withValues(alpha: 0.2),
             child: Text(
               artist.name.isNotEmpty ? artist.name[0].toUpperCase() : '?',
               style: const TextStyle(
@@ -225,7 +225,7 @@ class _FoldersTab extends StatelessWidget {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: AppColors.primaryBeige.withOpacity(0.15),
+              color: AppColors.primaryBeige.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(10),
             ),
             child: const Icon(Icons.folder_rounded,
@@ -264,7 +264,7 @@ class _AlbumCard extends StatelessWidget {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: AppColors.primaryBeige.withOpacity(0.15),
+                color: AppColors.primaryBeige.withValues(alpha: 0.15),
                 borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(14)),
               ),
@@ -330,8 +330,8 @@ class _PermissionRequest extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context)
                         .colorScheme
-                        .onBackground
-                        .withOpacity(0.6),
+                        .onSurface
+                        .withValues(alpha: 0.6),
                   ),
               textAlign: TextAlign.center,
             ),

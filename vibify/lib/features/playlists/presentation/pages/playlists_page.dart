@@ -109,7 +109,7 @@ class _PlaylistTile extends StatelessWidget {
         width: 52,
         height: 52,
         decoration: BoxDecoration(
-          color: AppColors.primaryBeige.withOpacity(0.15),
+          color: AppColors.primaryBeige.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(12),
         ),
         child: const Icon(Icons.queue_music_rounded,

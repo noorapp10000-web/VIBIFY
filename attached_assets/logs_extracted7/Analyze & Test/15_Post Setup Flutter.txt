@@ -1,0 +1,14 @@
+﻿2026-06-18T01:07:16.1011203Z Post job cleanup.
+2026-06-18T01:07:16.2589499Z Post job cleanup.
+2026-06-18T01:07:16.4025385Z [command]/usr/bin/tar --posix -cf cache.tzst --exclude cache.tzst -P -C /home/runner/work/VIBIFY/VIBIFY --files-from manifest.txt --use-compress-program zstdmt
+2026-06-18T01:07:18.6400977Z Sent 67239936 of 95160714 (70.7%), 64.1 MBs/sec
+2026-06-18T01:07:19.5594396Z Sent 95160714 of 95160714 (100.0%), 47.3 MBs/sec
+2026-06-18T01:07:19.6617524Z Cache saved with key: flutter-pub-linux-stable-3.44.2-x64-c9a6c484230f8b5e408ec57be1ef71dee1e77020-
+2026-06-18T01:07:19.6728527Z Post job cleanup.
+2026-06-18T01:07:19.8129327Z [command]/usr/bin/tar --posix -cf cache.tzst --exclude cache.tzst -P -C /home/runner/work/VIBIFY/VIBIFY --files-from manifest.txt --use-compress-program zstdmt
+2026-06-18T01:07:26.9267385Z Sent 0 of 1688811713 (0.0%), 0.0 MBs/sec
+2026-06-18T01:07:27.9275090Z Sent 603979776 of 1688811713 (35.8%), 287.9 MBs/sec
+2026-06-18T01:07:28.9330760Z Sent 1073741824 of 1688811713 (63.6%), 341.1 MBs/sec
+2026-06-18T01:07:29.9318505Z Sent 1621702849 of 1688811713 (96.0%), 386.4 MBs/sec
+2026-06-18T01:07:30.0944606Z Sent 1688811713 of 1688811713 (100.0%), 386.4 MBs/sec
+2026-06-18T01:07:30.2940220Z Cache saved with key: flutter-linux-stable-3.44.2-x64-c9a6c484230f8b5e408ec57be1ef71dee1e77020

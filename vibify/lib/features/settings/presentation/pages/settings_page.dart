@@ -206,7 +206,7 @@ class _SettingsTile extends StatelessWidget {
         width: 38,
         height: 38,
         decoration: BoxDecoration(
-          color: AppColors.primaryBeige.withOpacity(0.12),
+          color: AppColors.primaryBeige.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Icon(icon, color: AppColors.primaryBeige, size: 20),
@@ -221,8 +221,8 @@ class _SettingsTile extends StatelessWidget {
                   Icons.chevron_right_rounded,
                   color: Theme.of(context)
                       .colorScheme
-                      .onBackground
-                      .withOpacity(0.3),
+                      .onSurface
+                      .withValues(alpha: 0.3),
                 )
               : null),
     );
@@ -247,7 +247,7 @@ class _ThemeSelector extends ConsumerWidget {
                 width: 38,
                 height: 38,
                 decoration: BoxDecoration(
-                  color: AppColors.primaryBeige.withOpacity(0.12),
+                  color: AppColors.primaryBeige.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Icon(Icons.dark_mode_rounded,
@@ -318,15 +318,15 @@ class _ThemeOption extends StatelessWidget {
           decoration: BoxDecoration(
             color: isSelected
                 ? AppColors.primaryBeige
-                : Theme.of(context).colorScheme.background,
+                : Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: isSelected
                   ? AppColors.primaryBeige
                   : Theme.of(context)
                       .colorScheme
-                      .onBackground
-                      .withOpacity(0.1),
+                      .onSurface
+                      .withValues(alpha: 0.1),
             ),
           ),
           child: Column(
@@ -338,8 +338,8 @@ class _ThemeOption extends StatelessWidget {
                     ? Colors.white
                     : Theme.of(context)
                         .colorScheme
-                        .onBackground
-                        .withOpacity(0.6),
+                        .onSurface
+                        .withValues(alpha: 0.6),
               ),
               const SizedBox(height: 4),
               Text(
@@ -352,8 +352,8 @@ class _ThemeOption extends StatelessWidget {
                       ? Colors.white
                       : Theme.of(context)
                           .colorScheme
-                          .onBackground
-                          .withOpacity(0.6),
+                          .onSurface
+                          .withValues(alpha: 0.6),
                 ),
               ),
             ],
@@ -377,7 +377,7 @@ class _AudioQualitySelector extends ConsumerWidget {
         width: 38,
         height: 38,
         decoration: BoxDecoration(
-          color: AppColors.primaryBeige.withOpacity(0.12),
+          color: AppColors.primaryBeige.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(10),
         ),
         child: const Icon(Icons.high_quality_rounded,
@@ -388,7 +388,7 @@ class _AudioQualitySelector extends ConsumerWidget {
       subtitle: Text(_qualityLabel(currentQuality),
           style: Theme.of(context).textTheme.bodySmall),
       trailing: Icon(Icons.chevron_right_rounded,
-          color: Theme.of(context).colorScheme.onBackground.withOpacity(0.3)),
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3)),
       onTap: () => _showQualityPicker(context, ref),
     );
   }

@@ -43,7 +43,7 @@ class QueuePanel extends ConsumerWidget {
                 child: Text(
                   'Clear',
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.6),
+                    color: Colors.white.withValues(alpha: 0.6),
                     fontFamily: 'Inter',
                     fontSize: 14,
                   ),
@@ -139,7 +139,7 @@ class _QueueItem extends StatelessWidget {
       subtitle: Text(
         track.artist,
         style: TextStyle(
-          color: Colors.white.withOpacity(0.5),
+          color: Colors.white.withValues(alpha: 0.5),
           fontFamily: 'Inter',
           fontSize: 12,
         ),
@@ -153,7 +153,7 @@ class _QueueItem extends StatelessWidget {
             Text(
               track.duration!.shortFormatted,
               style: TextStyle(
-                color: Colors.white.withOpacity(0.4),
+                color: Colors.white.withValues(alpha: 0.4),
                 fontSize: 12,
                 fontFamily: 'Inter',
               ),
@@ -163,7 +163,7 @@ class _QueueItem extends StatelessWidget {
             onTap: onRemove,
             child: Icon(
               Icons.close_rounded,
-              color: Colors.white.withOpacity(0.4),
+              color: Colors.white.withValues(alpha: 0.4),
               size: 18,
             ),
           ),
@@ -176,7 +176,7 @@ class _QueueItem extends StatelessWidget {
         width: 44,
         height: 44,
         decoration: BoxDecoration(
-          color: AppColors.primaryBeige.withOpacity(0.1),
+          color: AppColors.primaryBeige.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(8),
         ),
         child: const Icon(

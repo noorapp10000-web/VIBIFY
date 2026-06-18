@@ -53,7 +53,7 @@ class _BottomNav extends StatelessWidget {
         color: scheme.surface,
         border: Border(
           top: BorderSide(
-            color: scheme.onSurface.withOpacity(0.06),
+            color: scheme.onSurface.withValues(alpha: 0.06),
             width: 1,
           ),
         ),
@@ -127,7 +127,7 @@ class _NavItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = isActive
         ? AppColors.primaryBeige
-        : Theme.of(context).colorScheme.onSurface.withOpacity(0.5);
+        : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5);
 
     return GestureDetector(
       onTap: onTap,

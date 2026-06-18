@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide RepeatMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:palette_generator/palette_generator.dart';
@@ -84,8 +84,8 @@ class _PlayerPageState extends ConsumerState<PlayerPage>
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              _dominantColor.withOpacity(0.85),
-              Colors.black.withOpacity(0.95),
+              _dominantColor.withValues(alpha: 0.85),
+              Colors.black.withValues(alpha: 0.95),
               Colors.black,
             ],
             stops: const [0.0, 0.5, 1.0],
@@ -235,7 +235,7 @@ class _PlayerContent extends ConsumerWidget {
                     Text(
                       track?.artist ?? '',
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.7),
+                        color: Colors.white.withValues(alpha: 0.7),
                         fontFamily: 'Inter',
                         fontSize: 15,
                         fontWeight: FontWeight.w400,
@@ -254,7 +254,7 @@ class _PlayerContent extends ConsumerWidget {
                       : Icons.favorite_border_rounded,
                   color: state.isFavorite
                       ? AppColors.primaryBeige
-                      : Colors.white.withOpacity(0.6),
+                      : Colors.white.withValues(alpha: 0.6),
                   size: 28,
                 ),
               ),
@@ -288,7 +288,7 @@ class _PlayerContent extends ConsumerWidget {
 
   Widget _artPlaceholder() => Container(
         decoration: BoxDecoration(
-          color: AppColors.primaryBeige.withOpacity(0.15),
+          color: AppColors.primaryBeige.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(20),
         ),
         child: const Icon(
@@ -311,9 +311,9 @@ class _SeekBar extends ConsumerWidget {
         SliderTheme(
           data: SliderTheme.of(context).copyWith(
             activeTrackColor: AppColors.primaryBeige,
-            inactiveTrackColor: Colors.white.withOpacity(0.15),
+            inactiveTrackColor: Colors.white.withValues(alpha: 0.15),
             thumbColor: Colors.white,
-            overlayColor: Colors.white.withOpacity(0.1),
+            overlayColor: Colors.white.withValues(alpha: 0.1),
             trackHeight: 3.5,
             thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 7),
           ),
@@ -336,7 +336,7 @@ class _SeekBar extends ConsumerWidget {
               Text(
                 state.position.shortFormatted,
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.6),
+                  color: Colors.white.withValues(alpha: 0.6),
                   fontSize: 12,
                   fontFamily: 'Inter',
                 ),
@@ -344,7 +344,7 @@ class _SeekBar extends ConsumerWidget {
               Text(
                 state.duration.shortFormatted,
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.6),
+                  color: Colors.white.withValues(alpha: 0.6),
                   fontSize: 12,
                   fontFamily: 'Inter',
                 ),
@@ -437,7 +437,7 @@ class _SecondaryControls extends StatelessWidget {
           onTap: notifier.toggleShuffle,
           color: state.isShuffling
               ? AppColors.primaryBeige
-              : Colors.white.withOpacity(0.6),
+              : Colors.white.withValues(alpha: 0.6),
         ),
         _IconBtn(
           icon: _repeatIcon(state.repeatMode),
@@ -445,13 +445,13 @@ class _SecondaryControls extends StatelessWidget {
           onTap: notifier.toggleRepeat,
           color: state.repeatMode != RepeatMode.none
               ? AppColors.primaryBeige
-              : Colors.white.withOpacity(0.6),
+              : Colors.white.withValues(alpha: 0.6),
         ),
         _IconBtn(
           icon: Icons.queue_music_rounded,
           size: 22,
           onTap: onQueueTap,
-          color: Colors.white.withOpacity(0.6),
+          color: Colors.white.withValues(alpha: 0.6),
         ),
         _IconBtn(
           icon: Icons.bedtime_outlined,
@@ -460,7 +460,7 @@ class _SecondaryControls extends StatelessWidget {
             context: context,
             builder: (_) => SleepTimerDialog(notifier: notifier),
           ),
-          color: Colors.white.withOpacity(0.6),
+          color: Colors.white.withValues(alpha: 0.6),
         ),
         _IconBtn(
           icon: Icons.speed_rounded,
@@ -472,7 +472,7 @@ class _SecondaryControls extends StatelessWidget {
               notifier: notifier,
             ),
           ),
-          color: Colors.white.withOpacity(0.6),
+          color: Colors.white.withValues(alpha: 0.6),
         ),
       ],
     );

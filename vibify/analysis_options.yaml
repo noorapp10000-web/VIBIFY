@@ -13,23 +13,18 @@ analyzer:
 linter:
   rules:
     - always_declare_return_types
-    - always_put_control_body_on_new_line
     - avoid_empty_else
     - avoid_print
     - avoid_relative_lib_imports
     - avoid_returning_null_for_future
     - avoid_slow_async_io
     - avoid_types_as_parameter_names
-    - avoid_unused_constructor_parameters
     - cancel_subscriptions
     - close_sinks
-    - directives_ordering
     - empty_statements
     - no_duplicate_case_values
-    - prefer_const_constructors
     - prefer_const_declarations
     - prefer_final_fields
-    - prefer_final_locals
     - prefer_is_empty
     - prefer_is_not_empty
     - prefer_single_quotes

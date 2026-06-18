@@ -51,8 +51,8 @@ class PlaylistDetailPage extends ConsumerWidget {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          AppColors.primaryBeige.withOpacity(0.6),
-                          AppColors.primaryBeige.withOpacity(0.2),
+                          AppColors.primaryBeige.withValues(alpha: 0.6),
+                          AppColors.primaryBeige.withValues(alpha: 0.2),
                         ],
                       ),
                     ),

@@ -1,0 +1,35 @@
+﻿2026-06-18T01:08:49.5789466Z ##[group]Run flutter build apk --debug
+2026-06-18T01:08:49.5789854Z [36;1mflutter build apk --debug[0m
+2026-06-18T01:08:49.5821228Z shell: /usr/bin/bash -e {0}
+2026-06-18T01:08:49.5821516Z env:
+2026-06-18T01:08:49.5821833Z   JAVA_HOME: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.19-10/x64
+2026-06-18T01:08:49.5822296Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.19-10/x64
+2026-06-18T01:08:49.5822787Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.44.2-x64/flutter
+2026-06-18T01:08:49.5823216Z   PUB_CACHE: /home/runner/.pub-cache
+2026-06-18T01:08:49.5823506Z ##[endgroup]
+2026-06-18T01:08:50.1521940Z Upgrading build.gradle
+2026-06-18T01:08:50.1559127Z Upgrading gradle.properties
+2026-06-18T01:08:50.1820172Z [!] Your app isn't using AndroidX.
+2026-06-18T01:08:50.1821580Z     To avoid potential build failures, you can quickly migrate your app by following the steps on https://docs.flutter.dev/release/breaking-changes/androidx-migration .
+2026-06-18T01:08:56.4779065Z Running Gradle task 'assembleDebug'...                          
+2026-06-18T01:08:56.4782230Z 
+2026-06-18T01:08:56.4858207Z FAILURE: Build failed with an exception.
+2026-06-18T01:08:56.4858838Z 
+2026-06-18T01:08:56.4859149Z * Where:
+2026-06-18T01:08:56.4860253Z Script '/opt/hostedtoolcache/flutter/stable-3.44.2-x64/flutter/packages/flutter_tools/gradle/app_plugin_loader.gradle' line: 9
+2026-06-18T01:08:56.4861385Z 
+2026-06-18T01:08:56.4861664Z * What went wrong:
+2026-06-18T01:08:56.4862316Z A problem occurred evaluating script.
+2026-06-18T01:08:56.4864730Z > You are applying Flutter's app_plugin_loader Gradle plugin imperatively using the apply script method, which is not possible anymore. Migrate to applying Gradle plugins with the declarative plugins block: https://flutter.dev/to/flutter-gradle-plugin-apply
+2026-06-18T01:08:56.4867042Z 
+2026-06-18T01:08:56.4867199Z 
+2026-06-18T01:08:56.4867755Z * Try:
+2026-06-18T01:08:56.4868508Z > Run with --stacktrace option to get the stack trace.
+2026-06-18T01:08:56.4869886Z > Run with --info or --debug option to get more log output.
+2026-06-18T01:08:56.4871308Z > Run with --scan to get full insights.
+2026-06-18T01:08:56.4872081Z > Get more help at https://help.gradle.org.
+2026-06-18T01:08:56.4872631Z 
+2026-06-18T01:08:56.4872961Z BUILD FAILED in 6s
+2026-06-18T01:08:56.8133980Z Running Gradle task 'assembleDebug'...                              6.6s
+2026-06-18T01:08:56.8231305Z Gradle task assembleDebug failed with exit code 1
+2026-06-18T01:08:56.8301907Z ##[error]Process completed with exit code 1.

@@ -1,4 +1,4 @@
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
+import 'package:youtube_explode_dart/youtube_explode_dart.dart' as yt;
 
 import '../../../../core/errors/exceptions.dart';
 import '../../../player/domain/entities/track.dart';
@@ -11,7 +11,7 @@ abstract class YoutubeDatasource {
 }
 
 class YoutubeDatasourceImpl implements YoutubeDatasource {
-  final YoutubeExplode _yt = YoutubeExplode();
+  final yt.YoutubeExplode _yt = yt.YoutubeExplode();
 
   @override
   Future<SearchResult> search(String query, {int limit = 20}) async {
@@ -22,15 +22,17 @@ class YoutubeDatasourceImpl implements YoutubeDatasource {
       final playlists = <SearchPlaylist>[];
 
       for (final result in searchList.take(limit)) {
-        if (result is SearchVideo) {
+        if (result is yt.SearchVideo) {
           tracks.add(_videoToTrack(result));
-        } else if (result is SearchChannel) {
+        } else if (result is yt.SearchChannel) {
           artists.add(SearchArtist(
             id: result.id.value,
             name: result.name,
-            thumbnailUrl: result.thumbnails.highResUrl,
+            thumbnailUrl: result.thumbnails.isNotEmpty
+                ? result.thumbnails.last.url.toString()
+                : null,
           ));
-        } else if (result is SearchPlaylist) {
+        } else if (result is yt.SearchPlaylist) {
           playlists.add(SearchPlaylist(
             id: result.id.value,
             title: result.title,
@@ -92,12 +94,14 @@ class YoutubeDatasourceImpl implements YoutubeDatasource {
     }
   }
 
-  Track _videoToTrack(SearchVideo video) => Track(
+  Track _videoToTrack(yt.SearchVideo video) => Track(
         id: video.id.value,
         title: video.title,
-        artist: video.channelName ?? 'Unknown',
+        artist: video.author ?? 'Unknown',
         duration: video.duration,
-        thumbnailUrl: video.thumbnails.highResUrl,
+        thumbnailUrl: video.thumbnails.isNotEmpty
+            ? video.thumbnails.last.url.toString()
+            : null,
         source: TrackSource.youtube,
         youtubeVideoId: video.id.value,
         addedAt: DateTime.now(),

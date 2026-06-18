@@ -1,0 +1,57 @@
+﻿2026-06-18T01:08:14.5326817Z ##[group]Run flutter pub run build_runner build --delete-conflicting-outputs
+2026-06-18T01:08:14.5328171Z [36;1mflutter pub run build_runner build --delete-conflicting-outputs[0m
+2026-06-18T01:08:14.5373775Z shell: /usr/bin/bash -e {0}
+2026-06-18T01:08:14.5374261Z env:
+2026-06-18T01:08:14.5374789Z   JAVA_HOME: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.19-10/x64
+2026-06-18T01:08:14.5375606Z   JAVA_HOME_17_X64: /opt/hostedtoolcache/Java_Zulu_jdk/17.0.19-10/x64
+2026-06-18T01:08:14.5376474Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.44.2-x64/flutter
+2026-06-18T01:08:14.5377218Z   PUB_CACHE: /home/runner/.pub-cache
+2026-06-18T01:08:14.5378060Z ##[endgroup]
+2026-06-18T01:08:19.4564281Z [INFO] Generating build script...
+2026-06-18T01:08:19.8082563Z [INFO] Generating build script completed, took 362ms
+2026-06-18T01:08:19.8083153Z 
+2026-06-18T01:08:19.8509540Z [INFO] Precompiling build script......
+2026-06-18T01:08:24.9398038Z [INFO] Precompiling build script... completed, took 5.1s
+2026-06-18T01:08:24.9398563Z 
+2026-06-18T01:08:25.5234149Z [INFO] Initializing inputs
+2026-06-18T01:08:25.9973002Z [INFO] Building new asset graph...
+2026-06-18T01:08:27.5002482Z [INFO] Building new asset graph completed, took 1.5s
+2026-06-18T01:08:27.5003078Z 
+2026-06-18T01:08:27.5003610Z [INFO] Checking for unexpected pre-existing outputs....
+2026-06-18T01:08:27.5016555Z [INFO] Checking for unexpected pre-existing outputs. completed, took 1ms
+2026-06-18T01:08:27.5017610Z 
+2026-06-18T01:08:27.5101799Z [INFO] Running build...
+2026-06-18T01:08:27.5514986Z [INFO] Generating SDK summary...
+2026-06-18T01:08:29.6054104Z [INFO] 2.1s elapsed, 0/16 actions completed.
+2026-06-18T01:08:31.3268286Z [INFO] 3.8s elapsed, 0/16 actions completed.
+2026-06-18T01:08:31.3534339Z [WARNING] riverpod_generator on test/widget/mini_player_test.dart:
+2026-06-18T01:08:31.3535585Z Your current `analyzer` version may not fully support your current SDK version.
+2026-06-18T01:08:31.3536310Z 
+2026-06-18T01:08:31.3536875Z Analyzer language version: 3.4.0
+2026-06-18T01:08:31.3539672Z SDK language version: 3.12.0
+2026-06-18T01:08:31.3540305Z 
+2026-06-18T01:08:31.3540784Z Please update to the latest `analyzer` version (14.0.0) by running
+2026-06-18T01:08:31.3541501Z `flutter packages upgrade`.
+2026-06-18T01:08:31.3541807Z 
+2026-06-18T01:08:31.3542183Z If you are not getting the latest version by running the above command, you
+2026-06-18T01:08:31.3543109Z can try adding a constraint like the following to your pubspec to start
+2026-06-18T01:08:31.3543890Z diagnosing why you can't get the latest version:
+2026-06-18T01:08:31.3544302Z 
+2026-06-18T01:08:31.3544475Z dev_dependencies:
+2026-06-18T01:08:31.3544894Z   analyzer: ^14.0.0
+2026-06-18T01:08:31.3545144Z 
+2026-06-18T01:08:32.3168571Z [INFO] Generating SDK summary completed, took 4.8s
+2026-06-18T01:08:32.3169093Z 
+2026-06-18T01:08:33.4374864Z [INFO] 5.9s elapsed, 33/85 actions completed.
+2026-06-18T01:08:34.5158129Z [INFO] 7.0s elapsed, 79/112 actions completed.
+2026-06-18T01:08:35.7032727Z [INFO] 8.2s elapsed, 128/138 actions completed.
+2026-06-18T01:08:46.6709186Z [INFO] 19.2s elapsed, 165/166 actions completed.
+2026-06-18T01:08:47.7259408Z [INFO] 20.2s elapsed, 266/283 actions completed.
+2026-06-18T01:08:49.2001527Z [INFO] 21.7s elapsed, 330/334 actions completed.
+2026-06-18T01:08:49.3617753Z [INFO] Running build completed, took 21.9s
+2026-06-18T01:08:49.3618287Z 
+2026-06-18T01:08:49.3618537Z [INFO] Caching finalized dependency graph...
+2026-06-18T01:08:49.4642872Z [INFO] Caching finalized dependency graph completed, took 102ms
+2026-06-18T01:08:49.4643258Z 
+2026-06-18T01:08:49.4671137Z [INFO] Succeeded after 22.0s with 132 outputs (605 actions)
+2026-06-18T01:08:49.4671532Z 

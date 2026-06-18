@@ -25,8 +25,8 @@ class AppColors {
   static const Color info = Color(0xFF1E88E5);
 
   // Overlays
-  static Color overlayDark = const Color(0xFF000000).withOpacity(0.6);
-  static Color overlayLight = const Color(0xFFFFFFFF).withOpacity(0.1);
+  static Color overlayDark = const Color(0xFF000000).withValues(alpha: 0.6);
+  static Color overlayLight = const Color(0xFFFFFFFF).withValues(alpha: 0.1);
 
   // Player gradient stops
   static const Color playerGradientStart = Color(0xFF1A1A1A);
