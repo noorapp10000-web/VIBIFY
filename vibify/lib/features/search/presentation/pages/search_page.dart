@@ -45,9 +45,9 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     });
   }
 
-  /// Auto-test: search Piped for [_kDefaultQuery], pick the first result,
-  /// fetch its stream URL, and print it to the console.
-  Future<void> _runPipedAutoTest() async {
+  /// Debug test: search then fetch stream URL for the first result.
+  /// Prints results to console so you can verify the chain works end-to-end.
+  Future<void> _runDebugTest() async {
     if (_isAutoTesting) return;
     setState(() => _isAutoTesting = true);
 
@@ -55,53 +55,51 @@ class _SearchPageState extends ConsumerState<SearchPage> {
 
     try {
       debugPrint('═══════════════════════════════════════════════════════');
-      debugPrint('[Piped AutoTest] Searching: $_kDefaultQuery');
+      debugPrint('[DebugTest] Query: $_kDefaultQuery');
 
       final datasource = sl<YoutubeDatasource>();
 
-      // 1. Search via Piped
+      // 1. Search
       final result = await datasource.search(_kDefaultQuery, limit: 5);
       if (result.tracks.isEmpty) {
-        debugPrint('[Piped AutoTest] ✗ No search results returned');
+        debugPrint('[DebugTest] ✗ No search results');
         messenger.showSnackBar(const SnackBar(
-          content: Text('Piped search returned no results'),
+          content: Text('Search returned no results — check console'),
           backgroundColor: Colors.red,
         ));
         return;
       }
 
       final firstTrack = result.tracks.first;
-      debugPrint('[Piped AutoTest] First result → "${firstTrack.title}" '
-          'by ${firstTrack.artist} (videoId=${firstTrack.youtubeVideoId})');
+      debugPrint('[DebugTest] ✓ Search OK → "${firstTrack.title}" '
+          'by ${firstTrack.artist} (${firstTrack.youtubeVideoId})');
 
-      // 2. Fetch stream URL from Piped
+      // 2. Stream URL
       final videoId = firstTrack.youtubeVideoId ?? firstTrack.id;
-      debugPrint('[Piped AutoTest] Fetching stream URL for videoId=$videoId …');
-
+      debugPrint('[DebugTest] Fetching stream URL for $videoId …');
       final streamUrl = await datasource.getPipedStreamUrl(videoId);
 
       if (streamUrl != null && streamUrl.isNotEmpty) {
-        debugPrint('[Piped AutoTest] ✓ STREAM URL EXTRACTED:');
-        debugPrint('  $streamUrl');
+        debugPrint('[DebugTest] ✓ Stream URL OK (${streamUrl.length} chars)');
         debugPrint('═══════════════════════════════════════════════════════');
         messenger.showSnackBar(SnackBar(
-          content: Text('✓ Piped stream OK! "${firstTrack.title}"'),
+          content: Text('✓ OK! "${firstTrack.title}"'),
           backgroundColor: Colors.green,
           duration: const Duration(seconds: 4),
         ));
       } else {
-        debugPrint('[Piped AutoTest] ✗ Piped returned null stream URL');
+        debugPrint('[DebugTest] ✗ Stream URL was null');
         debugPrint('═══════════════════════════════════════════════════════');
         messenger.showSnackBar(const SnackBar(
-          content: Text('Piped stream URL was null — check console'),
+          content: Text('Stream URL null — check console'),
           backgroundColor: Colors.orange,
         ));
       }
     } catch (e) {
-      debugPrint('[Piped AutoTest] ✗ Exception: $e');
+      debugPrint('[DebugTest] ✗ Exception: $e');
       debugPrint('═══════════════════════════════════════════════════════');
       messenger.showSnackBar(SnackBar(
-        content: Text('Piped test failed: $e'),
+        content: Text('Test failed: $e'),
         backgroundColor: Colors.red,
       ));
     } finally {
@@ -190,13 +188,13 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                 ),
               ),
             ),
-            // ── Piped API debug test button ──────────────────────────────
+            // ── Debug test button ─────────────────────────────────────────
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
               child: SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
-                  onPressed: _isAutoTesting ? null : _runPipedAutoTest,
+                  onPressed: _isAutoTesting ? null : _runDebugTest,
                   icon: _isAutoTesting
                       ? const SizedBox(
                           width: 14,
@@ -206,8 +204,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                       : const Icon(Icons.biotech_rounded, size: 16),
                   label: Text(
                     _isAutoTesting
-                        ? 'Testing Piped API…'
-                        : 'Test Piped API (حمو المرشدي)',
+                        ? 'Testing…'
+                        : 'Test Search & Stream (حمو المرشدي)',
                     style: const TextStyle(fontSize: 12, fontFamily: 'Inter'),
                   ),
                   style: OutlinedButton.styleFrom(

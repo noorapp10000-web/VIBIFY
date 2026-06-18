@@ -58,11 +58,12 @@ class VibifyAudioHandler extends BaseAudioHandler
       'User-Agent': 'com.google.android.youtube/19.09.37 (Linux; U; Android 12; GB) gzip',
     },
   ));
-  // Creates a short-lived Dio for a specific Piped instance
+  // Creates a short-lived Dio for a specific Piped instance.
+  // Short timeouts so a dead instance fails fast instead of blocking.
   Dio _pipedDioFor(String base) => Dio(BaseOptions(
         baseUrl: base,
-        connectTimeout: const Duration(seconds: 7),
-        receiveTimeout: const Duration(seconds: 12),
+        connectTimeout: const Duration(seconds: 4),
+        receiveTimeout: const Duration(seconds: 6),
         headers: {'Accept': 'application/json'},
       ));
   final Dio _fallbackDio = Dio(BaseOptions(
@@ -157,32 +158,14 @@ class VibifyAudioHandler extends BaseAudioHandler
   }
 
   // ── Stream resolution chain ──────────────────────────────────────────────
-  // 1. InnerTube ANDROID  — fastest, works from real Android devices
-  // 2. youtube_explode_dart — pure Dart YouTube extractor
-  // 3. Server fallback    — API server / HF space
-  // 4. Embed fallback     — returns iframe URL for WebView playback
+  // 1. youtube_explode_dart — pure Dart, works on real device IPs, handles cipher
+  // 2. InnerTube ANDROID   — fast, no cipher when not rate-limited
+  // 3. Piped API           — open-source proxy (fast-fail if instances are down)
+  // 4. Embed fallback      — iframe/WebView as last resort
   // ─────────────────────────────────────────────────────────────────────────
 
   Future<StreamResolution> resolveYoutubeStream(String videoId) async {
-    // 1. InnerTube ANDROID (primary — fastest, no cipher)
-    try {
-      final url = await _getStreamViaInnerTube(videoId);
-      debugPrint('[Stream] InnerTube ANDROID ✓');
-      return StreamResolution(directUrl: url, source: 'innertube_android');
-    } catch (e) {
-      debugPrint('[Stream] InnerTube failed: $e');
-    }
-
-    // 2. Piped API (open-source proxy — reliable, no expiry issues)
-    try {
-      final url = await _getStreamViaPiped(videoId);
-      debugPrint('[Stream] Piped API ✓');
-      return StreamResolution(directUrl: url, source: 'piped_api');
-    } catch (e) {
-      debugPrint('[Stream] Piped API failed: $e');
-    }
-
-    // 3. youtube_explode_dart (pure Dart, works on real device IPs)
+    // 1. youtube_explode_dart — most reliable on real device IPs
     try {
       final url = await _getStreamViaYoutubeExplode(videoId);
       debugPrint('[Stream] youtube_explode_dart ✓');
@@ -191,17 +174,26 @@ class VibifyAudioHandler extends BaseAudioHandler
       debugPrint('[Stream] youtube_explode_dart failed: $e');
     }
 
-    // 4. Server fallback
+    // 2. InnerTube ANDROID — fast when not rate-limited
     try {
-      final resolution = await _getStreamViaServer(videoId);
-      debugPrint('[Stream] Server ✓ source=${resolution.source}');
-      return resolution;
+      final url = await _getStreamViaInnerTube(videoId);
+      debugPrint('[Stream] InnerTube ANDROID ✓');
+      return StreamResolution(directUrl: url, source: 'innertube_android');
     } catch (e) {
-      debugPrint('[Stream] Server failed: $e');
+      debugPrint('[Stream] InnerTube failed: $e');
     }
 
-    // 5. Embed fallback — return iframe URLs for WebView
-    debugPrint('[Stream] All direct methods failed — returning embed fallback');
+    // 3. Piped API — open-source proxy, fast-fail (4s timeout per instance)
+    try {
+      final url = await _getStreamViaPiped(videoId);
+      debugPrint('[Stream] Piped API ✓');
+      return StreamResolution(directUrl: url, source: 'piped_api');
+    } catch (e) {
+      debugPrint('[Stream] Piped API failed: $e');
+    }
+
+    // 4. Embed fallback — always works via iframe
+    debugPrint('[Stream] All direct methods failed — embed fallback');
     return StreamResolution(
       embedUrl: 'https://www.youtube.com/embed/$videoId?autoplay=1',
       nocookieEmbedUrl:
@@ -210,7 +202,7 @@ class VibifyAudioHandler extends BaseAudioHandler
     );
   }
 
-  /// Fetch audio stream URL from Piped — tries every instance until one works.
+  /// Try each Piped instance with a short timeout so failures are fast.
   Future<String> _getStreamViaPiped(String videoId) async {
     for (final base in _kPipedInstances) {
       try {
@@ -233,13 +225,13 @@ class VibifyAudioHandler extends BaseAudioHandler
         if (sorted.isEmpty) continue;
 
         final url = sorted.first['url'] as String;
-        debugPrint('[Piped] ✓ $base → ${url.substring(0, url.length.clamp(0, 80))}...');
+        debugPrint('[Piped] ✓ $base');
         return url;
       } catch (e) {
         debugPrint('[Piped] ✗ $base → $e');
       }
     }
-    throw Exception('Piped: all ${_kPipedInstances.length} instances failed for $videoId');
+    throw Exception('Piped: all instances failed for $videoId');
   }
 
   Future<String> _getStreamViaInnerTube(String videoId) async {
