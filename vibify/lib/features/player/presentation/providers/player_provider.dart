@@ -29,7 +29,10 @@ class PlayerNotifier extends StateNotifier<VibifyPlayerState> {
 
   PlayerNotifier(this._repository, this._playTrack, this._manageQueue)
       : super(const VibifyPlayerState()) {
-    _repository.playerStateStream.listen((s) => state = s);
+    _repository.playerStateStream.listen(
+      (s) => state = s,
+      onError: (_) {},
+    );
   }
 
   Future<void> play(Track track) => _playTrack(track);

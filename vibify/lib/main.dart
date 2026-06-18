@@ -11,6 +11,10 @@ import 'features/settings/presentation/providers/settings_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  FlutterError.onError = (details) {
+    FlutterError.presentError(details);
+  };
+
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -24,7 +28,10 @@ void main() async {
   );
 
   await Hive.initFlutter();
-  await setupDependencies();
+
+  try {
+    await setupDependencies();
+  } catch (_) {}
 
   runApp(const ProviderScope(child: VibifyApp()));
 }

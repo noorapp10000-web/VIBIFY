@@ -20,35 +20,43 @@ class PlayerRepositoryImpl implements PlayerRepository {
   }
 
   void _listenToAudioHandler() {
-    _audioHandler.playbackState.listen((playbackState) {
-      final status = _mapProcessingState(
-        playbackState.processingState,
-        playbackState.playing,
-      );
-
-      _currentState = _currentState.copyWith(
-        status: status,
-        position: playbackState.position,
-        isShuffling:
-            playbackState.shuffleMode == AudioServiceShuffleMode.all,
-        repeatMode: _mapRepeatMode(playbackState.repeatMode),
-      );
-      _stateController.add(_currentState);
-    });
-
-    _audioHandler.mediaItem.listen((item) {
-      if (item != null) {
+    _audioHandler.playbackState.listen(
+      (playbackState) {
+        final status = _mapProcessingState(
+          playbackState.processingState,
+          playbackState.playing,
+        );
         _currentState = _currentState.copyWith(
-          duration: item.duration ?? Duration.zero,
+          status: status,
+          position: playbackState.position,
+          isShuffling:
+              playbackState.shuffleMode == AudioServiceShuffleMode.all,
+          repeatMode: _mapRepeatMode(playbackState.repeatMode),
         );
         _stateController.add(_currentState);
-      }
-    });
+      },
+      onError: (_) {},
+    );
 
-    _audioHandler.positionStream.listen((position) {
-      _currentState = _currentState.copyWith(position: position);
-      _stateController.add(_currentState);
-    });
+    _audioHandler.mediaItem.listen(
+      (item) {
+        if (item != null) {
+          _currentState = _currentState.copyWith(
+            duration: item.duration ?? Duration.zero,
+          );
+          _stateController.add(_currentState);
+        }
+      },
+      onError: (_) {},
+    );
+
+    _audioHandler.positionStream.listen(
+      (position) {
+        _currentState = _currentState.copyWith(position: position);
+        _stateController.add(_currentState);
+      },
+      onError: (_) {},
+    );
   }
 
   PlayerStatus _mapProcessingState(
