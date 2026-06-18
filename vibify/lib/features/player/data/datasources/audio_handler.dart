@@ -4,7 +4,6 @@ import 'package:audio_service/audio_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 import '../../domain/entities/track.dart';
 
@@ -25,8 +24,6 @@ const List<String> _kPipedInstances = [
   'https://piped-api.mint.lgbt',
 ];
 
-// Cloudflare Worker — stream fallback
-const String _kApiBase = 'https://broken-unit-a21e.noor-app-8000.workers.dev';
 
 /// Holds either a direct stream URL or an embed URL for iframe/webview fallback.
 class StreamResolution {
@@ -49,7 +46,6 @@ class StreamResolution {
 class VibifyAudioHandler extends BaseAudioHandler
     with QueueHandler, SeekHandler {
   final AudioPlayer _player;
-  final YoutubeExplode _yt = YoutubeExplode();
   final Dio _innerTubeDio = Dio(BaseOptions(
     connectTimeout: const Duration(seconds: 10),
     receiveTimeout: const Duration(seconds: 20),
@@ -66,11 +62,6 @@ class VibifyAudioHandler extends BaseAudioHandler
         receiveTimeout: const Duration(seconds: 6),
         headers: {'Accept': 'application/json'},
       ));
-  final Dio _fallbackDio = Dio(BaseOptions(
-    baseUrl: _kApiBase,
-    connectTimeout: const Duration(seconds: 10),
-    receiveTimeout: const Duration(seconds: 40),
-  ));
 
   // Track queue index ourselves — _player.currentIndex is always 0
   // because we load individual AudioSources, not a ConcatenatingAudioSource.
@@ -158,23 +149,14 @@ class VibifyAudioHandler extends BaseAudioHandler
   }
 
   // ── Stream resolution chain ──────────────────────────────────────────────
-  // 1. youtube_explode_dart — pure Dart, works on real device IPs, handles cipher
-  // 2. InnerTube ANDROID   — fast, no cipher when not rate-limited
-  // 3. Piped API           — open-source proxy (fast-fail if instances are down)
-  // 4. Embed fallback      — iframe/WebView as last resort
+  // 1. InnerTube ANDROID — same protocol as the YouTube app; works on real
+  //    Android device IPs; returns direct MP4/WEBM URLs without cipher.
+  // 2. Piped API        — open-source proxy; fast-fail when instances are down.
+  // 3. Embed fallback   — YouTube iframe/WebView as last resort.
   // ─────────────────────────────────────────────────────────────────────────
 
   Future<StreamResolution> resolveYoutubeStream(String videoId) async {
-    // 1. youtube_explode_dart — most reliable on real device IPs
-    try {
-      final url = await _getStreamViaYoutubeExplode(videoId);
-      debugPrint('[Stream] youtube_explode_dart ✓');
-      return StreamResolution(directUrl: url, source: 'youtube_explode');
-    } catch (e) {
-      debugPrint('[Stream] youtube_explode_dart failed: $e');
-    }
-
-    // 2. InnerTube ANDROID — fast when not rate-limited
+    // 1. InnerTube ANDROID (primary)
     try {
       final url = await _getStreamViaInnerTube(videoId);
       debugPrint('[Stream] InnerTube ANDROID ✓');
@@ -183,7 +165,7 @@ class VibifyAudioHandler extends BaseAudioHandler
       debugPrint('[Stream] InnerTube failed: $e');
     }
 
-    // 3. Piped API — open-source proxy, fast-fail (4s timeout per instance)
+    // 2. Piped API (4s timeout per instance — fails fast if all are down)
     try {
       final url = await _getStreamViaPiped(videoId);
       debugPrint('[Stream] Piped API ✓');
@@ -192,8 +174,8 @@ class VibifyAudioHandler extends BaseAudioHandler
       debugPrint('[Stream] Piped API failed: $e');
     }
 
-    // 4. Embed fallback — always works via iframe
-    debugPrint('[Stream] All direct methods failed — embed fallback');
+    // 3. Embed fallback
+    debugPrint('[Stream] All methods failed — embed fallback');
     return StreamResolution(
       embedUrl: 'https://www.youtube.com/embed/$videoId?autoplay=1',
       nocookieEmbedUrl:
@@ -320,46 +302,6 @@ class VibifyAudioHandler extends BaseAudioHandler
     }
 
     throw Exception('All InnerTube clients returned no stream URL');
-  }
-
-  Future<String> _getStreamViaYoutubeExplode(String videoId) async {
-    final manifest = await _yt.videos.streamsClient
-        .getManifest(videoId)
-        .timeout(const Duration(seconds: 20));
-
-    final audio = manifest.audioOnly.withHighestBitrate();
-    return audio.url.toString();
-  }
-
-  Future<StreamResolution> _getStreamViaServer(String videoId) async {
-    try {
-      final resp = await _fallbackDio.get<Map<String, dynamic>>(
-        '/stream',
-        queryParameters: {'id': videoId},
-      );
-      final url = resp.data?['url'] as String?;
-      if (url != null && url.isNotEmpty) {
-        return StreamResolution(directUrl: url, source: 'server_direct');
-      }
-      throw Exception('Server returned no stream URL');
-    } on DioException catch (e) {
-      // 451 = YouTube blocked from server — server returns embed fallback
-      if (e.response?.statusCode == 451) {
-        final fallback = e.response?.data?['fallback'] as Map?;
-        if (fallback != null) {
-          final embedUrl = fallback['embedUrl'] as String?;
-          final nocookieUrl = fallback['nocookieEmbedUrl'] as String?;
-          if (embedUrl != null) {
-            return StreamResolution(
-              embedUrl: embedUrl,
-              nocookieEmbedUrl: nocookieUrl,
-              source: 'server_embed_fallback',
-            );
-          }
-        }
-      }
-      rethrow;
-    }
   }
 
   Future<void> _playYoutubeTrack(String videoId) async {
@@ -554,8 +496,6 @@ class VibifyAudioHandler extends BaseAudioHandler
 
   void dispose() {
     _player.dispose();
-    _yt.close();
     _innerTubeDio.close();
-    _fallbackDio.close();
   }
 }
