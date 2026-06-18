@@ -18,26 +18,26 @@ class VibifyAudioHandler extends BaseAudioHandler
   })  : _player = player,
         _yt = yt;
 
-  static Future<VibifyAudioHandler> init() async {
+  /// Creates the handler and starts AudioService.init() in the background.
+  /// Does NOT block — call this before runApp() so the UI shows immediately.
+  static VibifyAudioHandler create() {
     final handler = VibifyAudioHandler._(
       player: AudioPlayer(),
       yt: YoutubeExplode(),
     );
-    try {
-      await AudioService.init(
-        builder: () => handler,
-        config: const AudioServiceConfig(
-          androidNotificationChannelId: 'com.vibify.audio',
-          androidNotificationChannelName: 'Vibify',
-          androidNotificationOngoing: true,
-          androidStopForegroundOnPause: true,
-          notificationColor: Color(0xFFD6B48A),
-          androidNotificationIcon: 'drawable/ic_notification',
-        ),
-      ).timeout(const Duration(seconds: 8));
-    } catch (_) {
-      // Audio service failed to init — app still opens, playback unavailable
-    }
+
+    AudioService.init(
+      builder: () => handler,
+      config: const AudioServiceConfig(
+        androidNotificationChannelId: 'com.vibify.audio',
+        androidNotificationChannelName: 'Vibify',
+        androidNotificationOngoing: true,
+        androidStopForegroundOnPause: true,
+        notificationColor: Color(0xFFD6B48A),
+        androidNotificationIcon: 'drawable/ic_notification',
+      ),
+    ).timeout(const Duration(seconds: 10)).catchError((_) {});
+
     handler._listenToPlayerEvents();
     return handler;
   }
