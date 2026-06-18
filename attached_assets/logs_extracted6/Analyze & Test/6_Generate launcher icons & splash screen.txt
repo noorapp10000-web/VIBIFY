@@ -1,0 +1,49 @@
+﻿2026-06-18T01:02:30.6685450Z ##[group]Run flutter pub run flutter_launcher_icons:main
+2026-06-18T01:02:30.6685887Z [36;1mflutter pub run flutter_launcher_icons:main[0m
+2026-06-18T01:02:30.6686235Z [36;1mflutter pub run flutter_native_splash:create[0m
+2026-06-18T01:02:30.6720264Z shell: /usr/bin/bash -e {0}
+2026-06-18T01:02:30.6720531Z env:
+2026-06-18T01:02:30.6720843Z   FLUTTER_ROOT: /opt/hostedtoolcache/flutter/stable-3.44.2-x64/flutter
+2026-06-18T01:02:30.6721234Z   PUB_CACHE: /home/runner/.pub-cache
+2026-06-18T01:02:30.6721495Z ##[endgroup]
+2026-06-18T01:02:32.3076918Z This command is deprecated and replaced with "flutter pub run flutter_launcher_icons"
+2026-06-18T01:02:32.3080523Z   ════════════════════════════════════════════
+2026-06-18T01:02:32.3081058Z      FLUTTER LAUNCHER ICONS (v0.14.4)                               
+2026-06-18T01:02:32.3081721Z   ════════════════════════════════════════════
+2026-06-18T01:02:32.3082148Z   
+2026-06-18T01:02:32.3814956Z • Creating default icons Android
+2026-06-18T01:02:32.3825535Z • Creating adaptive icons Android
+2026-06-18T01:02:32.5046559Z • Adding a new Android launcher icon
+2026-06-18T01:02:32.7783767Z • No colors.xml file found in your Android project
+2026-06-18T01:02:32.7784357Z • Creating colors.xml file and adding it to your Android project
+2026-06-18T01:02:33.0012338Z • Creating mipmap xml file Android
+2026-06-18T01:02:33.0044564Z Creating Icons for Web...
+2026-06-18T01:02:33.0060069Z ⚠️Requirements failed for platform Web. Skipped
+2026-06-18T01:02:33.0062034Z 
+2026-06-18T01:02:33.0062739Z ✓ Successfully generated launcher icons
+2026-06-18T01:02:35.0656347Z [Android] Creating default splash images
+2026-06-18T01:02:35.2075850Z [Android] Creating dark mode splash images
+2026-06-18T01:02:35.5173829Z [Android] Creating default android12splash images
+2026-06-18T01:02:35.9373836Z [Android] Creating dark mode android12splash images
+2026-06-18T01:02:36.3363875Z [Android] Updating launch background(s) with splash image path...
+2026-06-18T01:02:36.3453465Z [Android]  - android/app/src/main/res/drawable/launch_background.xml
+2026-06-18T01:02:36.7234624Z [Android]  - android/app/src/main/res/drawable-night/launch_background.xml
+2026-06-18T01:02:36.7281957Z [Android]  - android/app/src/main/res/drawable-v21/launch_background.xml
+2026-06-18T01:02:36.7344509Z [Android]  - android/app/src/main/res/drawable-night-v21/launch_background.xml
+2026-06-18T01:02:36.7367108Z [Android] Updating styles...
+2026-06-18T01:02:36.7423425Z [Android]  - android/app/src/main/res/values-v31/styles.xml
+2026-06-18T01:02:36.7453501Z [Android] No android/app/src/main/res/values-v31/styles.xml found in your Android project
+2026-06-18T01:02:36.7489222Z [Android] Creating android/app/src/main/res/values-v31/styles.xml and adding it to your Android project
+2026-06-18T01:02:36.7513319Z [Android]  - android/app/src/main/res/values-night-v31/styles.xml
+2026-06-18T01:02:36.7523820Z [Android] No android/app/src/main/res/values-night-v31/styles.xml found in your Android project
+2026-06-18T01:02:36.7573690Z [Android] Creating android/app/src/main/res/values-night-v31/styles.xml and adding it to your Android project
+2026-06-18T01:02:36.7603351Z [Android]  - android/app/src/main/res/values/styles.xml
+2026-06-18T01:02:36.7623290Z [Android]  - android/app/src/main/res/values-night/styles.xml
+2026-06-18T01:02:36.7653394Z [Android] No android/app/src/main/res/values-night/styles.xml found in your Android project
+2026-06-18T01:02:36.7683439Z [Android] Creating android/app/src/main/res/values-night/styles.xml and adding it to your Android project
+2026-06-18T01:02:36.7713167Z Web folder not found, skipping web splash update...
+2026-06-18T01:02:36.7742909Z 
+2026-06-18T01:02:36.7773344Z ✅ Native splash complete.
+2026-06-18T01:02:36.7783374Z Now go finish building something awesome! 💪 You rock! 🤘🤩
+2026-06-18T01:02:36.7803568Z Like the package? Please give it a 👍 here: https://pub.dev/packages/flutter_native_splash
+2026-06-18T01:02:36.7832930Z 
