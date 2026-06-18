@@ -8,14 +8,13 @@ import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 import '../../domain/entities/track.dart';
 
-// InnerTube ANDROID client — returns unencrypted stream URLs directly
-// (no JS cipher needed), works on Android without bot-detection issues.
+// InnerTube player endpoint
 const String _kPlayerUrl =
     'https://www.youtube.com/youtubei/v1/player'
     '?key=AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w';
 
-// Server fallback (HuggingFace Space or Replit API server)
-const String _kApiBase = 'https://Seifooooooo-vibify-api.hf.space';
+// Cloudflare Worker — stream fallback
+const String _kApiBase = 'https://broken-unit-a21e.noor-app-8000.workers.dev';
 
 /// Holds either a direct stream URL or an embed URL for iframe/webview fallback.
 class StreamResolution {
@@ -184,48 +183,91 @@ class VibifyAudioHandler extends BaseAudioHandler
   }
 
   Future<String> _getStreamViaInnerTube(String videoId) async {
-    final payload = {
-      'videoId': videoId,
-      'context': {
-        'client': {
-          'clientName': 'ANDROID',
-          'clientVersion': '19.09.37',
-          'androidSdkVersion': 30,
-          'hl': 'en',
-          'gl': 'US',
-        }
+    // Try multiple InnerTube clients in order — some bypass bot-detection better
+    final clients = [
+      {
+        'clientName': 'ANDROID',
+        'clientVersion': '19.29.34',
+        'androidSdkVersion': 30,
+        'hl': 'en',
+        'gl': 'US',
+        'userAgent': 'com.google.android.youtube/19.29.34 (Linux; U; Android 12; GB) gzip',
       },
-    };
+      {
+        'clientName': 'ANDROID_TESTSUITE',
+        'clientVersion': '1.9',
+        'androidSdkVersion': 30,
+        'hl': 'en',
+        'gl': 'US',
+        'userAgent': 'com.google.android.youtube/1.9 (Linux; U; Android 12) gzip',
+      },
+      {
+        'clientName': 'ANDROID',
+        'clientVersion': '19.09.37',
+        'androidSdkVersion': 30,
+        'hl': 'en',
+        'gl': 'US',
+        'userAgent': 'com.google.android.youtube/19.09.37 (Linux; U; Android 12; GB) gzip',
+      },
+    ];
 
-    final resp = await _innerTubeDio.post<Map<String, dynamic>>(
-      _kPlayerUrl,
-      data: payload,
-    );
+    for (final client in clients) {
+      try {
+        final userAgent = client['userAgent'] as String;
+        final clientCtx = Map<String, dynamic>.from(client)..remove('userAgent');
 
-    final streamingData = resp.data?['streamingData'] as Map?;
-    if (streamingData == null) throw Exception('No streamingData');
+        final payload = {
+          'videoId': videoId,
+          'context': {'client': clientCtx},
+          'params': '2AMBCgIQBg==',
+        };
 
-    final adaptive =
-        (streamingData['adaptiveFormats'] as List<dynamic>?) ?? [];
-    final audioFormats = adaptive
-        .whereType<Map>()
-        .where((f) =>
-            (f['mimeType'] as String? ?? '').startsWith('audio/') &&
-            f['url'] != null)
-        .toList();
+        final resp = await Dio(BaseOptions(
+          connectTimeout: const Duration(seconds: 10),
+          receiveTimeout: const Duration(seconds: 20),
+          headers: {
+            'Content-Type': 'application/json',
+            'User-Agent': userAgent,
+          },
+        )).post<Map<String, dynamic>>(_kPlayerUrl, data: payload);
 
-    if (audioFormats.isNotEmpty) {
-      audioFormats.sort((a, b) => ((b['bitrate'] as num?) ?? 0)
-          .compareTo((a['bitrate'] as num?) ?? 0));
-      return audioFormats.first['url'] as String;
+        final streamingData = resp.data?['streamingData'] as Map?;
+        if (streamingData == null) continue;
+
+        final adaptive = (streamingData['adaptiveFormats'] as List<dynamic>?) ?? [];
+        final allFormats = (streamingData['formats'] as List<dynamic>?) ?? [];
+
+        final audioFormats = [...adaptive, ...allFormats]
+            .whereType<Map>()
+            .where((f) =>
+                (f['mimeType'] as String? ?? '').startsWith('audio/') &&
+                f['url'] != null &&
+                f['signatureCipher'] == null)
+            .toList();
+
+        if (audioFormats.isNotEmpty) {
+          audioFormats.sort((a, b) => ((b['bitrate'] as num?) ?? 0)
+              .compareTo((a['bitrate'] as num?) ?? 0));
+          debugPrint('[Stream] InnerTube ${client['clientName']} ✓');
+          return audioFormats.first['url'] as String;
+        }
+
+        // Combined formats as last resort
+        final combined = [...adaptive, ...allFormats]
+            .whereType<Map>()
+            .where((f) => f['url'] != null && f['signatureCipher'] == null)
+            .toList();
+        if (combined.isNotEmpty) {
+          debugPrint('[Stream] InnerTube ${client['clientName']} combined ✓');
+          return combined.first['url'] as String;
+        }
+      } catch (e) {
+        debugPrint('[Stream] ${client['clientName']} failed: $e');
+        continue;
+      }
     }
 
-    final formats = (streamingData['formats'] as List<dynamic>?) ?? [];
-    final combined =
-        formats.whereType<Map>().where((f) => f['url'] != null).toList();
-    if (combined.isNotEmpty) return combined.first['url'] as String;
-
-    throw Exception('No playable stream found in InnerTube response');
+    throw Exception('All InnerTube clients returned no stream URL');
   }
 
   Future<String> _getStreamViaYoutubeExplode(String videoId) async {
