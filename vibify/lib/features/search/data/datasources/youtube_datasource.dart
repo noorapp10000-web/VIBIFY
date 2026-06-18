@@ -39,13 +39,14 @@ class YoutubeDatasourceImpl implements YoutubeDatasource {
   final Dio _apiDio = Dio(BaseOptions(
     baseUrl: _kApiBase,
     connectTimeout: const Duration(seconds: 15),
-    receiveTimeout: const Duration(seconds: 40),
+    receiveTimeout: const Duration(seconds: 50),
   ));
 
   @override
   Future<SearchResult> search(String query, {int limit = 20}) async {
+    // Try server-side search first (yt_dlp — more reliable)
     try {
-      final tracks = await _searchInnerTube(query, limit);
+      final tracks = await _searchViaServer(query, limit);
       if (tracks.isNotEmpty) {
         return SearchResult(
           tracks: tracks,
@@ -54,19 +55,19 @@ class YoutubeDatasourceImpl implements YoutubeDatasource {
           query: query,
         );
       }
-      throw Exception('Empty results from InnerTube');
-    } catch (_) {
-      try {
-        final tracks = await _searchViaServer(query, limit);
-        return SearchResult(
-          tracks: tracks,
-          artists: [],
-          playlists: [],
-          query: query,
-        );
-      } catch (e2) {
-        throw StreamException(message: 'Search failed: $e2');
-      }
+    } catch (_) {}
+
+    // Fallback: InnerTube direct
+    try {
+      final tracks = await _searchInnerTube(query, limit);
+      return SearchResult(
+        tracks: tracks,
+        artists: [],
+        playlists: [],
+        query: query,
+      );
+    } catch (e) {
+      throw StreamException(message: 'Search failed: $e');
     }
   }
 
