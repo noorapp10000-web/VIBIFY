@@ -5,14 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
 import '../../domain/entities/track.dart';
+import 'youtube_stream_service.dart';
 
 class VibifyAudioHandler extends BaseAudioHandler
     with QueueHandler, SeekHandler {
   final AudioPlayer _player = AudioPlayer();
+  final YoutubeStreamService _streamService;
 
   int _currentQueueIndex = 0;
 
-  VibifyAudioHandler() {
+  VibifyAudioHandler(this._streamService) {
     _listenToPlayerEvents();
   }
 
@@ -26,15 +28,16 @@ class VibifyAudioHandler extends BaseAudioHandler
     androidNotificationChannelDescription: 'Vibify music playback',
   );
 
-  static Future<VibifyAudioHandler> createAndInit() async {
+  static Future<VibifyAudioHandler> createAndInit(
+      YoutubeStreamService streamService) async {
     try {
       return await AudioService.init<VibifyAudioHandler>(
-        builder: VibifyAudioHandler.new,
+        builder: () => VibifyAudioHandler(streamService),
         config: _serviceConfig,
       );
     } catch (e) {
       debugPrint('[AudioService] init failed ($e) — using plain handler');
-      return VibifyAudioHandler();
+      return VibifyAudioHandler(streamService);
     }
   }
 
@@ -42,31 +45,28 @@ class VibifyAudioHandler extends BaseAudioHandler
     _player.playbackEventStream.listen(_broadcastState);
 
     _player.processingStateStream.listen((state) {
-      if (state == ProcessingState.completed) {
-        _handleTrackCompletion();
-      }
+      if (state == ProcessingState.completed) _handleTrackCompletion();
     });
 
     _player.durationStream.listen((duration) {
       if (_currentQueueIndex < queue.value.length) {
-        final updatedItem = queue.value[_currentQueueIndex].copyWith(
-          duration: duration,
-        );
+        final updated =
+            queue.value[_currentQueueIndex].copyWith(duration: duration);
         final newQueue = List<MediaItem>.from(queue.value);
-        newQueue[_currentQueueIndex] = updatedItem;
+        newQueue[_currentQueueIndex] = updated;
         queue.add(newQueue);
       }
     });
   }
 
   void _handleTrackCompletion() {
-    final repeatMode = playbackState.value.repeatMode;
-    if (repeatMode == AudioServiceRepeatMode.one) {
+    final mode = playbackState.value.repeatMode;
+    if (mode == AudioServiceRepeatMode.one) {
       seek(Duration.zero);
       play();
     } else if (_currentQueueIndex < queue.value.length - 1) {
       skipToNext();
-    } else if (repeatMode == AudioServiceRepeatMode.all) {
+    } else if (mode == AudioServiceRepeatMode.all) {
       skipToQueueItem(0);
     } else {
       stop();
@@ -78,27 +78,57 @@ class VibifyAudioHandler extends BaseAudioHandler
     this.mediaItem.add(mediaItem);
     _currentQueueIndex = 0;
     queue.add([mediaItem]);
-
-    if (track.source == TrackSource.youtube) {
-      // YouTube tracks are handled by YoutubeIframePlayer in the UI layer.
-      // The handler manages queue/metadata only — no audio_player involvement.
-      await _player.stop();
-      playbackState.add(playbackState.value.copyWith(
-        processingState: AudioProcessingState.idle,
-        playing: false,
-      ));
-    } else if (track.source == TrackSource.local && track.localPath != null) {
-      await _player.setFilePath(track.localPath!);
-      await _player.play();
-    }
+    await _playItem(track.source.name, track.youtubeVideoId, track.localPath);
   }
 
   Future<void> setQueueFromTracks(List<Track> tracks,
       {int startIndex = 0}) async {
-    final mediaItems = tracks.map(_trackToMediaItem).toList();
-    queue.add(mediaItems);
+    final items = tracks.map(_trackToMediaItem).toList();
+    queue.add(items);
     _currentQueueIndex = startIndex.clamp(0, tracks.length - 1);
     await skipToQueueItem(_currentQueueIndex);
+  }
+
+  Future<void> _playItem(
+      String source, String? youtubeId, String? localPath) async {
+    if (source == TrackSource.youtube.name && youtubeId != null) {
+      await _playYoutube(youtubeId);
+    } else if (source == TrackSource.local.name && localPath != null) {
+      await _player.setFilePath(localPath);
+      await _player.play();
+    }
+  }
+
+  Future<void> _playYoutube(String videoId) async {
+    try {
+      debugPrint('[Player] Resolving stream for $videoId…');
+
+      // Set loading state so UI shows spinner immediately
+      playbackState.add(playbackState.value.copyWith(
+        processingState: AudioProcessingState.loading,
+      ));
+
+      final resolved = await _streamService.resolveStream(videoId);
+      if (resolved == null) {
+        debugPrint('[Player] No stream resolved for $videoId');
+        playbackState.add(playbackState.value.copyWith(
+          processingState: AudioProcessingState.error,
+        ));
+        return;
+      }
+
+      debugPrint('[Player] Got URL — loading…');
+      await _player.setAudioSource(
+        AudioSource.uri(resolved.url, headers: resolved.headers),
+      );
+      await _player.play();
+      debugPrint('[Player] Playing $videoId');
+    } catch (e, st) {
+      debugPrint('[Player] Error for $videoId: $e\n$st');
+      playbackState.add(playbackState.value.copyWith(
+        processingState: AudioProcessingState.error,
+      ));
+    }
   }
 
   MediaItem _trackToMediaItem(Track track) => MediaItem(
@@ -107,9 +137,8 @@ class VibifyAudioHandler extends BaseAudioHandler
         artist: track.artist,
         album: track.album,
         duration: track.duration,
-        artUri: track.thumbnailUrl != null
-            ? Uri.parse(track.thumbnailUrl!)
-            : null,
+        artUri:
+            track.thumbnailUrl != null ? Uri.parse(track.thumbnailUrl!) : null,
         extras: {
           'source': track.source.name,
           'localPath': track.localPath,
@@ -118,11 +147,11 @@ class VibifyAudioHandler extends BaseAudioHandler
       );
 
   void _broadcastState(PlaybackEvent event) {
-    final isPlaying = _player.playing;
+    final playing = _player.playing;
     playbackState.add(playbackState.value.copyWith(
       controls: [
         MediaControl.skipToPrevious,
-        if (isPlaying) MediaControl.pause else MediaControl.play,
+        if (playing) MediaControl.pause else MediaControl.play,
         MediaControl.stop,
         MediaControl.skipToNext,
       ],
@@ -139,7 +168,7 @@ class VibifyAudioHandler extends BaseAudioHandler
         ProcessingState.ready: AudioProcessingState.ready,
         ProcessingState.completed: AudioProcessingState.completed,
       }[_player.processingState]!,
-      playing: isPlaying,
+      playing: playing,
       updatePosition: _player.position,
       bufferedPosition: _player.bufferedPosition,
       speed: _player.speed,
@@ -186,24 +215,13 @@ class VibifyAudioHandler extends BaseAudioHandler
     _currentQueueIndex = index;
     final item = queue.value[index];
     mediaItem.add(item);
-
     final extras = item.extras;
     if (extras == null) return;
-
-    final source = extras['source'] as String?;
-    final localPath = extras['localPath'] as String?;
-
-    if (source == TrackSource.youtube.name) {
-      // YouTube playback is handled by YoutubeIframePlayer in the UI.
-      await _player.stop();
-      playbackState.add(playbackState.value.copyWith(
-        processingState: AudioProcessingState.idle,
-        playing: false,
-      ));
-    } else if (source == TrackSource.local.name && localPath != null) {
-      await _player.setFilePath(localPath);
-      await _player.play();
-    }
+    await _playItem(
+      extras['source'] as String? ?? '',
+      extras['youtubeVideoId'] as String?,
+      extras['localPath'] as String?,
+    );
   }
 
   @override
@@ -222,11 +240,12 @@ class VibifyAudioHandler extends BaseAudioHandler
   Future<void> setShuffleMode(AudioServiceShuffleMode shuffleMode) async {
     final enabled = shuffleMode == AudioServiceShuffleMode.all;
     await _player.setShuffleModeEnabled(enabled);
-    playbackState.add(playbackState.value.copyWith(shuffleMode: shuffleMode));
+    playbackState
+        .add(playbackState.value.copyWith(shuffleMode: shuffleMode));
   }
 
-  Future<void> setPlaybackSpeed(double speed) async => _player.setSpeed(speed);
-  Future<void> setVolume(double volume) async => _player.setVolume(volume);
+  Future<void> setPlaybackSpeed(double speed) => _player.setSpeed(speed);
+  Future<void> setVolume(double volume) => _player.setVolume(volume);
 
   Stream<Duration> get positionStream => _player.positionStream;
   Stream<Duration?> get durationStream => _player.durationStream;

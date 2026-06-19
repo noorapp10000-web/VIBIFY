@@ -33,9 +33,6 @@ dependencies:
   # YouTube stream extraction (fallback for downloads)
   youtube_explode_dart: ^3.1.0
 
-  # YouTube IFrame player (primary playback engine)
-  webview_flutter: ^4.8.0
-
   # Local Database
   hive: ^2.2.3
   hive_flutter: ^1.1.0

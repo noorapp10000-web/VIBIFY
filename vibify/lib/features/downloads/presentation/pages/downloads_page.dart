@@ -114,7 +114,8 @@ class _DownloadTile extends StatelessWidget {
           if (item.isDownloading || item.isPaused) ...[
             const SizedBox(height: 4),
             LinearProgressIndicator(
-              value: item.progress,
+              // null = indeterminate (when Content-Length unknown)
+              value: item.fileSizeBytes != null ? item.progress : null,
               backgroundColor:
                   Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.1),
               valueColor:
@@ -123,7 +124,11 @@ class _DownloadTile extends StatelessWidget {
             ),
             const SizedBox(height: 2),
             Text(
-              '${(item.progress * 100).toInt()}%',
+              item.fileSizeBytes != null
+                  ? '${(item.progress * 100).toInt()}%'
+                  : item.downloadedBytes != null
+                      ? '${(item.downloadedBytes! / 1024 / 1024).toStringAsFixed(1)} MB'
+                      : 'جاري التحميل…',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: AppColors.primaryBeige,
                     fontSize: 11,

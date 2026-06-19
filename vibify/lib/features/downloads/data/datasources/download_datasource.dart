@@ -86,17 +86,17 @@ class DownloadDatasourceImpl implements DownloadDatasource {
         filePath,
         onProgress: (received, total) async {
           if (_cancelled[item.id] == true) return;
-          if (total > 0) {
-            final current = updated.copyWith(
-              status: DownloadStatus.downloading,
-              progress: received / total,
-              downloadedBytes: received,
-              fileSizeBytes: total,
-            );
-            await _saveItem(current);
-            _progressController.add(current);
-            updated = current;
-          }
+          // total can be -1 for chunked/streaming responses
+          final progress = total > 0 ? received / total : null;
+          final current = updated.copyWith(
+            status: DownloadStatus.downloading,
+            progress: progress ?? updated.progress,
+            downloadedBytes: received,
+            fileSizeBytes: total > 0 ? total : null,
+          );
+          await _saveItem(current);
+          _progressController.add(current);
+          updated = current;
         },
       );
 

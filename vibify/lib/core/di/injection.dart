@@ -46,8 +46,9 @@ Future<void> setupDependencies() async {
   // YouTube stream service (InnerTube ANDROID primary, yt-explode fallback)
   sl.registerLazySingleton<YoutubeStreamService>(() => YoutubeStreamService());
 
-  // Audio handler — YouTube playback is delegated to YoutubeIframePlayer in UI.
-  final audioHandler = await VibifyAudioHandler.createAndInit();
+  // Audio handler — InnerTube ANDROID resolves stream, just_audio plays it.
+  final audioHandler =
+      await VibifyAudioHandler.createAndInit(sl<YoutubeStreamService>());
   sl.registerSingleton<VibifyAudioHandler>(audioHandler);
 
   // Search

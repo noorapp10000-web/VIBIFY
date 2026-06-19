@@ -1,51 +1,47 @@
 ---
 name: Vibify Search & Stream Engine
-description: YouTube playback via IFrame API (WebView). audio_handler manages local files + queue metadata only. YoutubeStreamService kept for downloads.
+description: YouTube playback via InnerTube ANDROID + just_audio. No IFrame/WebView. Custom Flutter UI only. Downloads via same InnerTube URL + Dio.
 ---
 
-## Architecture (current)
+## Architecture (current — final)
 
 ### YouTube Playback
-- **Engine**: `YoutubeIframePlayer` widget (WebView + YouTube IFrame API)
-- **File**: `lib/features/player/presentation/widgets/youtube_iframe_player.dart`
-- **PlayerPage**: when `track.source == TrackSource.youtube`, renders full-screen Stack with IFrame player + header overlay
-- **audio_handler**: for YouTube tracks → `_player.stop()` + idle state only (no audio_player involvement)
-- **No encryption issues**: YouTube handles URL resolution internally via IFrame API
+- **Engine**: InnerTube ANDROID API → direct URL → `just_audio` (ExoPlayer)
+- **Handler**: `VibifyAudioHandler._playYoutube(videoId)`
+  1. Calls `YoutubeStreamService.resolveStream(videoId)` — InnerTube primary, yt-explode fallback
+  2. `_player.setAudioSource(AudioSource.uri(url, headers: {User-Agent: Android}))` 
+  3. `_player.play()`
+- **UI**: Full custom Flutter gradient layout — no YouTube branding, no WebView, no IFrame
+
+### Why NOT IFrame (lessons learned)
+- Error 153 = video not embeddable → IFrame shows YouTube error UI we can't hide
+- YouTube controls bleed through even with `controls:0`
+- Some videos blocked from embedding entirely
+- InnerTube ANDROID from real device IP = YouTube thinks it's the official Android app → no blocks
 
 ### Local File Playback
-- **Engine**: `just_audio` via `VibifyAudioHandler`
-- Works unchanged — `setFilePath` + `play()`
+- `just_audio` → `setFilePath(localPath)` + `play()`
 
 ### Downloads
-- **Engine**: `YoutubeStreamService.downloadToFile()` (youtube_explode_dart stream)
-- `YoutubeStreamService` registered in DI, passed to `DownloadDatasourceImpl`
+- **Engine**: `YoutubeStreamService.downloadToFile()` → InnerTube URL + Dio (primary), yt-explode (fallback)
+- **Progress**: YouTube CDN returns chunked responses with `Content-Length: -1`
+  - When `total = -1`: show indeterminate bar + MB downloaded (not %)
+  - When `total > 0`: show normal % progress bar
+- `DownloadItem.fileSizeBytes` is nullable — null = chunked/unknown size
 
-## IFrame Player — Key Details
+## Key Files
+- `audio_handler.dart` — `_playYoutube()` resolves InnerTube → just_audio
+- `youtube_stream_service.dart` — `resolveStream()` + `downloadToFile()` 
+- `injection.dart` — `VibifyAudioHandler.createAndInit(sl<YoutubeStreamService>())`
+- `download_datasource.dart` — handles `total = -1` gracefully
+- `downloads_page.dart` — indeterminate bar when fileSizeBytes null
 
-### Pointer Events / Skip Ad Trick
-- `WebViewWidget` at bottom of Stack — receives all unhandled taps
-- `GestureDetector(behavior: HitTestBehavior.translucent)` layer → shows controls AND passes event to WebView
-- Decorative widgets (gradient, LIVE badge, buffering ring) wrapped in `IgnorePointer`
-- Interactive controls (play/pause, slider) wrapped in `IgnorePointer(ignoring: !_controlsVisible)`
-- Empty areas → no Flutter widget → tap goes directly to WebView → Skip Ad works
+## Deleted Files
+- `youtube_iframe_player.dart` — removed (IFrame approach abandoned)
+- `youtube_iframe_extractor.dart` — removed (unused)
 
-### JS ↔ Flutter Communication
-- Flutter channel name: `Vibify`
-- JS → Flutter: `Vibify.postMessage(JSON.stringify({type, ...}))` 
-  - types: `ready`, `state`, `tick`
-- Flutter → JS: `_wvc.runJavaScript('play()|pause()|seek(s)|loadVideo(id)')`
-
-### Live Stream Detection
-- `duration == 0` → `_isLive = true` → hides seek bar, shows red LIVE badge
-
-### Track Change (queue skip)
-- `didUpdateWidget` detects `old.videoId != widget.videoId`
-- Calls `loadVideo(newId)` via JS — no WebView rebuild, no flash
-
-### Player vars (hidden chrome)
-- `controls:0, rel:0, modestbranding:1, disablekb:1, fs:0, iv_load_policy:3`
-
-## Do NOT re-add
-- `_YoutubeStreamAudioSource` (StreamAudioSource + YoutubeHttpClient range requests)
-- Direct `YoutubeExplode()` calls in `audio_handler.dart`
-- `getAudioUrl()` / `resolveStream()` calls in the playback path
+## DO NOT
+- Re-add IFrame/WebView for playback — fundamentally broken for non-embeddable videos
+- Use `?.['key']` syntax in Dart — must be `?['key']` (no dot before bracket)
+- Use `Options(receiveTimeout:)` from dio in conflicting context — use `BaseOptions` on `Dio()` instance
+- Import `dio` without `as dio_lib` alias alongside `youtube_explode_dart`
