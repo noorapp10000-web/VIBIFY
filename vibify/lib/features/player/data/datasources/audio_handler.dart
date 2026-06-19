@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 import '../../domain/entities/track.dart';
 import 'youtube_stream_service.dart';
@@ -99,18 +100,10 @@ class VibifyAudioHandler extends BaseAudioHandler
   Future<void> _playYoutubeTrack(String videoId) async {
     try {
       debugPrint('[Player] Resolving stream for $videoId via youtube_explode_dart…');
-      final audioUrl = await _streamService.getAudioUrl(videoId);
-
-      if (audioUrl != null && audioUrl.isNotEmpty) {
-        await _player.setAudioSource(AudioSource.uri(Uri.parse(audioUrl)));
-        await _player.play();
-        debugPrint('[Player] ✓ Playback started for $videoId');
-      } else {
-        debugPrint('[Player] ✗ No audio URL returned for $videoId');
-        playbackState.add(playbackState.value.copyWith(
-          processingState: AudioProcessingState.error,
-        ));
-      }
+      final source = _YoutubeStreamAudioSource(videoId);
+      await _player.setAudioSource(source);
+      await _player.play();
+      debugPrint('[Player] ✓ Playback started for $videoId');
     } catch (e) {
       debugPrint('[Player] ✗ Stream resolution failed for $videoId: $e');
       playbackState.add(playbackState.value.copyWith(
@@ -267,5 +260,41 @@ class VibifyAudioHandler extends BaseAudioHandler
 
   void dispose() {
     _player.dispose();
+  }
+}
+
+class _YoutubeStreamAudioSource extends StreamAudioSource {
+  final String videoId;
+  YoutubeExplode? _yt;
+
+  _YoutubeStreamAudioSource(this.videoId) : super(tag: videoId);
+
+  @override
+  Future<StreamAudioResponse> request([int? start, int? end]) async {
+    _yt?.close();
+    final yt = YoutubeExplode();
+    _yt = yt;
+
+    try {
+      final manifest = await yt.videos.streamsClient.getManifest(videoId);
+      final info = manifest.audioOnly.withHighestBitrate();
+      final totalBytes = info.size.totalBytes;
+      final startByte = start ?? 0;
+      final endByte = end ?? totalBytes;
+
+      final stream = yt.videos.streamsClient.get(info);
+
+      return StreamAudioResponse(
+        sourceLength: totalBytes,
+        contentLength: endByte - startByte,
+        offset: startByte,
+        stream: stream,
+        contentType: 'audio/${info.container.name}',
+      );
+    } catch (e) {
+      yt.close();
+      _yt = null;
+      rethrow;
+    }
   }
 }

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
@@ -26,13 +25,9 @@ abstract class DownloadDatasource {
 class DownloadDatasourceImpl implements DownloadDatasource {
   final Box _box;
   final YoutubeStreamService _streamService;
-  final Dio _dio = Dio(BaseOptions(
-    connectTimeout: const Duration(seconds: 15),
-    receiveTimeout: const Duration(seconds: 120),
-  ));
   final _uuid = const Uuid();
 
-  final Map<String, CancelToken> _cancelTokens = {};
+  final Map<String, bool> _cancelled = {};
   final _progressController = _DownloadProgressController();
 
   DownloadDatasourceImpl(this._box, this._streamService);
@@ -68,46 +63,33 @@ class DownloadDatasourceImpl implements DownloadDatasource {
   }
 
   Future<void> _downloadInBackground(DownloadItem item) async {
+    _cancelled.remove(item.id);
     try {
       var updated = item.copyWith(status: DownloadStatus.downloading);
       await _saveItem(updated);
       _progressController.add(updated);
 
-      String downloadUrl;
-      if (item.track.source == TrackSource.youtube &&
-          item.track.youtubeVideoId != null) {
-        final url =
-            await _streamService.getAudioUrl(item.track.youtubeVideoId!);
-        if (url == null || url.isEmpty) {
-          throw const DownloadException(
-              message: 'تعذّر استخراج رابط الصوت');
-        }
-        downloadUrl = url;
-      } else if (item.track.localPath != null) {
+      if (item.track.source == TrackSource.local ||
+          item.track.youtubeVideoId == null) {
         return;
-      } else {
-        throw const DownloadException(message: 'No downloadable source');
       }
 
       final dir = await getApplicationDocumentsDirectory();
-      final fileName =
-          '${item.id}_${item.track.title.replaceAll(RegExp(r'[^\w]'), '_')}.m4a';
+      final safeName =
+          item.track.title.replaceAll(RegExp(r'[^\w\u0600-\u06FF]'), '_');
+      final fileName = '${item.id}_$safeName.m4a';
       final filePath = '${dir.path}/downloads/$fileName';
       await Directory('${dir.path}/downloads').create(recursive: true);
 
-      final cancelToken = CancelToken();
-      _cancelTokens[item.id] = cancelToken;
-
-      await _dio.download(
-        downloadUrl,
+      await _streamService.downloadToFile(
+        item.track.youtubeVideoId!,
         filePath,
-        cancelToken: cancelToken,
-        onReceiveProgress: (received, total) async {
+        onProgress: (received, total) async {
+          if (_cancelled[item.id] == true) return;
           if (total > 0) {
-            final progress = received / total;
             final current = updated.copyWith(
               status: DownloadStatus.downloading,
-              progress: progress,
+              progress: received / total,
               downloadedBytes: received,
               fileSizeBytes: total,
             );
@@ -118,6 +100,8 @@ class DownloadDatasourceImpl implements DownloadDatasource {
         },
       );
 
+      if (_cancelled[item.id] == true) return;
+
       final completed = updated.copyWith(
         status: DownloadStatus.completed,
         progress: 1.0,
@@ -125,17 +109,8 @@ class DownloadDatasourceImpl implements DownloadDatasource {
       );
       await _saveItem(completed);
       _progressController.add(completed);
-      _cancelTokens.remove(item.id);
-    } on DioException catch (e) {
-      if (CancelToken.isCancel(e)) return;
-      debugPrint('[Download] DioException: ${e.message}');
-      final failed = item.copyWith(
-        status: DownloadStatus.failed,
-        errorMessage: e.message,
-      );
-      await _saveItem(failed);
-      _progressController.add(failed);
     } catch (e) {
+      if (_cancelled[item.id] == true) return;
       debugPrint('[Download] Error: $e');
       final failed = item.copyWith(
         status: DownloadStatus.failed,
@@ -143,13 +118,14 @@ class DownloadDatasourceImpl implements DownloadDatasource {
       );
       await _saveItem(failed);
       _progressController.add(failed);
+    } finally {
+      _cancelled.remove(item.id);
     }
   }
 
   @override
   Future<void> pauseDownload(String downloadId) async {
-    _cancelTokens[downloadId]?.cancel('paused');
-    _cancelTokens.remove(downloadId);
+    _cancelled[downloadId] = true;
     final item = _getItem(downloadId);
     if (item != null) {
       final paused = item.copyWith(status: DownloadStatus.paused);
@@ -168,8 +144,7 @@ class DownloadDatasourceImpl implements DownloadDatasource {
 
   @override
   Future<void> cancelDownload(String downloadId) async {
-    _cancelTokens[downloadId]?.cancel('cancelled');
-    _cancelTokens.remove(downloadId);
+    _cancelled[downloadId] = true;
     await _box.delete(downloadId);
   }
 
