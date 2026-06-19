@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
@@ -259,34 +260,64 @@ class VibifyAudioHandler extends BaseAudioHandler
 
 class _YoutubeStreamAudioSource extends StreamAudioSource {
   final String videoId;
+
+  // Cached after first manifest fetch — avoids re-fetching on every seek.
   YoutubeExplode? _yt;
+  Uri? _cachedUrl;
+  int? _cachedTotalBytes;
+  String? _cachedContentType;
 
   _YoutubeStreamAudioSource(this.videoId) : super(tag: videoId);
 
+  Future<void> _ensureManifest() async {
+    if (_cachedUrl != null) return;
+    _yt ??= YoutubeExplode();
+    final manifest =
+        await _yt!.videos.streamsClient.getManifest(videoId);
+    final info = manifest.audioOnly.withHighestBitrate();
+    _cachedUrl = info.url;
+    _cachedTotalBytes = info.size.totalBytes;
+    _cachedContentType = 'audio/${info.container.name}';
+  }
+
   @override
   Future<StreamAudioResponse> request([int? start, int? end]) async {
-    _yt?.close();
-    final yt = YoutubeExplode();
-    _yt = yt;
-
     try {
-      final manifest = await yt.videos.streamsClient.getManifest(videoId);
-      final info = manifest.audioOnly.withHighestBitrate();
-      final totalBytes = info.size.totalBytes;
-      final startByte = start ?? 0;
-      final endByte = end ?? totalBytes;
+      await _ensureManifest();
+      final totalBytes = _cachedTotalBytes!;
+      final rangeStart = start ?? 0;
+      final rangeEnd = (end ?? totalBytes).clamp(0, totalBytes);
 
-      final stream = yt.videos.streamsClient.get(info);
+      // Use dart:io HttpClient so we can send a Range header.
+      // The CDN URL extracted by youtube_explode_dart supports byte-range requests.
+      final httpClient = HttpClient()
+        ..userAgent =
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36';
+      final req = await httpClient.getUrl(_cachedUrl!);
+      req.headers.set(
+          HttpHeaders.rangeHeader, 'bytes=$rangeStart-${rangeEnd - 1}');
+      final response = await req.close();
 
       return StreamAudioResponse(
         sourceLength: totalBytes,
-        contentLength: endByte - startByte,
-        offset: startByte,
-        stream: stream,
-        contentType: 'audio/${info.container.name}',
+        contentLength: rangeEnd - rangeStart,
+        offset: rangeStart,
+        stream: response.transform(
+          StreamTransformer.fromHandlers(
+            handleDone: (sink) {
+              sink.close();
+              httpClient.close(force: true);
+            },
+          ),
+        ),
+        contentType: _cachedContentType!,
       );
     } catch (e) {
-      yt.close();
+      // Invalidate cache so next call re-fetches a fresh URL.
+      _cachedUrl = null;
+      _cachedTotalBytes = null;
+      _cachedContentType = null;
+      _yt?.close();
       _yt = null;
       rethrow;
     }
