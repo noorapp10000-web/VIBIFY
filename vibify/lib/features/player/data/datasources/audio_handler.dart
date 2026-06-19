@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -288,32 +288,22 @@ class _YoutubeStreamAudioSource extends StreamAudioSource {
       final rangeStart = start ?? 0;
       final rangeEnd = (end ?? totalBytes).clamp(0, totalBytes);
 
-      // Use dart:io HttpClient so we can send a Range header.
-      // The CDN URL extracted by youtube_explode_dart supports byte-range requests.
-      final httpClient = HttpClient()
-        ..userAgent =
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36';
-      final req = await httpClient.getUrl(_cachedUrl!);
-      req.headers.set(
-          HttpHeaders.rangeHeader, 'bytes=$rangeStart-${rangeEnd - 1}');
-      final response = await req.close();
+      // Use youtube_explode_dart's own HTTP client so it sends all the
+      // required YouTube headers (User-Agent, Origin, cookies, etc.).
+      // A plain dart:io / http.Client would get 403 without those headers.
+      final req = http.Request('GET', _cachedUrl!)
+        ..headers['Range'] = 'bytes=$rangeStart-${rangeEnd - 1}';
+      final response = await _yt!.httpClient.send(req);
 
       return StreamAudioResponse(
         sourceLength: totalBytes,
-        contentLength: rangeEnd - rangeStart,
+        contentLength: response.contentLength ?? (rangeEnd - rangeStart),
         offset: rangeStart,
-        stream: response.transform(
-          StreamTransformer.fromHandlers(
-            handleDone: (sink) {
-              sink.close();
-              httpClient.close(force: true);
-            },
-          ),
-        ),
+        stream: response.stream,
         contentType: _cachedContentType!,
       );
     } catch (e) {
-      // Invalidate cache so next call re-fetches a fresh URL.
+      // Invalidate cache so the next attempt re-fetches a fresh URL.
       _cachedUrl = null;
       _cachedTotalBytes = null;
       _cachedContentType = null;
