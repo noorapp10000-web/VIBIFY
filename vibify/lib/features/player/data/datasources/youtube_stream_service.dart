@@ -6,153 +6,102 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-/// User-Agent that matches the InnerTube ANDROID client.
-/// Must also be passed to ExoPlayer so YouTube CDN accepts range requests.
-const kYoutubeAndroidUserAgent =
+const _kAndroidUserAgent =
     'com.google.android.youtube/19.09.37 (Linux; U; Android 11) gzip';
 
+const _kInnerTubeEndpoint =
+    'https://www.youtube.com/youtubei/v1/player?prettyPrint=false';
+
+const _kInnerTubeApiKey = 'AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w';
+
 class YoutubeStreamService {
-  // ──────────────────────────────────────────────────────────────
-  // Public API
-  // ──────────────────────────────────────────────────────────────
-
-  /// Returns a playable audio URL + headers for [videoId].
-  ///
-  /// Strategy 1 – InnerTube ANDROID direct (no JS-cipher risk, unencrypted URLs).
-  /// Strategy 2 – youtube_explode_dart fallback.
-  ///
-  /// Returns `null` only when both strategies fail.
+  /// Resolves a direct audio URL for [videoId].
+  /// Strategy 1: InnerTube ANDROID (unencrypted URLs, no cipher).
+  /// Strategy 2: youtube_explode_dart fallback.
   Future<ResolvedStream?> resolveStream(String videoId) async {
-    // ── Strategy 1: InnerTube ANDROID direct ────────────────────
     try {
-      final url = await _resolveViaInnerTube(videoId);
+      final url = await _innerTubeAudioUrl(videoId);
       if (url != null) {
-        debugPrint('[Stream] ✓ Strategy 1 (InnerTube ANDROID) ok');
+        debugPrint('[Stream] InnerTube ok');
         return ResolvedStream(
           url: Uri.parse(url),
-          headers: {'User-Agent': kYoutubeAndroidUserAgent},
+          headers: {'User-Agent': _kAndroidUserAgent},
         );
       }
     } catch (e) {
-      debugPrint('[Stream] Strategy 1 failed: $e');
+      debugPrint('[Stream] InnerTube failed: $e');
     }
 
-    // ── Strategy 2: youtube_explode_dart ────────────────────────
     try {
-      final url = await _resolveViaExplode(videoId);
+      final url = await _explodeAudioUrl(videoId);
       if (url != null) {
-        debugPrint('[Stream] ✓ Strategy 2 (yt-explode) ok');
+        debugPrint('[Stream] yt-explode ok');
         return ResolvedStream(
           url: Uri.parse(url),
-          headers: {'User-Agent': kYoutubeAndroidUserAgent},
+          headers: {'User-Agent': _kAndroidUserAgent},
         );
       }
     } catch (e) {
-      debugPrint('[Stream] Strategy 2 failed: $e');
+      debugPrint('[Stream] yt-explode failed: $e');
     }
 
-    debugPrint('[Stream] ✗ Both strategies failed for $videoId');
+    debugPrint('[Stream] Both strategies failed for $videoId');
     return null;
   }
 
-  /// Downloads audio for [videoId] directly to [filePath].
-  ///
-  /// Strategy 1 – InnerTube ANDROID direct URL + Dio (no cipher, real device IP).
-  /// Strategy 2 – youtube_explode_dart fallback.
+  /// Downloads audio for [videoId] to [filePath] with optional progress.
+  /// Strategy 1: InnerTube ANDROID + Dio.
+  /// Strategy 2: youtube_explode_dart stream.
   Future<void> downloadToFile(
     String videoId,
     String filePath, {
     void Function(int received, int total)? onProgress,
   }) async {
-    // ── Strategy 1: InnerTube ANDROID → Dio download ────────────
     try {
-      final url = await _resolveViaInnerTube(videoId);
+      final url = await _innerTubeAudioUrl(videoId);
       if (url != null) {
-        debugPrint('[Download] ✓ Strategy 1 (InnerTube) — downloading…');
-        await _downloadViaUrl(
-          url,
-          filePath,
-          headers: {'User-Agent': kYoutubeAndroidUserAgent},
-          onProgress: onProgress,
-        );
-        debugPrint('[Download] ✓ Done → $filePath');
+        debugPrint('[Download] InnerTube ok — starting Dio download');
+        await _dioDownload(url, filePath, onProgress: onProgress);
+        debugPrint('[Download] Done → $filePath');
         return;
       }
     } catch (e) {
-      debugPrint('[Download] Strategy 1 failed: $e');
+      debugPrint('[Download] InnerTube failed: $e');
     }
 
-    // ── Strategy 2: youtube_explode_dart fallback ────────────────
-    debugPrint('[Download] Falling back to youtube_explode_dart…');
+    debugPrint('[Download] Falling back to yt-explode');
     final yt = YoutubeExplode();
     try {
       final manifest = await yt.videos.streamsClient.getManifest(videoId);
-      final info = _pickBestAudio(manifest);
-      final totalBytes = info.size.totalBytes;
-
+      final info = _bestAudio(manifest);
+      final total = info.size.totalBytes;
       final stream = yt.videos.streamsClient.get(info);
-      final file = File(filePath);
-      final sink = file.openWrite();
-
+      final sink = File(filePath).openWrite();
       int received = 0;
       await for (final chunk in stream) {
         sink.add(chunk);
         received += chunk.length;
-        onProgress?.call(received, totalBytes);
+        onProgress?.call(received, total);
       }
       await sink.flush();
       await sink.close();
-      debugPrint('[Download] ✓ Strategy 2 done → $filePath');
+      debugPrint('[Download] yt-explode done → $filePath');
     } catch (e) {
-      debugPrint('[Download] ✗ Both strategies failed: $e');
+      debugPrint('[Download] Both strategies failed: $e');
       rethrow;
     } finally {
       yt.close();
     }
   }
 
-  /// Downloads from a direct URL using Dio with progress tracking.
-  Future<void> _downloadViaUrl(
-    String url,
-    String filePath, {
-    Map<String, String>? headers,
-    void Function(int received, int total)? onProgress,
-  }) async {
-    final dio = dio_lib.Dio(
-      dio_lib.BaseOptions(
-        connectTimeout: const Duration(seconds: 30),
-        receiveTimeout: const Duration(minutes: 10),
-        headers: headers != null
-            ? Map<String, dynamic>.from(headers)
-            : null,
-      ),
-    );
-    await dio.download(
-      url,
-      filePath,
-      onReceiveProgress: (received, total) {
-        if (total > 0) onProgress?.call(received, total);
-      },
-    );
-  }
-
-  // ──────────────────────────────────────────────────────────────
-  // Strategy 1: InnerTube ANDROID direct
-  // ──────────────────────────────────────────────────────────────
-  // ANDROID client returns unencrypted URLs — no JS cipher needed.
-  // Works from real device IPs without datacenter blocks.
-
-  Future<String?> _resolveViaInnerTube(String videoId) async {
-    const endpoint =
-        'https://www.youtube.com/youtubei/v1/player?prettyPrint=false';
-
+  Future<String?> _innerTubeAudioUrl(String videoId) async {
     final response = await http
         .post(
-          Uri.parse(endpoint),
+          Uri.parse(_kInnerTubeEndpoint),
           headers: {
             'Content-Type': 'application/json; charset=UTF-8',
-            'User-Agent': kYoutubeAndroidUserAgent,
-            'X-Goog-Api-Key': 'AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w',
+            'User-Agent': _kAndroidUserAgent,
+            'X-Goog-Api-Key': _kInnerTubeApiKey,
           },
           body: jsonEncode({
             'videoId': videoId,
@@ -161,7 +110,7 @@ class YoutubeStreamService {
                 'clientName': 'ANDROID',
                 'clientVersion': '19.09.37',
                 'androidSdkVersion': 30,
-                'userAgent': kYoutubeAndroidUserAgent,
+                'userAgent': _kAndroidUserAgent,
                 'hl': 'en',
                 'gl': 'US',
                 'timeZone': 'UTC',
@@ -175,59 +124,55 @@ class YoutubeStreamService {
         .timeout(const Duration(seconds: 15));
 
     if (response.statusCode != 200) {
-      debugPrint('[Stream] InnerTube HTTP ${response.statusCode}');
+      debugPrint('[InnerTube] HTTP ${response.statusCode}');
       return null;
     }
 
     final data = jsonDecode(response.body) as Map<String, dynamic>;
-    final status =
-        (data['playabilityStatus'] as Map?)?.['status'] as String?;
+    final playability = data['playabilityStatus'] as Map<String, dynamic>?;
+    final status = playability?['status'] as String?;
+
     if (status != 'OK') {
-      final reason =
-          (data['playabilityStatus'] as Map?)?.['reason'] as String? ?? '';
-      debugPrint('[Stream] InnerTube status=$status reason=$reason');
+      final reason = playability?['reason'] as String? ?? '';
+      debugPrint('[InnerTube] status=$status reason=$reason');
       return null;
     }
 
-    final formats =
-        ((data['streamingData'] as Map?)?.['adaptiveFormats'] as List?)
+    final streamingData = data['streamingData'] as Map<String, dynamic>?;
+    final adaptiveFormats =
+        (streamingData?['adaptiveFormats'] as List?)
             ?.whereType<Map<String, dynamic>>()
             .where((f) =>
-                ((f['mimeType'] as String?) ?? '').startsWith('audio/') &&
+                (f['mimeType'] as String? ?? '').startsWith('audio/') &&
                 f['url'] != null)
             .toList();
 
-    if (formats == null || formats.isEmpty) {
-      debugPrint('[Stream] InnerTube: no direct audio URLs found');
+    if (adaptiveFormats == null || adaptiveFormats.isEmpty) {
+      debugPrint('[InnerTube] no direct audio URLs');
       return null;
     }
 
-    // Prefer AAC (audio/mp4), then anything else
-    final mp4 = formats
-        .where((f) => ((f['mimeType'] as String?) ?? '').contains('mp4'))
+    final mp4 = adaptiveFormats
+        .where((f) => (f['mimeType'] as String? ?? '').contains('mp4'))
         .toList();
-    final ranked = mp4.isNotEmpty ? mp4 : formats;
+    final ranked = mp4.isNotEmpty ? mp4 : adaptiveFormats;
     ranked.sort((a, b) =>
         ((b['bitrate'] as int?) ?? 0).compareTo((a['bitrate'] as int?) ?? 0));
 
-    final url = ranked.first['url'] as String;
+    final best = ranked.first;
     debugPrint(
-        '[Stream] InnerTube: ${ranked.first['mimeType']} '
-        '${((ranked.first['bitrate'] as int?) ?? 0) ~/ 1000}kbps');
-    return url;
+        '[InnerTube] ${best['mimeType']} '
+        '${((best['bitrate'] as int?) ?? 0) ~/ 1000}kbps');
+    return best['url'] as String;
   }
 
-  // ──────────────────────────────────────────────────────────────
-  // Strategy 2: youtube_explode_dart
-  // ──────────────────────────────────────────────────────────────
-
-  Future<String?> _resolveViaExplode(String videoId) async {
+  Future<String?> _explodeAudioUrl(String videoId) async {
     final yt = YoutubeExplode();
     try {
       final manifest = await yt.videos.streamsClient.getManifest(videoId);
-      final info = _pickBestAudio(manifest);
+      final info = _bestAudio(manifest);
       debugPrint(
-          '[Stream] explode: ${info.container.name} '
+          '[yt-explode] ${info.container.name} '
           '${info.bitrate.bitsPerSecond ~/ 1000}kbps');
       return info.url.toString();
     } finally {
@@ -235,7 +180,28 @@ class YoutubeStreamService {
     }
   }
 
-  AudioStreamInfo _pickBestAudio(StreamManifest manifest) {
+  Future<void> _dioDownload(
+    String url,
+    String filePath, {
+    void Function(int received, int total)? onProgress,
+  }) async {
+    final client = dio_lib.Dio(
+      dio_lib.BaseOptions(
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(minutes: 10),
+        headers: {'User-Agent': _kAndroidUserAgent},
+      ),
+    );
+    await client.download(
+      url,
+      filePath,
+      onReceiveProgress: (received, total) {
+        if (total > 0) onProgress?.call(received, total);
+      },
+    );
+  }
+
+  AudioStreamInfo _bestAudio(StreamManifest manifest) {
     final mp4 = manifest.audioOnly
         .where((s) => s.container.name.toLowerCase() == 'mp4')
         .toList();
@@ -247,7 +213,6 @@ class YoutubeStreamService {
   }
 }
 
-/// Holds the resolved stream URL and headers needed for playback.
 class ResolvedStream {
   final Uri url;
   final Map<String, String> headers;
