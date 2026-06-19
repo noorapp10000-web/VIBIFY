@@ -8,6 +8,8 @@ import '../../../../core/di/injection.dart';
 import '../../domain/entities/search_result.dart';
 import '../../domain/usecases/search_tracks_usecase.dart';
 
+const _kUndefined = Object();
+
 class SearchState {
   final String query;
   final bool isLoading;
@@ -26,16 +28,24 @@ class SearchState {
   SearchState copyWith({
     String? query,
     bool? isLoading,
-    SearchResult? result,
-    String? error,
+    Object? result = _kUndefined,
+    Object? error = _kUndefined,
     List<String>? recentSearches,
   }) =>
       SearchState(
         query: query ?? this.query,
         isLoading: isLoading ?? this.isLoading,
-        result: result,
-        error: error,
+        result: result == _kUndefined ? this.result : result as SearchResult?,
+        error: error == _kUndefined ? this.error : error as String?,
         recentSearches: recentSearches ?? this.recentSearches,
+      );
+
+  SearchState clearResult() => SearchState(
+        query: query,
+        isLoading: isLoading,
+        result: null,
+        error: null,
+        recentSearches: recentSearches,
       );
 }
 
@@ -56,10 +66,16 @@ class SearchNotifier extends StateNotifier<SearchState> {
   }
 
   void onQueryChanged(String query) {
-    state = state.copyWith(query: query, result: null, error: null);
+    state = state.clearResult().copyWith(query: query);
     _debounce?.cancel();
     if (query.trim().isEmpty) return;
-    _debounce = Timer(const Duration(milliseconds: 400), search);
+    _debounce = Timer(const Duration(milliseconds: 500), search);
+  }
+
+  Future<void> searchNow(String query) async {
+    _debounce?.cancel();
+    state = state.clearResult().copyWith(query: query);
+    await search();
   }
 
   Future<void> search() async {
@@ -69,7 +85,7 @@ class SearchNotifier extends StateNotifier<SearchState> {
     state = state.copyWith(isLoading: true, error: null);
     try {
       final result = await _usecase(q);
-      state = state.copyWith(isLoading: false, result: result);
+      state = state.copyWith(isLoading: false, result: result, error: null);
       _saveRecentSearch(q);
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
@@ -94,7 +110,7 @@ class SearchNotifier extends StateNotifier<SearchState> {
 
   void clear() {
     _debounce?.cancel();
-    state = state.copyWith(query: '', result: null, isLoading: false);
+    state = const SearchState();
   }
 
   @override

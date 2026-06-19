@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -8,12 +7,9 @@ import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/add_to_playlist_sheet.dart';
 import '../../../../core/widgets/download_option.dart';
-import '../../../player/data/datasources/youtube_stream_service.dart';
 import '../../../player/domain/entities/track.dart';
 import '../../../player/presentation/providers/player_provider.dart';
 import '../providers/search_provider.dart';
-
-const String _kDefaultQuery = 'حمو المرشدي';
 
 class SearchPage extends ConsumerStatefulWidget {
   const SearchPage({super.key});
@@ -26,7 +22,6 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   final _controller = TextEditingController();
   final _focusNode = FocusNode();
   bool _isFocused = false;
-  bool _isAutoTesting = false;
 
   @override
   void initState() {
@@ -34,92 +29,6 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     _focusNode.addListener(() {
       if (mounted) setState(() => _isFocused = _focusNode.hasFocus);
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      _controller.text = _kDefaultQuery;
-      final notifier = ref.read(searchNotifierProvider.notifier);
-      notifier.onQueryChanged(_kDefaultQuery);
-      notifier.search();
-    });
-  }
-
-  /// اختبار كامل: بحث → استخراج رابط الصوت
-  Future<void> _runDebugTest() async {
-    if (_isAutoTesting) return;
-    setState(() => _isAutoTesting = true);
-
-    final messenger = ScaffoldMessenger.of(context);
-
-    try {
-      debugPrint('═══════════════════════════════════════════════════════');
-      debugPrint('[DebugTest] Query: $_kDefaultQuery');
-
-      // 1. بحث عبر Cloudflare Worker
-      final notifier = ref.read(searchNotifierProvider.notifier);
-      await notifier.search();
-      final state = ref.read(searchNotifierProvider);
-
-      if (state.error != null) {
-        debugPrint('[DebugTest] ✗ Search error: ${state.error}');
-        messenger.showSnackBar(SnackBar(
-          content: Text('خطأ في البحث: ${state.error}'),
-          backgroundColor: Colors.red,
-          duration: const Duration(seconds: 6),
-        ));
-        return;
-      }
-
-      if (state.result == null || state.result!.tracks.isEmpty) {
-        debugPrint('[DebugTest] ✗ result=${state.result}, tracks=${state.result?.tracks.length}');
-        messenger.showSnackBar(SnackBar(
-          content: Text(
-            state.result == null
-                ? 'result = null — البحث لم يكتمل'
-                : 'tracks = 0 — تحقق من الكونسول (لوجات [Search])',
-          ),
-          backgroundColor: Colors.orange,
-          duration: const Duration(seconds: 6),
-        ));
-        return;
-      }
-
-      final firstTrack = state.result!.tracks.first;
-      debugPrint('[DebugTest] ✓ Search OK → "${firstTrack.title}" '
-          'by ${firstTrack.artist} (${firstTrack.youtubeVideoId})');
-
-      // 2. استخراج رابط الصوت عبر youtube_explode_dart
-      final videoId = firstTrack.youtubeVideoId ?? firstTrack.id;
-      debugPrint('[DebugTest] Fetching stream URL for $videoId …');
-
-      final streamService = YoutubeStreamService();
-      final streamUrl = await streamService.getAudioUrl(videoId);
-
-      if (streamUrl != null && streamUrl.isNotEmpty) {
-        debugPrint('[DebugTest] ✓ Stream URL OK (${streamUrl.length} chars)');
-        debugPrint('═══════════════════════════════════════════════════════');
-        messenger.showSnackBar(SnackBar(
-          content: Text('✓ يعمل! "${firstTrack.title}"'),
-          backgroundColor: Colors.green,
-          duration: const Duration(seconds: 4),
-        ));
-      } else {
-        debugPrint('[DebugTest] ✗ Stream URL was null');
-        debugPrint('═══════════════════════════════════════════════════════');
-        messenger.showSnackBar(const SnackBar(
-          content: Text('رابط الصوت فارغ — تحقق من الكونسول'),
-          backgroundColor: Colors.orange,
-        ));
-      }
-    } catch (e) {
-      debugPrint('[DebugTest] ✗ Exception: $e');
-      debugPrint('═══════════════════════════════════════════════════════');
-      messenger.showSnackBar(SnackBar(
-        content: Text('الاختبار فشل: $e'),
-        backgroundColor: Colors.red,
-      ));
-    } finally {
-      if (mounted) setState(() => _isAutoTesting = false);
-    }
   }
 
   @override
@@ -131,9 +40,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
 
   void _searchGenre(String genre) {
     _controller.text = genre;
-    final notifier = ref.read(searchNotifierProvider.notifier);
-    notifier.onQueryChanged(genre);
-    notifier.search();
+    ref.read(searchNotifierProvider.notifier).searchNow(genre);
     _focusNode.unfocus();
   }
 
@@ -159,17 +66,18 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       body = searchState.result!.isEmpty
           ? const _EmptyResults()
           : _SearchResults(result: searchState.result!);
-    } else if (_isFocused && searchState.query.isEmpty) {
-      body = _RecentSearches(
-        recent: searchState.recentSearches,
-        onTap: (q) {
-          _controller.text = q;
-          notifier.onQueryChanged(q);
-          notifier.search();
-        },
-        onClear: notifier.clearRecentSearches,
-        onGenreTap: _searchGenre,
-      );
+    } else if (searchState.query.isEmpty) {
+      body = _isFocused
+          ? _RecentSearches(
+              recent: searchState.recentSearches,
+              onTap: (q) {
+                _controller.text = q;
+                ref.read(searchNotifierProvider.notifier).searchNow(q);
+              },
+              onClear: notifier.clearRecentSearches,
+              onGenreTap: _searchGenre,
+            )
+          : _BrowseCategories(onTap: _searchGenre);
     } else {
       body = _BrowseCategories(onTap: _searchGenre);
     }
@@ -179,12 +87,18 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
               child: TextField(
                 controller: _controller,
                 focusNode: _focusNode,
-                onChanged: notifier.onQueryChanged,
-                onSubmitted: (_) => notifier.search(),
+                onChanged: (q) {
+                  notifier.onQueryChanged(q);
+                },
+                onSubmitted: (q) {
+                  if (q.trim().isNotEmpty) {
+                    notifier.searchNow(q);
+                  }
+                },
                 textInputAction: TextInputAction.search,
                 decoration: InputDecoration(
                   hintText: 'Search songs, artists, playlists...',
@@ -198,37 +112,6 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                           icon: const Icon(Icons.close_rounded, size: 18),
                         )
                       : null,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
-              child: SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: _isAutoTesting ? null : _runDebugTest,
-                  icon: _isAutoTesting
-                      ? const SizedBox(
-                          width: 14,
-                          height: 14,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Icon(Icons.biotech_rounded, size: 16),
-                  label: Text(
-                    _isAutoTesting
-                        ? 'Testing…'
-                        : 'Test Search & Stream (حمو المرشدي)',
-                    style: const TextStyle(fontSize: 12, fontFamily: 'Inter'),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.primaryBeige,
-                    side: const BorderSide(
-                        color: AppColors.primaryBeige, width: 1),
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
                 ),
               ),
             ),
