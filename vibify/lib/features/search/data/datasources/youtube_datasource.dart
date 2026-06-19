@@ -1,6 +1,6 @@
 import 'dart:convert';
+import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../../../core/errors/exceptions.dart';
@@ -16,70 +16,90 @@ abstract class YoutubeDatasource {
 }
 
 class YoutubeDatasourceImpl implements YoutubeDatasource {
-  final Dio _dio = Dio(BaseOptions(
-    baseUrl: _kApiBase,
-    connectTimeout: const Duration(seconds: 12),
-    receiveTimeout: const Duration(seconds: 15),
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-  ));
-
   @override
   Future<SearchResult> search(String query, {int limit = 20}) async {
     try {
-      debugPrint('[Search] Calling Cloudflare API → q="$query"');
-
-      final resp = await _dio.get<dynamic>(
-        '/api/search',
-        queryParameters: {'q': query},
+      final uri = Uri.parse(
+        '$_kApiBase/api/search?q=${Uri.encodeQueryComponent(query)}',
       );
+      debugPrint('[Search] → $uri');
 
-      final dynamic data = resp.data;
-      debugPrint('[Search] Response type: ${data.runtimeType}');
+      final client = HttpClient()
+        ..connectionTimeout = const Duration(seconds: 12);
+      final req = await client.getUrl(uri);
+      req.headers.set(HttpHeaders.acceptHeader, 'application/json');
+      final resp = await req.close().timeout(const Duration(seconds: 15));
+
+      final body = await resp.transform(utf8.decoder).join();
+      debugPrint('[Search] HTTP ${resp.statusCode} — body length: ${body.length}');
+
+      if (body.isEmpty) {
+        debugPrint('[Search] ✗ Empty response body');
+        throw StreamException(message: 'الاستجابة فارغة من السيرفر.');
+      }
+
+      dynamic decoded;
+      try {
+        decoded = json.decode(body);
+      } catch (e) {
+        debugPrint('[Search] ✗ JSON decode failed: $e');
+        debugPrint('[Search] Raw body (first 300): ${body.substring(0, body.length.clamp(0, 300))}');
+        throw StreamException(message: 'فشل تحليل الـ JSON: $e');
+      }
+
+      debugPrint('[Search] Decoded type: ${decoded.runtimeType}');
 
       List<dynamic> items;
-      if (data is List) {
-        items = data;
-      } else if (data is Map) {
-        items = (data['results'] ??
-                data['items'] ??
-                data['videos'] ??
-                []) as List<dynamic>;
-      } else if (data is String) {
-        // dio might return raw string if content-type header is wrong
-        final decoded = json.decode(data);
-        if (decoded is List) {
-          items = decoded;
-        } else if (decoded is Map) {
-          items = (decoded['results'] ??
-                  decoded['items'] ??
-                  decoded['videos'] ??
-                  []) as List<dynamic>;
-        } else {
+      if (decoded is List) {
+        items = decoded;
+      } else if (decoded is Map) {
+        // Log the actual keys to understand the response
+        debugPrint('[Search] Response keys: ${decoded.keys.toList()}');
+        final rawList = decoded['results'] ??
+            decoded['items'] ??
+            decoded['videos'] ??
+            decoded['data'];
+        if (rawList == null) {
+          debugPrint('[Search] ✗ No known list key found. Keys: ${decoded.keys}');
+          if (decoded.containsKey('error')) {
+            throw StreamException(message: 'السيرفر أعاد خطأ: ${decoded['error']}');
+          }
           items = [];
+        } else {
+          items = List<dynamic>.from(rawList as List);
         }
       } else {
+        debugPrint('[Search] ✗ Unexpected decoded type: ${decoded.runtimeType}');
         items = [];
       }
 
-      debugPrint('[Search] Parsed ${items.length} items');
+      debugPrint('[Search] Items count: ${items.length}');
 
       final tracks = <Track>[];
       for (final item in items) {
-        if (item is! Map) continue;
+        if (item is! Map) {
+          debugPrint('[Search] Skipping non-Map item: ${item.runtimeType}');
+          continue;
+        }
 
-        final videoId = item['videoId'] as String?;
-        if (videoId == null || videoId.isEmpty) continue;
+        final videoId = (item['videoId'] ?? item['id'] ?? item['video_id'])?.toString();
+        if (videoId == null || videoId.isEmpty) {
+          debugPrint('[Search] Skipping item with no videoId: $item');
+          continue;
+        }
 
-        final title = item['title'] as String? ?? videoId;
-        final thumbnail = item['thumbnail'] as String? ??
-            'https://i.ytimg.com/vi/$videoId/hqdefault.jpg';
-        final artist = item['author'] as String? ??
-            item['channelTitle'] as String? ??
-            item['channel'] as String? ??
-            'Unknown';
+        final title = (item['title'] ?? videoId).toString();
+        final thumbnail = (item['thumbnail'] ??
+                item['thumbnailUrl'] ??
+                item['thumb'] ??
+                'https://i.ytimg.com/vi/$videoId/hqdefault.jpg')
+            .toString();
+        final artist = (item['author'] ??
+                item['channelTitle'] ??
+                item['channel'] ??
+                item['uploader'] ??
+                'Unknown')
+            .toString();
         final durationRaw = item['duration'];
 
         Duration? duration;
@@ -87,6 +107,8 @@ class YoutubeDatasourceImpl implements YoutubeDatasource {
           duration = _parseDuration(durationRaw);
         } else if (durationRaw is int) {
           duration = Duration(seconds: durationRaw);
+        } else if (durationRaw is double) {
+          duration = Duration(seconds: durationRaw.toInt());
         }
 
         tracks.add(Track(
@@ -103,22 +125,24 @@ class YoutubeDatasourceImpl implements YoutubeDatasource {
         if (tracks.length >= limit) break;
       }
 
-      debugPrint('[Search] Cloudflare API ✓ ${tracks.length} نتيجة');
+      debugPrint('[Search] ✓ ${tracks.length} tracks parsed');
       return SearchResult(
         tracks: tracks,
         artists: [],
         playlists: [],
         query: query,
       );
-    } on DioException catch (e) {
-      debugPrint('[Search] DioException: ${e.type} — ${e.message}');
-      debugPrint('[Search] Response: ${e.response?.data}');
-      throw StreamException(
-          message: 'البحث فشل (${e.type.name}). تحقق من الإنترنت.');
+    } on StreamException {
+      rethrow;
+    } on SocketException catch (e) {
+      debugPrint('[Search] SocketException: $e');
+      throw StreamException(message: 'لا يوجد اتصال بالإنترنت.');
+    } on TimeoutException catch (e) {
+      debugPrint('[Search] Timeout: $e');
+      throw StreamException(message: 'انتهت مهلة الطلب. حاول مجدداً.');
     } catch (e) {
       debugPrint('[Search] Unexpected error: $e');
-      throw StreamException(
-          message: 'البحث فشل: $e');
+      throw StreamException(message: 'خطأ غير متوقع: $e');
     }
   }
 
@@ -128,8 +152,6 @@ class YoutubeDatasourceImpl implements YoutubeDatasource {
       id: videoId,
       title: videoId,
       artist: 'Unknown',
-      duration: null,
-      thumbnailUrl: 'https://i.ytimg.com/vi/$videoId/hqdefault.jpg',
       source: TrackSource.youtube,
       youtubeVideoId: videoId,
       addedAt: DateTime.now(),
@@ -147,8 +169,7 @@ class YoutubeDatasourceImpl implements YoutubeDatasource {
         return Duration(minutes: parts[0], seconds: parts[1]);
       }
       if (parts.length == 3) {
-        return Duration(
-            hours: parts[0], minutes: parts[1], seconds: parts[2]);
+        return Duration(hours: parts[0], minutes: parts[1], seconds: parts[2]);
       }
     } catch (_) {}
     return null;

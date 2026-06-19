@@ -70,10 +70,15 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       }
 
       if (state.result == null || state.result!.tracks.isEmpty) {
-        debugPrint('[DebugTest] ✗ No search results (result is empty)');
-        messenger.showSnackBar(const SnackBar(
-          content: Text('البحث رجع فارغ — تحقق من الكونسول'),
+        debugPrint('[DebugTest] ✗ result=${state.result}, tracks=${state.result?.tracks.length}');
+        messenger.showSnackBar(SnackBar(
+          content: Text(
+            state.result == null
+                ? 'result = null — البحث لم يكتمل'
+                : 'tracks = 0 — تحقق من الكونسول (لوجات [Search])',
+          ),
           backgroundColor: Colors.orange,
+          duration: const Duration(seconds: 6),
         ));
         return;
       }
