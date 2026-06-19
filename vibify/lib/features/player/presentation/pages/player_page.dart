@@ -15,6 +15,7 @@ import '../providers/player_provider.dart';
 import '../widgets/queue_panel.dart';
 import '../widgets/sleep_timer_dialog.dart';
 import '../widgets/playback_speed_dialog.dart';
+import '../widgets/youtube_iframe_player.dart';
 
 class PlayerPage extends ConsumerStatefulWidget {
   const PlayerPage({super.key});
@@ -69,6 +70,7 @@ class _PlayerPageState extends ConsumerState<PlayerPage>
   Widget build(BuildContext context) {
     final state = ref.watch(playerNotifierProvider);
     final track = state.currentTrack;
+    final notifier = ref.read(playerNotifierProvider.notifier);
 
     ref.listen<VibifyPlayerState>(playerNotifierProvider, (prev, next) {
       if (prev?.currentTrack?.id != next.currentTrack?.id) {
@@ -78,6 +80,41 @@ class _PlayerPageState extends ConsumerState<PlayerPage>
       }
     });
 
+    // ── YouTube tracks → full-screen IFrame layout ────────────────────────
+    final isYoutube = track?.source == TrackSource.youtube &&
+        track?.youtubeVideoId != null;
+
+    if (isYoutube && !_showQueue) {
+      return Scaffold(
+        backgroundColor: Colors.black,
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            // IFrame player fills the entire screen (including under the header).
+            YoutubeIframePlayer(
+              key: ValueKey(track!.youtubeVideoId),
+              videoId: track.youtubeVideoId!,
+              hasNext: state.hasNext,
+              hasPrevious: state.hasPrevious,
+              onEnded: notifier.skipToNext,
+              onSkipNext: notifier.skipToNext,
+              onSkipPrevious: notifier.skipToPrevious,
+            ),
+
+            // Transparent header overlay on top of the IFrame.
+            // IgnorePointer so empty header areas pass through to WebView.
+            SafeArea(
+              child: IgnorePointer(
+                ignoring: false,
+                child: _PlayerHeader(onClose: () => context.pop()),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // ── Local tracks → original gradient layout ───────────────────────────
     return Scaffold(
       backgroundColor: Colors.black,
       body: AnimatedContainer(

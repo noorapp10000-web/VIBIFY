@@ -1,42 +1,51 @@
 ---
 name: Vibify Search & Stream Engine
-description: Stream resolution: InnerTube ANDROID direct (primary) → youtube_explode_dart (fallback). audio_handler uses YoutubeStreamService only — no direct yt-explode calls.
+description: YouTube playback via IFrame API (WebView). audio_handler manages local files + queue metadata only. YoutubeStreamService kept for downloads.
 ---
 
-## Search Engine
-- Package: `http: ^1.2.2`
-- Endpoint: `https://yt-audio-api.noor-app-100.workers.dev/api/search?q={query}`
-- File: `lib/features/search/data/datasources/youtube_datasource.dart`
+## Architecture (current)
 
-## Stream Engine — Architecture
+### YouTube Playback
+- **Engine**: `YoutubeIframePlayer` widget (WebView + YouTube IFrame API)
+- **File**: `lib/features/player/presentation/widgets/youtube_iframe_player.dart`
+- **PlayerPage**: when `track.source == TrackSource.youtube`, renders full-screen Stack with IFrame player + header overlay
+- **audio_handler**: for YouTube tracks → `_player.stop()` + idle state only (no audio_player involvement)
+- **No encryption issues**: YouTube handles URL resolution internally via IFrame API
 
-### Flow
-```
-_playYoutubeTrack(videoId)
-  → YoutubeStreamService.resolveStream(videoId)
-      → Strategy 1: InnerTube ANDROID direct  ← PRIMARY
-      → Strategy 2: youtube_explode_dart        ← FALLBACK
-  → AudioSource.uri(url, headers: {User-Agent: kYoutubeAndroidUserAgent})
-  → ExoPlayer handles all HTTP + range requests natively
-```
+### Local File Playback
+- **Engine**: `just_audio` via `VibifyAudioHandler`
+- Works unchanged — `setFilePath` + `play()`
 
-### Why InnerTube ANDROID is primary
-- ANDROID client returns **unencrypted** URLs — no JS cipher decryption needed.
-- JS cipher in youtube_explode_dart breaks whenever YouTube updates their JS player.
-- Real Android device IPs are not blocked by YouTube CDN.
-- `User-Agent` header must be passed to `AudioSource.uri()` so the CDN URL (signed for Android UA) isn't rejected by ExoPlayer's HTTP client.
+### Downloads
+- **Engine**: `YoutubeStreamService.downloadToFile()` (youtube_explode_dart stream)
+- `YoutubeStreamService` registered in DI, passed to `DownloadDatasourceImpl`
 
-### Key constants
-- `kYoutubeAndroidUserAgent` = `'com.google.android.youtube/19.09.37 (Linux; U; Android 11) gzip'`
-- InnerTube API key: `AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w`
-- InnerTube endpoint: `POST https://www.youtube.com/youtubei/v1/player?prettyPrint=false`
+## IFrame Player — Key Details
 
-### DI wiring
-- `YoutubeStreamService` registered first as lazy singleton.
-- `VibifyAudioHandler.createAndInit(sl<YoutubeStreamService>())` — receives service via constructor.
-- Downloads use `YoutubeStreamService.downloadToFile()` (yt-explode stream, unaffected by playback change).
+### Pointer Events / Skip Ad Trick
+- `WebViewWidget` at bottom of Stack — receives all unhandled taps
+- `GestureDetector(behavior: HitTestBehavior.translucent)` layer → shows controls AND passes event to WebView
+- Decorative widgets (gradient, LIVE badge, buffering ring) wrapped in `IgnorePointer`
+- Interactive controls (play/pause, slider) wrapped in `IgnorePointer(ignoring: !_controlsVisible)`
+- Empty areas → no Flutter widget → tap goes directly to WebView → Skip Ad works
+
+### JS ↔ Flutter Communication
+- Flutter channel name: `Vibify`
+- JS → Flutter: `Vibify.postMessage(JSON.stringify({type, ...}))` 
+  - types: `ready`, `state`, `tick`
+- Flutter → JS: `_wvc.runJavaScript('play()|pause()|seek(s)|loadVideo(id)')`
+
+### Live Stream Detection
+- `duration == 0` → `_isLive = true` → hides seek bar, shows red LIVE badge
+
+### Track Change (queue skip)
+- `didUpdateWidget` detects `old.videoId != widget.videoId`
+- Calls `loadVideo(newId)` via JS — no WebView rebuild, no flash
+
+### Player vars (hidden chrome)
+- `controls:0, rel:0, modestbranding:1, disablekb:1, fs:0, iv_load_policy:3`
 
 ## Do NOT re-add
-- Direct `YoutubeExplode()` calls inside `audio_handler.dart`
-- `StreamAudioSource` + `YoutubeHttpClient` for range requests (broken in v3.x)
-- `getAudioUrl()` method (replaced by `resolveStream()` returning `ResolvedStream`)
+- `_YoutubeStreamAudioSource` (StreamAudioSource + YoutubeHttpClient range requests)
+- Direct `YoutubeExplode()` calls in `audio_handler.dart`
+- `getAudioUrl()` / `resolveStream()` calls in the playback path

@@ -30,8 +30,11 @@ dependencies:
   audio_service: ^0.18.14
   audio_session: ^0.1.21
 
-  # YouTube stream extraction
+  # YouTube stream extraction (fallback for downloads)
   youtube_explode_dart: ^3.1.0
+
+  # YouTube IFrame player (primary playback engine)
+  webview_flutter: ^4.8.0
 
   # Local Database
   hive: ^2.2.3

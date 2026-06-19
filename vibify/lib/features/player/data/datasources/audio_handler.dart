@@ -5,16 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
 import '../../domain/entities/track.dart';
-import 'youtube_stream_service.dart';
 
 class VibifyAudioHandler extends BaseAudioHandler
     with QueueHandler, SeekHandler {
   final AudioPlayer _player = AudioPlayer();
-  final YoutubeStreamService _streamService;
 
   int _currentQueueIndex = 0;
 
-  VibifyAudioHandler(this._streamService) {
+  VibifyAudioHandler() {
     _listenToPlayerEvents();
   }
 
@@ -28,16 +26,15 @@ class VibifyAudioHandler extends BaseAudioHandler
     androidNotificationChannelDescription: 'Vibify music playback',
   );
 
-  static Future<VibifyAudioHandler> createAndInit(
-      YoutubeStreamService streamService) async {
+  static Future<VibifyAudioHandler> createAndInit() async {
     try {
       return await AudioService.init<VibifyAudioHandler>(
-        builder: () => VibifyAudioHandler(streamService),
+        builder: VibifyAudioHandler.new,
         config: _serviceConfig,
       );
     } catch (e) {
       debugPrint('[AudioService] init failed ($e) — using plain handler');
-      return VibifyAudioHandler(streamService);
+      return VibifyAudioHandler();
     }
   }
 
@@ -82,42 +79,17 @@ class VibifyAudioHandler extends BaseAudioHandler
     _currentQueueIndex = 0;
     queue.add([mediaItem]);
 
-    if (track.source == TrackSource.youtube && track.youtubeVideoId != null) {
-      await _playYoutubeTrack(track.youtubeVideoId!);
+    if (track.source == TrackSource.youtube) {
+      // YouTube tracks are handled by YoutubeIframePlayer in the UI layer.
+      // The handler manages queue/metadata only — no audio_player involvement.
+      await _player.stop();
+      playbackState.add(playbackState.value.copyWith(
+        processingState: AudioProcessingState.idle,
+        playing: false,
+      ));
     } else if (track.source == TrackSource.local && track.localPath != null) {
       await _player.setFilePath(track.localPath!);
       await _player.play();
-    }
-  }
-
-  /// Resolves the stream URL via [YoutubeStreamService] (InnerTube ANDROID
-  /// primary, youtube_explode_dart fallback) then hands the URL + headers
-  /// to just_audio so ExoPlayer handles all HTTP range/seek natively.
-  Future<void> _playYoutubeTrack(String videoId) async {
-    try {
-      debugPrint('[Player] Resolving stream for $videoId …');
-
-      final resolved = await _streamService.resolveStream(videoId);
-
-      if (resolved == null) {
-        debugPrint('[Player] ✗ No stream resolved for $videoId');
-        playbackState.add(playbackState.value.copyWith(
-          processingState: AudioProcessingState.error,
-        ));
-        return;
-      }
-
-      debugPrint('[Player] ✓ Got URL — setting audio source …');
-      await _player.setAudioSource(
-        AudioSource.uri(resolved.url, headers: resolved.headers),
-      );
-      await _player.play();
-      debugPrint('[Player] ✓ Playback started for $videoId');
-    } catch (e, st) {
-      debugPrint('[Player] ✗ Playback error for $videoId: $e\n$st');
-      playbackState.add(playbackState.value.copyWith(
-        processingState: AudioProcessingState.error,
-      ));
     }
   }
 
@@ -219,11 +191,15 @@ class VibifyAudioHandler extends BaseAudioHandler
     if (extras == null) return;
 
     final source = extras['source'] as String?;
-    final youtubeVideoId = extras['youtubeVideoId'] as String?;
     final localPath = extras['localPath'] as String?;
 
-    if (source == TrackSource.youtube.name && youtubeVideoId != null) {
-      await _playYoutubeTrack(youtubeVideoId);
+    if (source == TrackSource.youtube.name) {
+      // YouTube playback is handled by YoutubeIframePlayer in the UI.
+      await _player.stop();
+      playbackState.add(playbackState.value.copyWith(
+        processingState: AudioProcessingState.idle,
+        playing: false,
+      ));
     } else if (source == TrackSource.local.name && localPath != null) {
       await _player.setFilePath(localPath);
       await _player.play();
