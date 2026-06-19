@@ -4,14 +4,16 @@ import 'package:flutter/foundation.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class YoutubeStreamService {
+  /// Returns the best audio URL for [videoId].
+  /// Prefers AAC/MP4 for Android compatibility; falls back to any audio stream.
   Future<String?> getAudioUrl(String videoId) async {
     final yt = YoutubeExplode();
     try {
       final manifest = await yt.videos.streamsClient.getManifest(videoId);
-      final streamInfo = manifest.audioOnly.withHighestBitrate();
-      final audioUrl = streamInfo.url.toString();
-      debugPrint('[YoutubeStreamService] ✓ Got audio URL for $videoId');
-      return audioUrl;
+      final info = _pickBestAudio(manifest);
+      debugPrint('[YoutubeStreamService] ✓ Got audio URL for $videoId '
+          '(${info.container.name} ${info.bitrate.bitsPerSecond ~/ 1000}kbps)');
+      return info.url.toString();
     } catch (e) {
       debugPrint('[YoutubeStreamService] ✗ getAudioUrl failed for $videoId: $e');
       return null;
@@ -20,30 +22,7 @@ class YoutubeStreamService {
     }
   }
 
-  Future<AudioStreamResult?> getAudioStream(String videoId) async {
-    final yt = YoutubeExplode();
-    try {
-      final manifest = await yt.videos.streamsClient.getManifest(videoId);
-      final info = manifest.audioOnly.withHighestBitrate();
-      final totalBytes = info.size.totalBytes;
-      final contentType = 'audio/${info.container.name}';
-      final stream = yt.videos.streamsClient.get(info);
-      debugPrint(
-          '[YoutubeStreamService] ✓ Got audio stream for $videoId ($totalBytes bytes)');
-      return AudioStreamResult(
-        stream: stream,
-        totalBytes: totalBytes,
-        contentType: contentType,
-        yt: yt,
-      );
-    } catch (e) {
-      debugPrint(
-          '[YoutubeStreamService] ✗ getAudioStream failed for $videoId: $e');
-      yt.close();
-      return null;
-    }
-  }
-
+  /// Downloads audio for [videoId] directly to [filePath].
   Future<void> downloadToFile(
     String videoId,
     String filePath, {
@@ -52,7 +31,7 @@ class YoutubeStreamService {
     final yt = YoutubeExplode();
     try {
       final manifest = await yt.videos.streamsClient.getManifest(videoId);
-      final info = manifest.audioOnly.withHighestBitrate();
+      final info = _pickBestAudio(manifest);
       final totalBytes = info.size.totalBytes;
 
       final stream = yt.videos.streamsClient.get(info);
@@ -67,8 +46,7 @@ class YoutubeStreamService {
       }
       await sink.flush();
       await sink.close();
-      debugPrint(
-          '[YoutubeStreamService] ✓ Downloaded $videoId → $filePath');
+      debugPrint('[YoutubeStreamService] ✓ Downloaded $videoId → $filePath');
     } catch (e) {
       debugPrint('[YoutubeStreamService] ✗ downloadToFile failed: $e');
       rethrow;
@@ -76,20 +54,19 @@ class YoutubeStreamService {
       yt.close();
     }
   }
-}
 
-class AudioStreamResult {
-  final Stream<List<int>> stream;
-  final int totalBytes;
-  final String contentType;
-  final YoutubeExplode yt;
+  /// Picks the best audio stream: prefers AAC/MP4 for compatibility,
+  /// falls back to the highest-bitrate stream of any container.
+  AudioStreamInfo _pickBestAudio(StreamManifest manifest) {
+    final mp4Streams = manifest.audioOnly
+        .where((s) => s.container.name.toLowerCase() == 'mp4')
+        .toList();
 
-  AudioStreamResult({
-    required this.stream,
-    required this.totalBytes,
-    required this.contentType,
-    required this.yt,
-  });
-
-  void dispose() => yt.close();
+    if (mp4Streams.isNotEmpty) {
+      return mp4Streams.reduce(
+        (a, b) => a.bitrate.bitsPerSecond > b.bitrate.bitsPerSecond ? a : b,
+      );
+    }
+    return manifest.audioOnly.withHighestBitrate();
+  }
 }

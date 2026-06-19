@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -28,9 +27,6 @@ class VibifyAudioHandler extends BaseAudioHandler
     androidNotificationChannelDescription: 'Vibify music playback',
   );
 
-  /// Call once from main() — returns the handler wired to the system service.
-  /// Falls back to a plain handler if AudioService.init() fails so that DI
-  /// registration is never blocked.
   static Future<VibifyAudioHandler> createAndInit() async {
     try {
       return await AudioService.init<VibifyAudioHandler>(
@@ -38,7 +34,7 @@ class VibifyAudioHandler extends BaseAudioHandler
         config: _serviceConfig,
       );
     } catch (e) {
-      debugPrint('[AudioService] init failed ($e) — using plain handler (no notification)');
+      debugPrint('[AudioService] init failed ($e) — using plain handler');
       return VibifyAudioHandler();
     }
   }
@@ -92,18 +88,49 @@ class VibifyAudioHandler extends BaseAudioHandler
     }
   }
 
+  /// Resolves the YouTube stream URL via youtube_explode_dart and hands it
+  /// directly to just_audio as a URI source.  ExoPlayer handles all HTTP
+  /// range requests natively — no custom proxy or YoutubeHttpClient needed.
   Future<void> _playYoutubeTrack(String videoId) async {
+    final yt = YoutubeExplode();
     try {
-      debugPrint('[Player] Resolving stream for $videoId via youtube_explode_dart…');
-      final source = _YoutubeStreamAudioSource(videoId);
-      await _player.setAudioSource(source);
+      debugPrint('[Player] Fetching manifest for $videoId …');
+
+      final manifest = await yt.videos.streamsClient.getManifest(videoId);
+
+      // Prefer AAC/MP4 streams for maximum Android compatibility.
+      // Fall back to any audio-only stream if MP4 is unavailable.
+      AudioStreamInfo info;
+      final mp4Streams = manifest.audioOnly
+          .where((s) => s.container.name.toLowerCase() == 'mp4')
+          .toList();
+      if (mp4Streams.isNotEmpty) {
+        info = mp4Streams.reduce(
+          (a, b) => a.bitrate.bitsPerSecond > b.bitrate.bitsPerSecond ? a : b,
+        );
+      } else {
+        info = manifest.audioOnly.withHighestBitrate();
+      }
+
+      final url = info.url;
+      debugPrint(
+        '[Player] ✓ Stream resolved — ${info.container.name} '
+        '${info.bitrate.bitsPerSecond ~/ 1000} kbps',
+      );
+
+      // AudioSource.uri lets ExoPlayer fetch bytes with native range support.
+      // The signed googlevideo.com URL requires no extra headers.
+      await _player.setAudioSource(AudioSource.uri(url));
       await _player.play();
       debugPrint('[Player] ✓ Playback started for $videoId');
-    } catch (e) {
-      debugPrint('[Player] ✗ Stream resolution failed for $videoId: $e');
+    } catch (e, st) {
+      debugPrint('[Player] ✗ Failed for $videoId: $e\n$st');
       playbackState.add(playbackState.value.copyWith(
         processingState: AudioProcessingState.error,
       ));
+    } finally {
+      // The URL is self-contained — safe to close the client immediately.
+      yt.close();
     }
   }
 
@@ -255,75 +282,5 @@ class VibifyAudioHandler extends BaseAudioHandler
 
   void dispose() {
     _player.dispose();
-  }
-}
-
-class _YoutubeStreamAudioSource extends StreamAudioSource {
-  final String videoId;
-
-  // Cached after first manifest fetch — avoids re-fetching on every seek.
-  YoutubeExplode? _yt;
-  Uri? _cachedUrl;
-  int? _cachedTotalBytes;
-  String? _cachedContentType;
-
-  _YoutubeStreamAudioSource(this.videoId) : super(tag: videoId);
-
-  Future<void> _ensureManifest() async {
-    if (_cachedUrl != null) return;
-    _yt ??= YoutubeExplode();
-    final manifest =
-        await _yt!.videos.streamsClient.getManifest(videoId);
-    final info = manifest.audioOnly.withHighestBitrate();
-    _cachedUrl = info.url;
-    _cachedTotalBytes = info.size.totalBytes;
-    _cachedContentType = 'audio/${info.container.name}';
-  }
-
-  @override
-  Future<StreamAudioResponse> request([int? start, int? end]) async {
-    try {
-      await _ensureManifest();
-      final totalBytes = _cachedTotalBytes!;
-      final rangeStart = start ?? 0;
-      final rangeEnd = (end ?? totalBytes).clamp(0, totalBytes);
-
-      // YoutubeHttpClient is publicly exported and automatically adds all
-      // required YouTube headers (User-Agent, cookies, etc.) before sending.
-      // In v3.1.0 YoutubeExplode._httpClient is private so we instantiate
-      // YoutubeHttpClient directly here for the range request.
-      final ytClient = YoutubeHttpClient();
-      try {
-        final req = http.Request('GET', _cachedUrl!)
-          ..headers['Range'] = 'bytes=$rangeStart-${rangeEnd - 1}';
-        final response = await ytClient.send(req);
-
-        return StreamAudioResponse(
-          sourceLength: totalBytes,
-          contentLength: response.contentLength ?? (rangeEnd - rangeStart),
-          offset: rangeStart,
-          stream: response.stream.transform(
-            StreamTransformer.fromHandlers(
-              handleDone: (sink) {
-                sink.close();
-                ytClient.close();
-              },
-            ),
-          ),
-          contentType: _cachedContentType!,
-        );
-      } catch (e) {
-        ytClient.close();
-        rethrow;
-      }
-    } catch (e) {
-      // Invalidate cache so the next attempt re-fetches a fresh URL.
-      _cachedUrl = null;
-      _cachedTotalBytes = null;
-      _cachedContentType = null;
-      _yt?.close();
-      _yt = null;
-      rethrow;
-    }
   }
 }
