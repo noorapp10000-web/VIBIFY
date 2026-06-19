@@ -1,82 +1,30 @@
 import 'dart:async';
 
 import 'package:audio_service/audio_service.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
 import '../../domain/entities/track.dart';
-
-// InnerTube player endpoint
-const String _kPlayerUrl =
-    'https://www.youtube.com/youtubei/v1/player'
-    '?key=AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w';
-
-// Piped API instances — tried in order until one returns a valid audio URL.
-// Public instances go up/down frequently; keep this list up-to-date.
-const List<String> _kPipedInstances = [
-  'https://pipedapi.kavin.rocks',
-  'https://pipedapi.adminforge.de',
-  'https://api.piped.yt',
-  'https://piped-api.cass.si',
-  'https://pipedapi.reallyaweso.me',
-  'https://pipedapi.aeong.one',
-  'https://piped-api.mint.lgbt',
-];
-
-
-/// Holds either a direct stream URL or an embed URL for iframe/webview fallback.
-class StreamResolution {
-  final String? directUrl;
-  final String? embedUrl;
-  final String? nocookieEmbedUrl;
-  final String source;
-
-  const StreamResolution({
-    this.directUrl,
-    this.embedUrl,
-    this.nocookieEmbedUrl,
-    required this.source,
-  });
-
-  bool get hasDirectUrl => directUrl != null && directUrl!.isNotEmpty;
-  bool get hasEmbedFallback => embedUrl != null;
-}
+import 'youtube_stream_service.dart';
 
 class VibifyAudioHandler extends BaseAudioHandler
     with QueueHandler, SeekHandler {
   final AudioPlayer _player;
-  final Dio _innerTubeDio = Dio(BaseOptions(
-    connectTimeout: const Duration(seconds: 10),
-    receiveTimeout: const Duration(seconds: 20),
-    headers: {
-      'Content-Type': 'application/json',
-      'User-Agent': 'com.google.android.youtube/19.09.37 (Linux; U; Android 12; GB) gzip',
-    },
-  ));
-  // Creates a short-lived Dio for a specific Piped instance.
-  // Short timeouts so a dead instance fails fast instead of blocking.
-  Dio _pipedDioFor(String base) => Dio(BaseOptions(
-        baseUrl: base,
-        connectTimeout: const Duration(seconds: 4),
-        receiveTimeout: const Duration(seconds: 6),
-        headers: {'Accept': 'application/json'},
-      ));
+  final YoutubeStreamService _streamService;
 
-  // Track queue index ourselves — _player.currentIndex is always 0
-  // because we load individual AudioSources, not a ConcatenatingAudioSource.
   int _currentQueueIndex = 0;
 
-  // Last embed URL for iframe/webview fallback
-  String? lastEmbedUrl;
-  String? lastNocookieEmbedUrl;
+  VibifyAudioHandler._({
+    required AudioPlayer player,
+    required YoutubeStreamService streamService,
+  })  : _player = player,
+        _streamService = streamService;
 
-  VibifyAudioHandler._({required AudioPlayer player}) : _player = player;
-
-  /// Creates the handler and awaits AudioService.init() so the media session
-  /// and lock-screen / notification controls are registered before playback.
   static Future<VibifyAudioHandler> createAndInit() async {
-    final handler = VibifyAudioHandler._(player: AudioPlayer());
+    final handler = VibifyAudioHandler._(
+      player: AudioPlayer(),
+      streamService: YoutubeStreamService(),
+    );
 
     try {
       await AudioService.init(
@@ -148,185 +96,23 @@ class VibifyAudioHandler extends BaseAudioHandler
     }
   }
 
-  // ── Stream resolution chain ──────────────────────────────────────────────
-  // 1. InnerTube ANDROID — same protocol as the YouTube app; works on real
-  //    Android device IPs; returns direct MP4/WEBM URLs without cipher.
-  // 2. Piped API        — open-source proxy; fast-fail when instances are down.
-  // 3. Embed fallback   — YouTube iframe/WebView as last resort.
-  // ─────────────────────────────────────────────────────────────────────────
-
-  Future<StreamResolution> resolveYoutubeStream(String videoId) async {
-    // 1. InnerTube ANDROID (primary)
-    try {
-      final url = await _getStreamViaInnerTube(videoId);
-      debugPrint('[Stream] InnerTube ANDROID ✓');
-      return StreamResolution(directUrl: url, source: 'innertube_android');
-    } catch (e) {
-      debugPrint('[Stream] InnerTube failed: $e');
-    }
-
-    // 2. Piped API (4s timeout per instance — fails fast if all are down)
-    try {
-      final url = await _getStreamViaPiped(videoId);
-      debugPrint('[Stream] Piped API ✓');
-      return StreamResolution(directUrl: url, source: 'piped_api');
-    } catch (e) {
-      debugPrint('[Stream] Piped API failed: $e');
-    }
-
-    // 3. Embed fallback
-    debugPrint('[Stream] All methods failed — embed fallback');
-    return StreamResolution(
-      embedUrl: 'https://www.youtube.com/embed/$videoId?autoplay=1',
-      nocookieEmbedUrl:
-          'https://www.youtube-nocookie.com/embed/$videoId?autoplay=1&controls=0&mute=0',
-      source: 'embed_fallback',
-    );
-  }
-
-  /// Try each Piped instance with a short timeout so failures are fast.
-  Future<String> _getStreamViaPiped(String videoId) async {
-    for (final base in _kPipedInstances) {
-      try {
-        final resp = await _pipedDioFor(base).get<Map<String, dynamic>>(
-          '/streams/$videoId',
-        );
-
-        final audioStreams =
-            (resp.data?['audioStreams'] as List<dynamic>?) ?? [];
-        if (audioStreams.isEmpty) continue;
-
-        final sorted = List<Map<String, dynamic>>.from(
-          audioStreams.whereType<Map<String, dynamic>>().where(
-                (s) => (s['url'] as String?)?.isNotEmpty == true,
-              ),
-        )..sort((a, b) =>
-            ((b['bitrate'] as num?) ?? 0)
-                .compareTo((a['bitrate'] as num?) ?? 0));
-
-        if (sorted.isEmpty) continue;
-
-        final url = sorted.first['url'] as String;
-        debugPrint('[Piped] ✓ $base');
-        return url;
-      } catch (e) {
-        debugPrint('[Piped] ✗ $base → $e');
-      }
-    }
-    throw Exception('Piped: all instances failed for $videoId');
-  }
-
-  Future<String> _getStreamViaInnerTube(String videoId) async {
-    // Try multiple InnerTube clients in order — some bypass bot-detection better
-    final clients = [
-      {
-        'clientName': 'ANDROID',
-        'clientVersion': '19.29.34',
-        'androidSdkVersion': 30,
-        'hl': 'en',
-        'gl': 'US',
-        'userAgent': 'com.google.android.youtube/19.29.34 (Linux; U; Android 12; GB) gzip',
-      },
-      {
-        'clientName': 'ANDROID_TESTSUITE',
-        'clientVersion': '1.9',
-        'androidSdkVersion': 30,
-        'hl': 'en',
-        'gl': 'US',
-        'userAgent': 'com.google.android.youtube/1.9 (Linux; U; Android 12) gzip',
-      },
-      {
-        'clientName': 'ANDROID',
-        'clientVersion': '19.09.37',
-        'androidSdkVersion': 30,
-        'hl': 'en',
-        'gl': 'US',
-        'userAgent': 'com.google.android.youtube/19.09.37 (Linux; U; Android 12; GB) gzip',
-      },
-    ];
-
-    for (final client in clients) {
-      try {
-        final userAgent = client['userAgent'] as String;
-        final clientCtx = Map<String, dynamic>.from(client)..remove('userAgent');
-
-        final payload = {
-          'videoId': videoId,
-          'context': {'client': clientCtx},
-          'params': '2AMBCgIQBg==',
-        };
-
-        final resp = await Dio(BaseOptions(
-          connectTimeout: const Duration(seconds: 10),
-          receiveTimeout: const Duration(seconds: 20),
-          headers: {
-            'Content-Type': 'application/json',
-            'User-Agent': userAgent,
-          },
-        )).post<Map<String, dynamic>>(_kPlayerUrl, data: payload);
-
-        final streamingData = resp.data?['streamingData'] as Map?;
-        if (streamingData == null) continue;
-
-        final adaptive = (streamingData['adaptiveFormats'] as List<dynamic>?) ?? [];
-        final allFormats = (streamingData['formats'] as List<dynamic>?) ?? [];
-
-        final audioFormats = [...adaptive, ...allFormats]
-            .whereType<Map>()
-            .where((f) =>
-                (f['mimeType'] as String? ?? '').startsWith('audio/') &&
-                f['url'] != null &&
-                f['signatureCipher'] == null)
-            .toList();
-
-        if (audioFormats.isNotEmpty) {
-          audioFormats.sort((a, b) => ((b['bitrate'] as num?) ?? 0)
-              .compareTo((a['bitrate'] as num?) ?? 0));
-          debugPrint('[Stream] InnerTube ${client['clientName']} ✓');
-          return audioFormats.first['url'] as String;
-        }
-
-        // Combined formats as last resort
-        final combined = [...adaptive, ...allFormats]
-            .whereType<Map>()
-            .where((f) => f['url'] != null && f['signatureCipher'] == null)
-            .toList();
-        if (combined.isNotEmpty) {
-          debugPrint('[Stream] InnerTube ${client['clientName']} combined ✓');
-          return combined.first['url'] as String;
-        }
-      } catch (e) {
-        debugPrint('[Stream] ${client['clientName']} failed: $e');
-        continue;
-      }
-    }
-
-    throw Exception('All InnerTube clients returned no stream URL');
-  }
-
   Future<void> _playYoutubeTrack(String videoId) async {
     try {
-      final resolution = await resolveYoutubeStream(videoId);
+      debugPrint('[Player] Resolving stream for $videoId via youtube_explode_dart…');
+      final audioUrl = await _streamService.getAudioUrl(videoId);
 
-      if (resolution.hasDirectUrl) {
-        await _player.setAudioSource(
-            AudioSource.uri(Uri.parse(resolution.directUrl!)));
+      if (audioUrl != null && audioUrl.isNotEmpty) {
+        await _player.setAudioSource(AudioSource.uri(Uri.parse(audioUrl)));
         await _player.play();
-        return;
+        debugPrint('[Player] ✓ Playback started for $videoId');
+      } else {
+        debugPrint('[Player] ✗ No audio URL returned for $videoId');
+        playbackState.add(playbackState.value.copyWith(
+          processingState: AudioProcessingState.error,
+        ));
       }
-
-      // No direct URL — store embed URLs for UI to use (WebView iframe)
-      lastEmbedUrl = resolution.embedUrl;
-      lastNocookieEmbedUrl = resolution.nocookieEmbedUrl;
-      debugPrint(
-          '[Player] Embed fallback: ${resolution.embedUrl} (source=${resolution.source})');
-
-      // Signal error state so UI can show iframe player
-      playbackState.add(playbackState.value.copyWith(
-        processingState: AudioProcessingState.error,
-      ));
     } catch (e) {
-      debugPrint('[Player] All stream methods failed: $e');
+      debugPrint('[Player] ✗ Stream resolution failed for $videoId: $e');
       playbackState.add(playbackState.value.copyWith(
         processingState: AudioProcessingState.error,
       ));
@@ -469,21 +255,6 @@ class VibifyAudioHandler extends BaseAudioHandler
     await _player.setVolume(volume);
   }
 
-  /// Called by the UI when the YouTube iframe WebView intercepts an audio URL.
-  /// Feeds the URL directly into just_audio so playback can start.
-  Future<void> injectIframeStreamUrl(String url) async {
-    try {
-      debugPrint('[IframeInject] Playing intercepted URL: ${url.substring(0, 80)}...');
-      await _player.setAudioSource(AudioSource.uri(Uri.parse(url)));
-      await _player.play();
-    } catch (e) {
-      debugPrint('[IframeInject] Failed to play injected URL: $e');
-      playbackState.add(playbackState.value.copyWith(
-        processingState: AudioProcessingState.error,
-      ));
-    }
-  }
-
   Stream<Duration> get positionStream => _player.positionStream;
   Stream<Duration?> get durationStream => _player.durationStream;
   Stream<bool> get playingStream => _player.playingStream;
@@ -496,6 +267,5 @@ class VibifyAudioHandler extends BaseAudioHandler
 
   void dispose() {
     _player.dispose();
-    _innerTubeDio.close();
   }
 }

@@ -19,6 +19,7 @@ dependencies:
 
   # Networking
   dio: ^5.4.3+1
+  http: ^1.2.2
   connectivity_plus: ^6.0.3
 
   # Dependency Injection
@@ -29,9 +30,8 @@ dependencies:
   audio_service: ^0.18.14
   audio_session: ^0.1.21
 
-  # YouTube stream extraction fallbacks
+  # YouTube stream extraction
   youtube_explode_dart: ^2.2.1
-  webview_flutter: ^4.8.0
 
   # Local Database
   hive: ^2.2.3

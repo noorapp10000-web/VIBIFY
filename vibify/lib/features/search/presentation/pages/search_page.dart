@@ -4,14 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/di/injection.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/widgets/add_to_playlist_sheet.dart';
 import '../../../../core/widgets/download_option.dart';
+import '../../../player/data/datasources/youtube_stream_service.dart';
 import '../../../player/domain/entities/track.dart';
 import '../../../player/presentation/providers/player_provider.dart';
-import '../../data/datasources/youtube_datasource.dart';
 import '../providers/search_provider.dart';
 
 const String _kDefaultQuery = 'حمو المرشدي';
@@ -35,7 +34,6 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     _focusNode.addListener(() {
       if (mounted) setState(() => _isFocused = _focusNode.hasFocus);
     });
-    // Auto-fill and search for the default query on first load
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       _controller.text = _kDefaultQuery;
@@ -45,8 +43,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     });
   }
 
-  /// Debug test: search then fetch stream URL for the first result.
-  /// Prints results to console so you can verify the chain works end-to-end.
+  /// اختبار كامل: بحث → استخراج رابط الصوت
   Future<void> _runDebugTest() async {
     if (_isAutoTesting) return;
     setState(() => _isAutoTesting = true);
@@ -57,33 +54,36 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       debugPrint('═══════════════════════════════════════════════════════');
       debugPrint('[DebugTest] Query: $_kDefaultQuery');
 
-      final datasource = sl<YoutubeDatasource>();
+      // 1. بحث عبر Cloudflare Worker
+      final notifier = ref.read(searchNotifierProvider.notifier);
+      await notifier.search();
+      final state = ref.read(searchNotifierProvider);
 
-      // 1. Search
-      final result = await datasource.search(_kDefaultQuery, limit: 5);
-      if (result.tracks.isEmpty) {
+      if (state.result == null || state.result!.tracks.isEmpty) {
         debugPrint('[DebugTest] ✗ No search results');
         messenger.showSnackBar(const SnackBar(
-          content: Text('Search returned no results — check console'),
+          content: Text('البحث لم يُرجع نتائج — تحقق من الكونسول'),
           backgroundColor: Colors.red,
         ));
         return;
       }
 
-      final firstTrack = result.tracks.first;
+      final firstTrack = state.result!.tracks.first;
       debugPrint('[DebugTest] ✓ Search OK → "${firstTrack.title}" '
           'by ${firstTrack.artist} (${firstTrack.youtubeVideoId})');
 
-      // 2. Stream URL
+      // 2. استخراج رابط الصوت عبر youtube_explode_dart
       final videoId = firstTrack.youtubeVideoId ?? firstTrack.id;
       debugPrint('[DebugTest] Fetching stream URL for $videoId …');
-      final streamUrl = await datasource.getPipedStreamUrl(videoId);
+
+      final streamService = YoutubeStreamService();
+      final streamUrl = await streamService.getAudioUrl(videoId);
 
       if (streamUrl != null && streamUrl.isNotEmpty) {
         debugPrint('[DebugTest] ✓ Stream URL OK (${streamUrl.length} chars)');
         debugPrint('═══════════════════════════════════════════════════════');
         messenger.showSnackBar(SnackBar(
-          content: Text('✓ OK! "${firstTrack.title}"'),
+          content: Text('✓ يعمل! "${firstTrack.title}"'),
           backgroundColor: Colors.green,
           duration: const Duration(seconds: 4),
         ));
@@ -91,7 +91,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         debugPrint('[DebugTest] ✗ Stream URL was null');
         debugPrint('═══════════════════════════════════════════════════════');
         messenger.showSnackBar(const SnackBar(
-          content: Text('Stream URL null — check console'),
+          content: Text('رابط الصوت فارغ — تحقق من الكونسول'),
           backgroundColor: Colors.orange,
         ));
       }
@@ -99,7 +99,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       debugPrint('[DebugTest] ✗ Exception: $e');
       debugPrint('═══════════════════════════════════════════════════════');
       messenger.showSnackBar(SnackBar(
-        content: Text('Test failed: $e'),
+        content: Text('الاختبار فشل: $e'),
         backgroundColor: Colors.red,
       ));
     } finally {
@@ -145,7 +145,6 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           ? const _EmptyResults()
           : _SearchResults(result: searchState.result!);
     } else if (_isFocused && searchState.query.isEmpty) {
-      // Search bar focused, nothing typed → show recents
       body = _RecentSearches(
         recent: searchState.recentSearches,
         onTap: (q) {
@@ -157,7 +156,6 @@ class _SearchPageState extends ConsumerState<SearchPage> {
         onGenreTap: _searchGenre,
       );
     } else {
-      // Default idle state → browse genres
       body = _BrowseCategories(onTap: _searchGenre);
     }
 
@@ -188,7 +186,6 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                 ),
               ),
             ),
-            // ── Debug test button ─────────────────────────────────────────
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
               child: SizedBox(
@@ -220,7 +217,6 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                 ),
               ),
             ),
-            // ─────────────────────────────────────────────────────────────
             Expanded(child: body),
           ],
         ),
@@ -671,12 +667,42 @@ class _PlaylistList extends StatelessWidget {
           ),
           title: Text(playlist.title,
               style: Theme.of(context).textTheme.titleSmall),
-          subtitle: playlist.author != null
-              ? Text(playlist.author!,
-                  style: Theme.of(context).textTheme.bodySmall)
-              : null,
+          subtitle: playlist.author != null ? Text(playlist.author!) : null,
         );
       },
+    );
+  }
+}
+
+class _EmptyResults extends StatelessWidget {
+  const _EmptyResults();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.search_off_rounded,
+            size: 56,
+            color: Theme.of(context)
+                .colorScheme
+                .onSurface
+                .withValues(alpha: 0.25),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'No results found',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurface
+                      .withValues(alpha: 0.4),
+                ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -695,65 +721,26 @@ class _ErrorWidget extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.wifi_off_rounded, size: 64,
-                color: AppColors.primaryBeige),
+            const Icon(Icons.wifi_off_rounded,
+                size: 48, color: AppColors.primaryBeige),
             const SizedBox(height: 16),
             Text(
-              'Search failed',
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Check your internet connection and try again.',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onSurface
-                        .withValues(alpha: 0.6),
-                  ),
+              error,
               textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
             ElevatedButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh_rounded),
-              label: const Text('Retry'),
+              label: const Text('إعادة المحاولة'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryBeige,
+                foregroundColor: Colors.white,
+              ),
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _EmptyResults extends StatelessWidget {
-  const _EmptyResults();
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.search_off_rounded,
-            size: 64,
-            color: Theme.of(context)
-                .colorScheme
-                .onSurface
-                .withValues(alpha: 0.3),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'No results found',
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSurface
-                      .withValues(alpha: 0.5),
-                ),
-          ),
-        ],
       ),
     );
   }

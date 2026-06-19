@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import '../network/network_client.dart';
 import '../network/network_info.dart';
 import '../../features/player/data/datasources/audio_handler.dart';
+import '../../features/player/data/datasources/youtube_stream_service.dart';
 import '../../features/player/data/repositories/player_repository_impl.dart';
 import '../../features/player/domain/repositories/player_repository.dart';
 import '../../features/player/domain/usecases/play_track_usecase.dart';
@@ -42,12 +43,15 @@ Future<void> setupDependencies() async {
   sl.registerLazySingleton<Dio>(() => NetworkClient.createDio());
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl());
 
+  // YouTube stream service (uses youtube_explode_dart)
+  sl.registerLazySingleton<YoutubeStreamService>(() => YoutubeStreamService());
+
   // Audio handler — await init so the media session + notification controls
   // are fully registered before the UI starts playing audio.
   final audioHandler = await VibifyAudioHandler.createAndInit();
   sl.registerSingleton<VibifyAudioHandler>(audioHandler);
 
-  // Search / YouTube
+  // Search
   sl.registerLazySingleton<YoutubeDatasource>(() => YoutubeDatasourceImpl());
   sl.registerLazySingleton<SearchRepository>(
     () => SearchRepositoryImpl(sl(), sl()),
@@ -81,7 +85,10 @@ Future<void> setupDependencies() async {
 
   // Downloads
   sl.registerLazySingleton<DownloadDatasource>(
-    () => DownloadDatasourceImpl(Hive.box(AppConstants.downloadBox)),
+    () => DownloadDatasourceImpl(
+      Hive.box(AppConstants.downloadBox),
+      sl<YoutubeStreamService>(),
+    ),
   );
   sl.registerLazySingleton<DownloadRepository>(
     () => DownloadRepositoryImpl(sl(), sl()),

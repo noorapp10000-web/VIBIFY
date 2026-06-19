@@ -21,8 +21,4 @@ class SearchRepositoryImpl implements SearchRepository {
   @override
   Future<List<Track>> getPlaylistTracks(String playlistId) =>
       _datasource.getPlaylistTracks(playlistId);
-
-  @override
-  Future<String?> getPipedStreamUrl(String videoId) =>
-      _datasource.getPipedStreamUrl(videoId);
 }
