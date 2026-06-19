@@ -6,46 +6,33 @@ import 'package:just_audio/just_audio.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 import '../../domain/entities/track.dart';
-import 'youtube_stream_service.dart';
 
 class VibifyAudioHandler extends BaseAudioHandler
     with QueueHandler, SeekHandler {
-  final AudioPlayer _player;
-  final YoutubeStreamService _streamService;
+  final AudioPlayer _player = AudioPlayer();
 
   int _currentQueueIndex = 0;
 
-  VibifyAudioHandler._({
-    required AudioPlayer player,
-    required YoutubeStreamService streamService,
-  })  : _player = player,
-        _streamService = streamService;
+  VibifyAudioHandler() {
+    _listenToPlayerEvents();
+  }
 
+  static const AudioServiceConfig _serviceConfig = AudioServiceConfig(
+    androidNotificationChannelId: 'com.vibify.audio',
+    androidNotificationChannelName: 'Vibify',
+    androidNotificationOngoing: true,
+    androidStopForegroundOnPause: true,
+    notificationColor: Color(0xFFD6B48A),
+    androidNotificationIcon: 'drawable/ic_notification',
+    androidNotificationChannelDescription: 'Vibify music playback',
+  );
+
+  /// Call once from main() — returns the handler wired to the system service.
   static Future<VibifyAudioHandler> createAndInit() async {
-    final handler = VibifyAudioHandler._(
-      player: AudioPlayer(),
-      streamService: YoutubeStreamService(),
+    return await AudioService.init<VibifyAudioHandler>(
+      builder: VibifyAudioHandler.new,
+      config: _serviceConfig,
     );
-
-    try {
-      await AudioService.init(
-        builder: () => handler,
-        config: const AudioServiceConfig(
-          androidNotificationChannelId: 'com.vibify.audio',
-          androidNotificationChannelName: 'Vibify',
-          androidNotificationOngoing: true,
-          androidStopForegroundOnPause: true,
-          notificationColor: Color(0xFFD6B48A),
-          androidNotificationIcon: 'drawable/ic_notification',
-          androidNotificationChannelDescription: 'Vibify music playback',
-        ),
-      ).timeout(const Duration(seconds: 15));
-    } catch (e) {
-      debugPrint('[AudioService] init error: $e');
-    }
-
-    handler._listenToPlayerEvents();
-    return handler;
   }
 
   void _listenToPlayerEvents() {
