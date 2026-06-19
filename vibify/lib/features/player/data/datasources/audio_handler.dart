@@ -28,11 +28,18 @@ class VibifyAudioHandler extends BaseAudioHandler
   );
 
   /// Call once from main() — returns the handler wired to the system service.
+  /// Falls back to a plain handler if AudioService.init() fails so that DI
+  /// registration is never blocked.
   static Future<VibifyAudioHandler> createAndInit() async {
-    return await AudioService.init<VibifyAudioHandler>(
-      builder: VibifyAudioHandler.new,
-      config: _serviceConfig,
-    );
+    try {
+      return await AudioService.init<VibifyAudioHandler>(
+        builder: VibifyAudioHandler.new,
+        config: _serviceConfig,
+      );
+    } catch (e) {
+      debugPrint('[AudioService] init failed ($e) — using plain handler (no notification)');
+      return VibifyAudioHandler();
+    }
   }
 
   void _listenToPlayerEvents() {
