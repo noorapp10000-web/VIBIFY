@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
@@ -55,11 +56,34 @@ class YoutubeStreamService {
   }
 
   /// Downloads audio for [videoId] directly to [filePath].
+  ///
+  /// Strategy 1 – InnerTube ANDROID direct URL + Dio (no cipher, real device IP).
+  /// Strategy 2 – youtube_explode_dart fallback.
   Future<void> downloadToFile(
     String videoId,
     String filePath, {
     void Function(int received, int total)? onProgress,
   }) async {
+    // ── Strategy 1: InnerTube ANDROID → Dio download ────────────
+    try {
+      final url = await _resolveViaInnerTube(videoId);
+      if (url != null) {
+        debugPrint('[Download] ✓ Strategy 1 (InnerTube) — downloading…');
+        await _downloadViaUrl(
+          url,
+          filePath,
+          headers: {'User-Agent': kYoutubeAndroidUserAgent},
+          onProgress: onProgress,
+        );
+        debugPrint('[Download] ✓ Done → $filePath');
+        return;
+      }
+    } catch (e) {
+      debugPrint('[Download] Strategy 1 failed: $e');
+    }
+
+    // ── Strategy 2: youtube_explode_dart fallback ────────────────
+    debugPrint('[Download] Falling back to youtube_explode_dart…');
     final yt = YoutubeExplode();
     try {
       final manifest = await yt.videos.streamsClient.getManifest(videoId);
@@ -78,13 +102,35 @@ class YoutubeStreamService {
       }
       await sink.flush();
       await sink.close();
-      debugPrint('[Stream] ✓ Downloaded $videoId → $filePath');
+      debugPrint('[Download] ✓ Strategy 2 done → $filePath');
     } catch (e) {
-      debugPrint('[Stream] ✗ downloadToFile failed: $e');
+      debugPrint('[Download] ✗ Both strategies failed: $e');
       rethrow;
     } finally {
       yt.close();
     }
+  }
+
+  /// Downloads from a direct URL using Dio with progress tracking.
+  Future<void> _downloadViaUrl(
+    String url,
+    String filePath, {
+    Map<String, String>? headers,
+    void Function(int received, int total)? onProgress,
+  }) async {
+    final dio = Dio();
+    await dio.download(
+      url,
+      filePath,
+      options: Options(
+        headers: headers,
+        receiveTimeout: const Duration(minutes: 10),
+        sendTimeout: const Duration(seconds: 30),
+      ),
+      onReceiveProgress: (received, total) {
+        if (total > 0) onProgress?.call(received, total);
+      },
+    );
   }
 
   // ──────────────────────────────────────────────────────────────
