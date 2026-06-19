@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:dio/dio.dart';
+import 'package:dio/dio.dart' as dio_lib;
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
@@ -118,15 +118,18 @@ class YoutubeStreamService {
     Map<String, String>? headers,
     void Function(int received, int total)? onProgress,
   }) async {
-    final dio = Dio();
+    final dio = dio_lib.Dio(
+      dio_lib.BaseOptions(
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(minutes: 10),
+        headers: headers != null
+            ? Map<String, dynamic>.from(headers)
+            : null,
+      ),
+    );
     await dio.download(
       url,
       filePath,
-      options: Options(
-        headers: headers,
-        receiveTimeout: const Duration(minutes: 10),
-        sendTimeout: const Duration(seconds: 30),
-      ),
       onReceiveProgress: (received, total) {
         if (total > 0) onProgress?.call(received, total);
       },
