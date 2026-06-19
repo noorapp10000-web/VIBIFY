@@ -288,20 +288,34 @@ class _YoutubeStreamAudioSource extends StreamAudioSource {
       final rangeStart = start ?? 0;
       final rangeEnd = (end ?? totalBytes).clamp(0, totalBytes);
 
-      // Use youtube_explode_dart's own HTTP client so it sends all the
-      // required YouTube headers (User-Agent, Origin, cookies, etc.).
-      // A plain dart:io / http.Client would get 403 without those headers.
-      final req = http.Request('GET', _cachedUrl!)
-        ..headers['Range'] = 'bytes=$rangeStart-${rangeEnd - 1}';
-      final response = await _yt!.httpClient.send(req);
+      // YoutubeHttpClient is publicly exported and automatically adds all
+      // required YouTube headers (User-Agent, cookies, etc.) before sending.
+      // In v3.1.0 YoutubeExplode._httpClient is private so we instantiate
+      // YoutubeHttpClient directly here for the range request.
+      final ytClient = YoutubeHttpClient();
+      try {
+        final req = http.Request('GET', _cachedUrl!)
+          ..headers['Range'] = 'bytes=$rangeStart-${rangeEnd - 1}';
+        final response = await ytClient.send(req);
 
-      return StreamAudioResponse(
-        sourceLength: totalBytes,
-        contentLength: response.contentLength ?? (rangeEnd - rangeStart),
-        offset: rangeStart,
-        stream: response.stream,
-        contentType: _cachedContentType!,
-      );
+        return StreamAudioResponse(
+          sourceLength: totalBytes,
+          contentLength: response.contentLength ?? (rangeEnd - rangeStart),
+          offset: rangeStart,
+          stream: response.stream.transform(
+            StreamTransformer.fromHandlers(
+              handleDone: (sink) {
+                sink.close();
+                ytClient.close();
+              },
+            ),
+          ),
+          contentType: _cachedContentType!,
+        );
+      } catch (e) {
+        ytClient.close();
+        rethrow;
+      }
     } catch (e) {
       // Invalidate cache so the next attempt re-fetches a fresh URL.
       _cachedUrl = null;
