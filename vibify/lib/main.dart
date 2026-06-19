@@ -32,11 +32,17 @@ void main() async {
 
   await Hive.initFlutter();
 
-  // Request notification permission on Android 13+ so media controls appear
   if (Platform.isAndroid) {
-    final status = await Permission.notification.status;
-    if (!status.isGranted) {
+    // طلب إذن الإشعارات على Android 13+
+    final notifStatus = await Permission.notification.status;
+    if (!notifStatus.isGranted) {
       await Permission.notification.request();
+    }
+
+    // طلب استثناء من battery optimization حتى يستمر الـ service في الخلفية
+    final batteryStatus = await Permission.ignoreBatteryOptimizations.status;
+    if (!batteryStatus.isGranted) {
+      await Permission.ignoreBatteryOptimizations.request();
     }
   }
 

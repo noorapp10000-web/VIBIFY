@@ -59,11 +59,21 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       await notifier.search();
       final state = ref.read(searchNotifierProvider);
 
-      if (state.result == null || state.result!.tracks.isEmpty) {
-        debugPrint('[DebugTest] ✗ No search results');
-        messenger.showSnackBar(const SnackBar(
-          content: Text('البحث لم يُرجع نتائج — تحقق من الكونسول'),
+      if (state.error != null) {
+        debugPrint('[DebugTest] ✗ Search error: ${state.error}');
+        messenger.showSnackBar(SnackBar(
+          content: Text('خطأ في البحث: ${state.error}'),
           backgroundColor: Colors.red,
+          duration: const Duration(seconds: 6),
+        ));
+        return;
+      }
+
+      if (state.result == null || state.result!.tracks.isEmpty) {
+        debugPrint('[DebugTest] ✗ No search results (result is empty)');
+        messenger.showSnackBar(const SnackBar(
+          content: Text('البحث رجع فارغ — تحقق من الكونسول'),
+          backgroundColor: Colors.orange,
         ));
         return;
       }
