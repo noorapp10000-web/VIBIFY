@@ -1,29 +1,42 @@
 ---
 name: Vibify Search & Stream Engine
-description: Search uses Cloudflare Worker API via http package; Stream uses youtube_explode_dart v3.1.0 with AudioSource.uri() — no custom proxy, no YoutubeHttpClient.
+description: Stream resolution: InnerTube ANDROID direct (primary) → youtube_explode_dart (fallback). audio_handler uses YoutubeStreamService only — no direct yt-explode calls.
 ---
 
 ## Search Engine
 - Package: `http: ^1.2.2`
 - Endpoint: `https://yt-audio-api.noor-app-100.workers.dev/api/search?q={query}`
 - File: `lib/features/search/data/datasources/youtube_datasource.dart`
-- JSON response shape: flexible — handles list or map with `results`/`items`/`videos` keys
-- Fields extracted: `videoId`, `title`, `thumbnail`, `author`/`channelTitle`/`channel`, `duration` (string or int seconds)
 
-## Stream Engine (youtube_explode_dart ^3.1.0)
-- **Key rule:** Use `AudioSource.uri(info.url)` directly — do NOT use `StreamAudioSource` + `YoutubeHttpClient`.
-- `getManifest(videoId)` → pick best audio via `_pickBestAudio()` (prefers AAC/MP4, falls back to highest bitrate).
-- ExoPlayer (inside just_audio) handles all HTTP range requests natively. The signed `googlevideo.com` URL needs no extra headers.
-- `YoutubeExplode` instance is created fresh per track and closed immediately after the URL is obtained (URL is self-contained).
-- `YoutubeStreamService.downloadToFile()` uses `yt.videos.streamsClient.get(info)` for streaming to disk (download only).
+## Stream Engine — Architecture
 
-**Why:** In v3.1.0, `YoutubeHttpClient.send(http.Request)` does NOT add YouTube-specific headers to externally constructed requests — so the old `StreamAudioSource` range-request proxy silently fails. `AudioSource.uri()` delegates HTTP to ExoPlayer which handles ranges natively without extra headers.
+### Flow
+```
+_playYoutubeTrack(videoId)
+  → YoutubeStreamService.resolveStream(videoId)
+      → Strategy 1: InnerTube ANDROID direct  ← PRIMARY
+      → Strategy 2: youtube_explode_dart        ← FALLBACK
+  → AudioSource.uri(url, headers: {User-Agent: kYoutubeAndroidUserAgent})
+  → ExoPlayer handles all HTTP + range requests natively
+```
 
-**How to apply:** Any playback call goes through `VibifyAudioHandler._playYoutubeTrack()`. Downloads go through `YoutubeStreamService.downloadToFile()`. Never use `StreamAudioSource`, `YoutubeHttpClient`, or manual range requests for playback.
+### Why InnerTube ANDROID is primary
+- ANDROID client returns **unencrypted** URLs — no JS cipher decryption needed.
+- JS cipher in youtube_explode_dart breaks whenever YouTube updates their JS player.
+- Real Android device IPs are not blocked by YouTube CDN.
+- `User-Agent` header must be passed to `AudioSource.uri()` so the CDN URL (signed for Android UA) isn't rejected by ExoPlayer's HTTP client.
 
-## Removed / Do Not Re-add
-- `_YoutubeStreamAudioSource` (StreamAudioSource subclass with manual YoutubeHttpClient range requests) — broken in v3.1.0
-- `AudioStreamResult` class (was used to pass stream+yt instance — no longer needed)
-- `webview_flutter` package
-- `youtube_iframe_extractor.dart` (stubbed)
-- InnerTube / Piped direct calls
+### Key constants
+- `kYoutubeAndroidUserAgent` = `'com.google.android.youtube/19.09.37 (Linux; U; Android 11) gzip'`
+- InnerTube API key: `AIzaSyA8eiZmM1FaDVjRy-df2KTyQ_vz_yYM39w`
+- InnerTube endpoint: `POST https://www.youtube.com/youtubei/v1/player?prettyPrint=false`
+
+### DI wiring
+- `YoutubeStreamService` registered first as lazy singleton.
+- `VibifyAudioHandler.createAndInit(sl<YoutubeStreamService>())` — receives service via constructor.
+- Downloads use `YoutubeStreamService.downloadToFile()` (yt-explode stream, unaffected by playback change).
+
+## Do NOT re-add
+- Direct `YoutubeExplode()` calls inside `audio_handler.dart`
+- `StreamAudioSource` + `YoutubeHttpClient` for range requests (broken in v3.x)
+- `getAudioUrl()` method (replaced by `resolveStream()` returning `ResolvedStream`)

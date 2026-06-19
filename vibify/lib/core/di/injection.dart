@@ -43,12 +43,12 @@ Future<void> setupDependencies() async {
   sl.registerLazySingleton<Dio>(() => NetworkClient.createDio());
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl());
 
-  // YouTube stream service (uses youtube_explode_dart)
+  // YouTube stream service (InnerTube ANDROID primary, yt-explode fallback)
   sl.registerLazySingleton<YoutubeStreamService>(() => YoutubeStreamService());
 
-  // Audio handler — await init so the media session + notification controls
-  // are fully registered before the UI starts playing audio.
-  final audioHandler = await VibifyAudioHandler.createAndInit();
+  // Audio handler — must receive the stream service so it can resolve URLs.
+  final audioHandler =
+      await VibifyAudioHandler.createAndInit(sl<YoutubeStreamService>());
   sl.registerSingleton<VibifyAudioHandler>(audioHandler);
 
   // Search

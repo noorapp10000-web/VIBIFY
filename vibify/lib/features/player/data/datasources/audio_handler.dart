@@ -3,17 +3,18 @@ import 'dart:async';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 import '../../domain/entities/track.dart';
+import 'youtube_stream_service.dart';
 
 class VibifyAudioHandler extends BaseAudioHandler
     with QueueHandler, SeekHandler {
   final AudioPlayer _player = AudioPlayer();
+  final YoutubeStreamService _streamService;
 
   int _currentQueueIndex = 0;
 
-  VibifyAudioHandler() {
+  VibifyAudioHandler(this._streamService) {
     _listenToPlayerEvents();
   }
 
@@ -27,15 +28,16 @@ class VibifyAudioHandler extends BaseAudioHandler
     androidNotificationChannelDescription: 'Vibify music playback',
   );
 
-  static Future<VibifyAudioHandler> createAndInit() async {
+  static Future<VibifyAudioHandler> createAndInit(
+      YoutubeStreamService streamService) async {
     try {
       return await AudioService.init<VibifyAudioHandler>(
-        builder: VibifyAudioHandler.new,
+        builder: () => VibifyAudioHandler(streamService),
         config: _serviceConfig,
       );
     } catch (e) {
       debugPrint('[AudioService] init failed ($e) — using plain handler');
-      return VibifyAudioHandler();
+      return VibifyAudioHandler(streamService);
     }
   }
 
@@ -88,49 +90,34 @@ class VibifyAudioHandler extends BaseAudioHandler
     }
   }
 
-  /// Resolves the YouTube stream URL via youtube_explode_dart and hands it
-  /// directly to just_audio as a URI source.  ExoPlayer handles all HTTP
-  /// range requests natively — no custom proxy or YoutubeHttpClient needed.
+  /// Resolves the stream URL via [YoutubeStreamService] (InnerTube ANDROID
+  /// primary, youtube_explode_dart fallback) then hands the URL + headers
+  /// to just_audio so ExoPlayer handles all HTTP range/seek natively.
   Future<void> _playYoutubeTrack(String videoId) async {
-    final yt = YoutubeExplode();
     try {
-      debugPrint('[Player] Fetching manifest for $videoId …');
+      debugPrint('[Player] Resolving stream for $videoId …');
 
-      final manifest = await yt.videos.streamsClient.getManifest(videoId);
+      final resolved = await _streamService.resolveStream(videoId);
 
-      // Prefer AAC/MP4 streams for maximum Android compatibility.
-      // Fall back to any audio-only stream if MP4 is unavailable.
-      AudioStreamInfo info;
-      final mp4Streams = manifest.audioOnly
-          .where((s) => s.container.name.toLowerCase() == 'mp4')
-          .toList();
-      if (mp4Streams.isNotEmpty) {
-        info = mp4Streams.reduce(
-          (a, b) => a.bitrate.bitsPerSecond > b.bitrate.bitsPerSecond ? a : b,
-        );
-      } else {
-        info = manifest.audioOnly.withHighestBitrate();
+      if (resolved == null) {
+        debugPrint('[Player] ✗ No stream resolved for $videoId');
+        playbackState.add(playbackState.value.copyWith(
+          processingState: AudioProcessingState.error,
+        ));
+        return;
       }
 
-      final url = info.url;
-      debugPrint(
-        '[Player] ✓ Stream resolved — ${info.container.name} '
-        '${info.bitrate.bitsPerSecond ~/ 1000} kbps',
+      debugPrint('[Player] ✓ Got URL — setting audio source …');
+      await _player.setAudioSource(
+        AudioSource.uri(resolved.url, headers: resolved.headers),
       );
-
-      // AudioSource.uri lets ExoPlayer fetch bytes with native range support.
-      // The signed googlevideo.com URL requires no extra headers.
-      await _player.setAudioSource(AudioSource.uri(url));
       await _player.play();
       debugPrint('[Player] ✓ Playback started for $videoId');
     } catch (e, st) {
-      debugPrint('[Player] ✗ Failed for $videoId: $e\n$st');
+      debugPrint('[Player] ✗ Playback error for $videoId: $e\n$st');
       playbackState.add(playbackState.value.copyWith(
         processingState: AudioProcessingState.error,
       ));
-    } finally {
-      // The URL is self-contained — safe to close the client immediately.
-      yt.close();
     }
   }
 
@@ -262,13 +249,8 @@ class VibifyAudioHandler extends BaseAudioHandler
     playbackState.add(playbackState.value.copyWith(shuffleMode: shuffleMode));
   }
 
-  Future<void> setPlaybackSpeed(double speed) async {
-    await _player.setSpeed(speed);
-  }
-
-  Future<void> setVolume(double volume) async {
-    await _player.setVolume(volume);
-  }
+  Future<void> setPlaybackSpeed(double speed) async => _player.setSpeed(speed);
+  Future<void> setVolume(double volume) async => _player.setVolume(volume);
 
   Stream<Duration> get positionStream => _player.positionStream;
   Stream<Duration?> get durationStream => _player.durationStream;
@@ -280,7 +262,5 @@ class VibifyAudioHandler extends BaseAudioHandler
   Duration get position => _player.position;
   Duration? get duration => _player.duration;
 
-  void dispose() {
-    _player.dispose();
-  }
+  void dispose() => _player.dispose();
 }
